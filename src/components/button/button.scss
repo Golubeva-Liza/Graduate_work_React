@@ -1,0 +1,27 @@
+@import '../../styles/variables';
+.button{
+   padding: 0 12px;
+   background-color: $main-blue;
+   color: #fff;
+   font-weight: 500;
+   height: 36px;
+   border-radius: 5px;
+   border: none;
+   outline: none;
+   transition: all .4s;
+   &:disabled{
+      background-color: $blue-disabled;
+   }
+   &:hover:not(:disabled){
+      background-color: $blue-hover;
+   }
+   &_linear{
+      border: 1px solid $main-blue;
+      color: $main-blue;
+      background-color: #FFFFFF;
+      &:hover:not(:disabled){
+         color: #FFFFFF;
+         background-color: $main-blue;
+      }
+   }
+}

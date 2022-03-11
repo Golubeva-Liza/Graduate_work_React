@@ -1,0 +1,30 @@
+@import '../../styles/variables';
+.header-top{
+   background: $main-color;
+   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+   height: 72px;
+   color: #FFFFFF;
+   .container{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+   }
+   &__name{
+      font-weight: 500;
+      font-size: 25px;
+      line-height: 30px;
+      margin: 0;
+   }
+   &__sign-up{
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 22px;
+      color: #FFFFFF;
+      background-color: transparent;
+      transition: opacity .3s;
+      &:hover{
+         opacity: 0.8;
+      }
+   }
+}

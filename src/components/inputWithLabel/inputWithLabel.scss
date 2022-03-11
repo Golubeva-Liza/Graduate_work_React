@@ -1,0 +1,13 @@
+@import '../../styles/variables';
+.label{
+   display: block;
+   width: 100%;
+   span{
+      display: block;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 22px;
+      color: $main-color;
+      margin-bottom: 6px;
+   }
+}

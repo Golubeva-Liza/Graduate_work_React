@@ -1,0 +1,23 @@
+@import '../../styles/variables';
+.input{
+   border-radius: 4px;
+   height: 38px;
+   border: 1px solid $main-grey;
+   width: 100%;
+   padding-left: 14px;
+   &:focus{
+      outline: 1px solid $main-color;
+      outline-offset: -1px;
+   }
+   &_search{
+      padding-left: 38px;
+   }
+   &::placeholder{
+      color: rgba(44, 44, 44, .5);
+   }
+   // &_textarea{
+   //    resize: none;
+   //    padding: 10px 14px;
+   //    height: 115px;
+   // }
+}

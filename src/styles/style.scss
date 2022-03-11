@@ -1,0 +1,71 @@
+@import './variables';
+@import './fonts';
+
+* {
+   font-family: 'Inter', sans-serif;
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+   font-size: 13px;
+}
+
+body {
+   margin: 0;
+   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+     sans-serif;
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
+}
+
+ul,
+li,
+dl {
+   list-style-type: none;
+   margin: 0;
+   padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+   margin: 0;
+}
+
+a {
+   text-decoration: none;
+   color: inherit;
+   display: inline-block;
+   &:hover {
+      text-decoration: none;
+      color: inherit;
+   }
+}
+
+p {
+   margin: 0;
+   padding: 0;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+   -webkit-appearance: none;
+   margin: 0; 
+}
+
+.container{
+   width: 1440px;
+   padding: 0 15px;
+   margin: 0 auto;
+}
+.button-reset{
+   border: none;
+   background-color: #fff;
+   cursor: pointer;
+   &:focus{
+      outline: none;
+   }
+}

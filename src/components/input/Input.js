@@ -18,7 +18,7 @@ const Input = ({props}) => {
          autoComplete={isComplete}
          value={value}
          onChange={onChange}
-         required
+         
       />
    )
 }

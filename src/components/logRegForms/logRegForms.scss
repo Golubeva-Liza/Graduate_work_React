@@ -43,5 +43,35 @@
             }
          }
       }
+      &__password{
+         position: relative;
+         margin-bottom: 16px;
+      }
+      &__eye{
+         width: 18px;
+         height: 18px;
+         position: absolute;
+         top: 52%;
+         right: 12px;
+         transform: translateY(-50%);
+         background-color: transparent;
+         background-image: url('../../resources/icons/eye.svg');
+         background-size: cover;
+         background-repeat: no-repeat;
+      }
+      &__eye.active{
+         background-image: url('../../resources/icons/eye-slash.svg');
+      }
+      &__message{
+         width: 305px;
+         padding: 8px 16px;
+         background-color: rgba($color: $main-red, $alpha: 0.2);
+         color: $main-red;
+         border-radius: 4px;
+         text-align: center;
+         font-size: 14px;
+         font-weight: 600;
+         margin-bottom: 24px;
+      }
    }
 }

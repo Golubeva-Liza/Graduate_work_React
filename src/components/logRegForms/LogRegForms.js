@@ -4,6 +4,7 @@ import './logRegForms.scss';
 
 import InputWithLabel from '../inputWithLabel/InputWithLabel';
 import Button from '../button/Button';
+import RegForm from './RegForm';
 
 
 function useValidateInput(initialValue) {
@@ -21,34 +22,8 @@ function useValidateInput(initialValue) {
 }
 
 const LogRegForms = () => {
-   const nameInput = useValidateInput('');
-   const loginInput = useValidateInput('');
-   const passwordInput = useValidateInput('');
-   const form = useRef(null);
-
    const formSubmit = (e) => {
       e.preventDefault();
-   }
-
-   const clickHandler = async () => {
-      
-      const formData = new FormData(form.current);
-      console.log(formData);
-
-      const response = await fetch("http://localhost/bookme-server/signup.php", {
-         method : 'POST',
-         header : {
-            'Content-Type': 'application/json'
-         },
-         body: formData,
-      });
-
-      if (!response.ok) {
-         throw new Error(`Could not fetch this, status: ${response.status}`);
-      }
-
-      const data = await response.text();
-      console.log(data);
    }
 
    return (
@@ -83,47 +58,7 @@ const LogRegForms = () => {
                      </form>
                      <p className="form__bottom">Нет аккаунта? <a href="#">Создать аккаунт</a></p>
                   </div> */}
-                  <div className="form login-form">
-                     <h2 className="form__title">Зарегистрироваться как модератор</h2>
-                     <form action="#" onSubmit={formSubmit} ref={form}>
-                        <InputWithLabel 
-                           labelClass="form__label"
-                           inputType="text"
-                           inputName="name"
-                           inputText="Введите своё имя"
-                           value={nameInput.value}
-                           onChange={nameInput.onChange} 
-                        >
-                           Имя пользователя
-                        </InputWithLabel>
-                        <InputWithLabel 
-                           labelClass="form__label"
-                           inputType="text"
-                           inputName="login"
-                           inputText="Введите логин или почту"
-                           value={loginInput.value}
-                           onChange={loginInput.onChange} 
-                        >
-                           Логин или почта
-                        </InputWithLabel>
-                        <InputWithLabel 
-                           labelClass="form__label"
-                           inputType="password"
-                           inputName="password"
-                           inputText="Введите пароль"
-                           value={passwordInput.value}
-                           onChange={passwordInput.onChange}>
-                           Пароль
-                        </InputWithLabel>
-                        <Button 
-                           buttonClass="form__btn"
-                           type="submit"
-                           onClick={clickHandler}>
-                           Войти
-                        </Button>
-                     </form>
-                     <p className="form__bottom">Нет аккаунта? <a href="#">Создать аккаунт</a></p>
-                  </div>
+                  <RegForm useValidateInput={useValidateInput} formSubmit={formSubmit}/>
                </div>
             </div>
          </div>

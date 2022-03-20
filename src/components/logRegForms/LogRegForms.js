@@ -2,9 +2,8 @@ import { useState, useRef } from 'react';
 
 import './logRegForms.scss';
 
-import InputWithLabel from '../inputWithLabel/InputWithLabel';
-import Button from '../button/Button';
 import RegForm from './RegForm';
+import LogForm from './LogForm';
 
 
 function useValidateInput(initialValue) {
@@ -18,12 +17,21 @@ function useValidateInput(initialValue) {
    //    return value.search(/\d/) >= 0;
    // }
 
-   return {value, onChange}; //{value: value, onChange: onChange}
+   return {value, onChange};
 }
 
 const LogRegForms = () => {
+   const [activeForm, setActiveForm] = useState('login');
+
    const formSubmit = (e) => {
       e.preventDefault();
+   }
+   const toggleForm = () => {
+      if (activeForm === "login"){
+         setActiveForm("registration");
+      }else{
+         setActiveForm("login");
+      }
    }
 
    return (
@@ -31,34 +39,8 @@ const LogRegForms = () => {
          <div className="container">
             <div className="log-reg-forms__container">
                <div className="log-reg-forms__forms">
-                  {/* <div className="form login-form">
-                     <h2 className="form__title">Войти в систему</h2>
-                     <form action="#">
-                        <InputWithLabel 
-                           labelClass="form__label"
-                           inputType="text"
-                           inputName="login"
-                           inputText="Введите логин"
-                        >
-                           Логин или почта
-                        </InputWithLabel>
-                        <InputWithLabel 
-                           labelClass="form__label"
-                           inputType="password"
-                           inputName="password"
-                           inputText="Введите пароль">
-                           Пароль
-                        </InputWithLabel>
-                        <Button 
-                           buttonClass="form__btn"
-                           type="button"
-                           onClick={clickHandler}>
-                           Войти
-                        </Button>
-                     </form>
-                     <p className="form__bottom">Нет аккаунта? <a href="#">Создать аккаунт</a></p>
-                  </div> */}
-                  <RegForm useValidateInput={useValidateInput} formSubmit={formSubmit}/>
+                  <LogForm useValidateInput={useValidateInput} formSubmit={formSubmit} active={activeForm} toggleForm={toggleForm}/>
+                  <RegForm useValidateInput={useValidateInput} formSubmit={formSubmit} active={activeForm} toggleForm={toggleForm}/>
                </div>
             </div>
          </div>

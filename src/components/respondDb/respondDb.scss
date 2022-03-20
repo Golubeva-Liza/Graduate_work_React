@@ -1,0 +1,135 @@
+@import '../../styles/variables';
+.respondDb{
+   padding: 73px 55px 60px 39px;
+   flex: 1;
+   position: relative;
+   &__table-container{
+      position: relative;
+   }
+   &__btns{
+      position: absolute;
+      bottom: 60px;
+      right: 57px;
+      button{
+         &:first-child{
+            margin-right: 22px;
+         }
+      }
+   }
+   &__add-btn{
+      padding-right: 37px !important;
+      position: relative;
+      &::after{
+         content: '';
+         width: 14px;
+         height: 14px;
+         background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7 0C7.5523 0 8 0.44772 8 1V6H13C13.5523 6 14 6.4477 14 7C14 7.5523 13.5523 8 13 8H8V13C8 13.5523 7.5523 14 7 14C6.4477 14 6 13.5523 6 13V8H1C0.44772 8 0 7.5523 0 7C0 6.4477 0.44771 6 1 6H6V1C6 0.44772 6.4477 0 7 0Z' fill='white'/%3E%3C/svg%3E%0A");
+         position: absolute;
+         top: 50%;
+         transform: translateY(-50%);
+         right: 13px;
+      }
+   }
+   &__respondent-options{
+      // top: calc(47px * 2);
+      right: 15px;
+   }
+   &__invite-to-proj{
+      top: 0;
+      right: 190px;
+      white-space: nowrap;
+   }
+   &__btns-popup{
+      top: -100px;
+      right: 0;
+   }
+}
+.respondents-list{
+   width: 100%;
+   border-radius: 5px;
+   border: 1px solid $main-grey;
+   table-layout: fixed;
+   border-spacing: 0px;
+   border-collapse: collapse;
+   tbody{
+      position: relative;
+   }
+   tr{
+      height: 47px;
+      border-bottom: 1px solid $main-grey;
+   }
+   th{
+      font-weight: 600;
+      text-align: left;
+   }
+   td, th{
+      padding-right: 21px;
+      overflow-x: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      box-sizing: content-box;
+
+      //Галочка
+      &:nth-child(1){
+         width: 16px;
+         padding-left: 14px;
+      }
+      //ФИО
+      &:nth-child(2){
+      }
+      //Пол
+      &:nth-child(3){
+         width: 26px;
+      }
+      //Возраст
+      &:nth-child(4){
+         width: 55px;
+      }
+      //Образование
+      &:nth-child(5){
+         width: 90px;
+      }
+      //Место жительства
+      &:nth-child(6){
+         width: 130px;
+      }
+      //Семейное положение
+      &:nth-child(7){
+         width: 145px;
+      }
+      //Телефон
+      &:nth-child(8){
+         width: 115px;
+      }
+      //Тэги
+      &:nth-child(9){
+         // background-color: red;
+      }
+      //Опции
+      &:last-child{
+         width: 24px;
+         padding-right: 15px;
+      }
+   }
+
+   &__label{
+      margin-bottom: 0;
+      transform: translateY(2px);
+   }
+}
+
+.more-functions {
+   width: 24px;
+   height: 24px;
+   background-color: transparent;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   svg{
+      fill: $main-grey;
+      pointer-events: none;
+   }
+   &:hover svg{
+      fill: rgba($color: #2C2C2C, $alpha: 0.4);
+   }
+}

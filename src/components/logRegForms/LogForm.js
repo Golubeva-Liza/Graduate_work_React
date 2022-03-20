@@ -4,9 +4,8 @@ import { useNavigate } from "react-router-dom";
 import InputWithLabel from '../inputWithLabel/InputWithLabel';
 import Button from '../button/Button';
 
-const RegForm = ({useValidateInput, formSubmit, active, toggleForm}) => {
+const LogForm = ({useValidateInput, formSubmit, active, toggleForm}) => {
    let navigate = useNavigate();
-   const nameInput = useValidateInput('');
    const emailInput = useValidateInput('');
    const passwordInput = useValidateInput('');
    const form = useRef(null);
@@ -14,35 +13,28 @@ const RegForm = ({useValidateInput, formSubmit, active, toggleForm}) => {
    const [passwordBtnActive, setPasswordBtnActive] = useState(false);
    const [errorMessage, setErrorMessage] = useState('');
 
-   const regForEmail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
-         regForPassword  = /^[a-zA-Z0-9!@#$%^&*]{6,16}$/;
+   const regForEmail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
    useEffect(() => {
       localStorage.removeItem('authorized');
    }, []);
 
    const clickHandler = async () => {
-
       //валидация
-      if (nameInput.value.length < 3 || nameInput.value.length >= 30){
-         setErrorMessage('Имя пользователя должно быть длиной от 3 до 30 символов');
-         return;
-         
-      } else if (!regForEmail.test(String(emailInput.value).toLocaleLowerCase())){
+      if (!regForEmail.test(String(emailInput.value).toLocaleLowerCase())){
          setErrorMessage('Введите корректный почтовый адрес');
          return;
 
-      } else if(passwordInput.value.length < 6 || passwordInput.value.length > 30){
-         setErrorMessage('Пароль должен быть длиной от 6 до 30 символов');
+      } else if(passwordInput.value.length === 0){
+         setErrorMessage('Пароль не должен быть пустым');
          return;
       }
       
       setErrorMessage('');
 
       const formData = new FormData(form.current);
-      console.log(formData);
 
-      const response = await fetch("http://localhost/bookme-server/signup.php", {
+      const response = await fetch("http://localhost/bookme-server/login.php", {
          method : 'POST',
          header : {
             'Content-Type': 'application/json'
@@ -63,7 +55,7 @@ const RegForm = ({useValidateInput, formSubmit, active, toggleForm}) => {
       } else {
          setErrorMessage(data);
       }
-      // console.log(data);
+      console.log(data);
    }
 
    const togglePassword = () => {
@@ -77,22 +69,12 @@ const RegForm = ({useValidateInput, formSubmit, active, toggleForm}) => {
 
    const activePassword = passwordBtnActive ? 'active' : '';
    const errorDiv = errorMessage ? <div className="form__message">{errorMessage}</div> : null;
-   const formActiveClass = active === "registration" ? 'active' : '';
+   const formActiveClass = active === "login" ? 'active' : '';
    return (
       <div className={`form login-form ${formActiveClass}`}>
-         <h2 className="form__title">Регистрация</h2>
+         <h2 className="form__title">Войти в систему</h2>
          {errorDiv}
          <form action="#" onSubmit={formSubmit} ref={form}>
-            <InputWithLabel 
-               labelClass="form__label"
-               inputType="text"
-               inputName="name"
-               inputText="Введите своё имя"
-               value={nameInput.value}
-               onChange={nameInput.onChange} 
-            >
-               Имя пользователя
-            </InputWithLabel>
             <InputWithLabel 
                labelClass="form__label"
                inputType="text"
@@ -101,7 +83,7 @@ const RegForm = ({useValidateInput, formSubmit, active, toggleForm}) => {
                value={emailInput.value}
                onChange={emailInput.onChange} 
             >
-               Почтовый адрес
+               Почта
             </InputWithLabel>
             <div className="form__password">
                <InputWithLabel 
@@ -115,18 +97,17 @@ const RegForm = ({useValidateInput, formSubmit, active, toggleForm}) => {
                </InputWithLabel>
                <button className={`button-reset form__eye ${activePassword}`} type="button" onClick={togglePassword}></button>
             </div>
-            
             <Button 
                buttonClass="form__btn"
-               type="submit"
+               type="button"
                onClick={clickHandler}>
-               Зарегистрироваться
+               Войти
             </Button>
          </form>
-         <p className="form__bottom">Есть аккаунт? 
-            <button className="button-reset form__change-btn" type="button" onClick={toggleForm}>Войти</button>
+         <p className="form__bottom">Нет аккаунта?  
+            <button className="button-reset form__change-btn" type="button" onClick={toggleForm}>Создать аккаунт</button>
          </p>
       </div>
    )
 }
-export default RegForm;
+export default LogForm;

@@ -1,0 +1,61 @@
+@import '../../styles/variables';
+.respond-db-settings{
+   padding: 70px 40px;
+   height: 100vh;
+   min-width: 338px;
+   width: 338px;
+   border-right: 1px solid #979797;
+   &__search{
+      position: relative;
+      margin-bottom: 48px;
+      &::before{
+         content: '';
+         width: 15px;
+         height: 15px;
+         background-image: url("data:image/svg+xml,%3Csvg width='15' height='15' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10.4834 9.18645L10.2381 9.53097L10.5371 9.83005L14.3535 13.6465C14.5488 13.8417 14.5488 14.1583 14.3535 14.3535C14.1583 14.5488 13.8417 14.5488 13.6465 14.3535L9.83005 10.5371L9.53097 10.2381L9.18645 10.4834C8.28755 11.1236 7.18845 11.5 6 11.5C2.96243 11.5 0.5 9.03756 0.5 6C0.5 2.96243 2.96243 0.5 6 0.5C9.03756 0.5 11.5 2.96243 11.5 6C11.5 7.18845 11.1236 8.28755 10.4834 9.18645ZM6 1.5C3.51472 1.5 1.5 3.51472 1.5 6C1.5 8.48524 3.51471 10.5 6 10.5C8.48524 10.5 10.5 8.48524 10.5 6C10.5 3.51471 8.48524 1.5 6 1.5Z' fill='%232C2C2C' stroke='%232C2C2C'/%3E%3C/svg%3E");
+         position: absolute;
+         top: 12px;
+         left: 14px;
+         opacity: 0.5;
+      }
+   }
+   &__label{
+      width: 100%;
+      margin-bottom: 32px;
+   }
+   &__label>span{
+      display: inline-block;
+      font-weight: 500;
+      margin-bottom: 5px;
+      line-height: 16px;
+   }
+   &__tags{
+      height: 210px;
+      overflow-y: scroll;
+      &::-webkit-scrollbar{
+         width: 5px;
+      }
+      &::-webkit-scrollbar-track{
+         background-color: rgba(44, 44, 44, 0.2);
+         border-radius: 10px;
+      }
+      &::-webkit-scrollbar-thumb{
+         background-color: rgba(44, 44, 44, 0.3);
+         border-radius: 10px;
+         cursor: pointer;
+         &:hover{
+               background-color: rgba(44, 44, 44, 0.45);
+         }
+         &:active{
+               background-color: rgba(44, 44, 44, 0.6);
+         }
+      }
+   }
+   &__tag-wrapper{
+      list-style: none;
+   }
+   &__tag{
+      display: inline-block;
+      margin-bottom: 7px;
+   }
+}

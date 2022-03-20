@@ -1,40 +1,42 @@
 import './headerSide.scss';
+import { HeaderArrow, Calendar, Respond, Settings, ProfilePhoto } from '../../resources';
+
+import { Link, NavLink } from 'react-router-dom';
 
 const HeaderSide = () => {
    return (
-      <header class="header">
-         привет
-         {/* <button class="button-reset header__arrow">
-            <svg><use xlink:href="img/icons/icons.svg#arrow-left"></use></svg>
+      <header className="header">
+         <button className="button-reset header__arrow">
+            <HeaderArrow/>
          </button>
-         <div class="header__profile-photo">
-            <img src="@img/example.jpg" alt="avatar"/>
+         <div className="header__profile-photo">
+            <img src={ProfilePhoto} alt="avatar"/>
          </div>
-         <div class="main-title header__profile-name">
+         <div className="main-title header__profile-name">
             Лиза Голубева
          </div>
-         <nav class="header__nav">
-            <ul class="header__list">
-               <li class="header__item @@projects">
-                  <a href="projects.html" class="header__link">
-                     <svg class="header__icon"><use xlink:href="img/icons/icons.svg#calendar"></use></svg>
-                     <span class="main-title header__nav-text">Проекты</span>
-                  </a>
+         <nav className="header__nav">
+            <ul className="header__list">
+               <li className="header__item">
+                  <NavLink end className={({ isActive }) => "header__link" + (isActive ? " header__item_active" : "")} to="/projects">
+                     <Calendar className="header__icon"/>
+                     <span className="main-title header__nav-text">Проекты</span>
+                  </NavLink>
                </li>
-               <li class="header__item @@respondents">
-                  <a href="index.html" class="header__link">
-                     <svg class="header__icon"><use xlink:href="img/icons/icons.svg#respondents"></use></svg>
-                     <span class="main-title header__nav-text">Респонденты</span>
-                  </a>
+               <li className="header__item">
+                  <NavLink end className={({ isActive }) => "header__link" + (isActive ? " header__item_active" : "")} to="/moderator">
+                     <Respond className="header__icon"/>
+                     <span className="main-title header__nav-text">Респонденты</span>
+                  </NavLink>
                </li>
-               <li class="header__item @@settings" >
-                  <a href="settings.html" class="header__link">
-                     <svg class="header__icon"><use xlink:href="img/icons/icons.svg#settings"></use></svg>
-                     <span class="main-title header__nav-text">Настройки</span>
-                  </a>
+               <li className="header__item">
+                  <NavLink end className={({ isActive }) => "header__link" + (isActive ? " header__item_active" : "")} to="/settings">
+                     <Settings className="header__icon"/>
+                     <span className="main-title header__nav-text">Настройки</span>
+                  </NavLink>
                </li>
             </ul>
-         </nav> */}
+         </nav>
       </header>
    )
 }

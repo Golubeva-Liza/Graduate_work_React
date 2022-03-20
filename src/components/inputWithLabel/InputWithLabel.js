@@ -7,7 +7,7 @@ const InputWithLabel = (props) => {
    const labelClasses = labelClass ? labelClass : '';
 
    return (
-      <label className={`label ${labelClasses}`}>
+      <label className={`form-label ${labelClasses}`}>
          <span>{children}</span>
          <Input props={props}/>
       </label>

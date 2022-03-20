@@ -9,7 +9,8 @@
       margin-top: 48px;
    }
    .form{
-      display: flex;
+      display: none;
+      // display: flex;
       flex-direction: column;
       align-items: center;
       padding: 48px;
@@ -73,5 +74,16 @@
          font-weight: 600;
          margin-bottom: 24px;
       }
+      &__change-btn{
+         color: $main-blue;
+         transition: .4s;
+         margin-left: 8px;
+         &:hover{
+            color: $blue-hover;
+         }
+      }
+   }
+   .form.active{
+      display: flex;
    }
 }

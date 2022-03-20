@@ -1,6 +1,6 @@
 import './input.scss';
 
-const Input = ({props}) => {
+const Input = (props) => {
    // console.log(props);
    const {inputType, inputName, inputText, inputComplete, inputClass, onChange, value} = props;
 

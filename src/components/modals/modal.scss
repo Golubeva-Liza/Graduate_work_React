@@ -1,0 +1,188 @@
+@import '../../styles/variables';
+.modal{
+   position: fixed;
+   width: 100%;
+   height: 100%;
+   background-color: rgba($color: #000000, $alpha: 0.25);
+   top: 0;
+   left: 0;
+   z-index: 5;
+   overflow-y: auto;
+   opacity: 1;
+   visibility: visible;
+   // transform: scale(1.2);
+   transition: all 0.2s;
+   &__body{
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 20px;
+   }
+   &__content{
+      width: 460px;
+      background-color: #fff;
+      box-shadow: 0px 10px 23px rgba(0, 0, 0, 0.12);
+      border-radius: 5px;
+      padding: 26px;
+   }
+   &__content:nth-last-child(-n+2) {
+      .progress__line-active{
+         width: 100%;
+      }
+   }
+   &__title{
+      font-weight: 600;
+      font-size: 25px;
+      line-height: 30px;
+      color: $main-blue;
+      margin-bottom: 24px;
+   }
+   &__input-name{
+      display: block;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 22px;
+      margin-bottom: 6px;
+   }
+   &__label{
+      display: block;
+      margin-bottom: 22px;
+   }
+   &__label .select__input span{
+      font-size: 13px;
+      font-weight: 400;
+      margin: 0;
+   }
+   &__some-inputs{
+      display: flex;
+   }
+   &__value{
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 16px;
+      color: $main-color;
+   }
+   &__link{
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 16px;
+      color: black;
+      transition: color .3s;
+      &:hover{
+         color: $main-blue;
+      }
+   }
+   &__checkbox{
+      display: flex;
+      cursor: pointer;
+      span{
+         font-weight: 500;
+         font-size: 13px;
+         line-height: 16px;
+         margin-right: 8px;
+      }
+      &:not(:last-child){
+         margin-right: 24px;
+      }
+   }
+   &__bottom-btns{
+      display: flex;
+      justify-content: flex-end;
+   }
+   &__btn{
+      padding: 0 16px;
+      border-radius: 5px;
+      color: #FFFFFF;
+      height: 36px;
+   }
+   &__ready{
+      background-color: $main-blue;
+   }
+   &__close{
+      background-color: $main-red;
+      margin-right: 24px;
+      &:hover{
+         background-color: $red-hover !important;
+      }
+   }
+   &__textarea{
+      resize: none;
+      padding: 10px 14px;
+      height: 115px;
+   }
+   &__back{
+      display: flex;
+      align-items: center;
+      margin-bottom: 32px;
+      .modal__title{
+         margin-bottom: 0;
+      }
+   }
+   &__back-button{
+      padding: 0 15px;
+      border-radius: 5px;
+      height: 36px;
+      background-color: rgba($color: $main-color, $alpha: 0.1);
+      color: rgba($color: red, $alpha: 0.5);
+      transition: all .3s;
+      margin-right: 24px;
+      svg{
+         height: 13px;
+         width: 8px;
+         opacity: 0.5;
+         pointer-events: none;
+      }
+      &:hover{
+         background-color: rgba($color: $main-color, $alpha: 0.2);
+      }
+   }
+   &__question{
+      display: flex;
+      margin-bottom: 6px;
+      align-items: center;
+      span{
+         margin-bottom: 0;
+         margin-right: 6px;
+      }
+   }
+   &__question-btn{
+      width: 20px;
+      height: 20px;
+      color: $main-blue;
+      svg{
+         width: 100%;
+         height: 100%;
+         pointer-events: none;
+         fill: currentColor;
+      }
+      &:hover{
+         color: $blue-hover;
+      }
+   }
+   &__period{
+      margin-bottom: 32px;
+      div, button{
+         font-weight: 500;
+         font-size: 13px;
+         line-height: 16px;
+      }
+      button{
+         color: $main-blue;
+         &:hover{
+            color: $blue-hover;
+         }
+      }
+   }
+   &__steps{
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+   }
+}
+
+.modal.show{
+   opacity: 1;
+   visibility: visible;
+   transform: scale(1);
+}

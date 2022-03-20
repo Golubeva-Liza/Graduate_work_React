@@ -1,50 +1,65 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
+import RespondDbPopup from '../popup/RespondDbPopup';
 import Popup from '../popup/Popup';
 import { Dots } from '../../resources';
 import './respondDb.scss';
+import useBookmeService from '../../services/BookmeService';
 
 
 const RespondDb = () => {
    const [respondentsList, setRespondentsList] = useState([]);
+   
    const [popupActive, setPopupActive] = useState(false);
+   const [addPopupActive, setAddPopupActive] = useState(false);
+   const {getAllRespondents} = useBookmeService();
 
-   const toggleSettings = () => {
-      setPopupActive(!popupActive);
-      // if (popupActive === false){//старое значение перед открытием
-      //    // console.log('открыт');
-      //    document.addEventListener('click', closeSelect);
-      // }
-   }
+   const [rowNum, setRowNum] = useState(0);
+   const dotBtns = useRef([]); 
+   const popup = useRef(); 
+
 
    useEffect(() => {
-      getRespondents();
+      updateRespondents();
    }, []);
 
-   const getRespondents = async () => {
-      const response = await fetch("http://localhost/bookme-server/respondents.php", {
-         method : 'GET',
-         header : {
-            'Content-Type': 'application/json'
-         },
-         body: null,
-      });
-
-      if (!response.ok) {
-         throw new Error(`Could not fetch this, status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setRespondentsList(data);
-
-      //массив из массивов, в которых хранятся все значения из таблицы, в данном случае:
-      //номер по порядку, id, name, email, phone, sex, age, education, sity, love, tags
-      // console.log(data[0]);
+   const updateRespondents = async () => {
+      getAllRespondents()
+         .then(onRespondentsLoaded);
+      //массив из массивов, в которых хранятся все значения из таблицы
    }
+
+   const onRespondentsLoaded = (res) => {
+      setRespondentsList(res);
+   }
+
+
+   const toggleSettings = (e) => {
+      if (popupActive === false){//старое значение перед открытием
+         document.addEventListener('click', closePopup);
+      }
+      if (popupActive == true && e.target != dotBtns.current[rowNum]){
+         console.log('нажали не на ту, которая открыла popup');
+         setPopupActive(true);
+      }else{
+         setPopupActive(!popupActive);
+      }
+      
+      let btnNum = dotBtns.current.findIndex(item => item == e.target);
+      setRowNum(btnNum);
+   }
+
+   const closePopup = (e) => {
+      if(!popup.current.contains(e.target) && !e.target.classList.contains('more-functions')){
+         setPopupActive(false);
+         document.removeEventListener('click', closePopup);
+      }
+   }
+   
 
    function renderRespondList(arr) {
       console.log('рендер респондентов');
-      const elements = arr.map((value) => {
+      const elements = arr.map((value, index) => {
          const userPhone = value[4].replace(/^(\d)(\d{3})(\d{3})(\d{2})(\d{2})$/, '+$1 $2 $3 $4 $5');
 
          return (
@@ -64,7 +79,7 @@ const RespondDb = () => {
                <td>{userPhone}</td>
                <td>{value[10]}</td>
                <td>
-                  <button className="button-reset more-functions" onClick={toggleSettings}>
+                  <button className="button-reset more-functions" onClick={toggleSettings} ref={el => dotBtns.current[index] = el}>
                      <Dots/>
                   </button>
                </td>
@@ -78,12 +93,11 @@ const RespondDb = () => {
    const comicsItems = renderRespondList(respondentsList);
    
    
-   
    return (
       <main className="respondDb">
          <div className="respondDb__table-container">
             {/* modal-closed */}
-            <Popup popupClass={`respondDb__respondent-options`} popupOpened={popupActive}/>
+            <RespondDbPopup link={popup} popupClass={`respondDb__respondent-options`} popupOpened={popupActive} rowNum={rowNum}/>
             <table className="respondents-list">
                <thead>
                   <tr>
@@ -112,7 +126,12 @@ const RespondDb = () => {
 
          <div className="respondDb__btns">
             <button className="button" disabled>Пригласить респондентов в проект</button>
-            <button className="button respondDb__add-btn" data-popup-btn="add-respond">Добавить респондента</button>
+            <button className="button respondDb__add-btn">Добавить респондента</button>
+            <Popup 
+               items={['Добавить одного респондента', 'Импорт из Excel']}
+               popupClass={`respondDb__btns-popup`} 
+               popupOpened={popupActive}
+            />
             {/* <div className="popup respondDb__btns-popup" data-popup-target="add-respond">
                <ul className="popup__list">
                   <li className="popup__item">

@@ -1,0 +1,205 @@
+@import '../../styles/variables';
+.modal-add-file{
+   &__content{
+      width: 275px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 45px 50px;
+   }
+   &__arrow{
+      width: 68px;
+      height: 68px;
+      margin-bottom: 14px;
+      svg{
+         width: 100%;
+         height: 100%;
+      }
+   }
+   &__title{
+      font-weight: 500;
+      font-size: 21px;
+      line-height: 25px;
+      margin-bottom: 8px;
+   }
+   &__descr{
+      margin-bottom: 30px;
+      font-size: 13px;
+      line-height: 16px;
+      color: rgba($color: $main-color, $alpha: 0.4);
+   }
+   &__btn{
+      width: 155px;
+   }
+}
+.modal_respond{
+   &__date{
+      input:first-child{
+         margin-right: 16px;
+         width: 150px;
+      }
+      input:last-child{
+         width: 47px;
+      }
+   }
+   &__tags-input{
+      input{
+         margin-right: 16px;
+      }
+   }
+   &__tag-btn{
+      background-color: $main-blue;
+      border-radius: 5px;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      svg{
+         width: 16px;
+         height: 16px;
+      }
+   }
+}
+.modal-change-password{
+   &__content{
+      width: 350px;
+   }
+}
+.modal-share-shedule{
+   &__content{
+      width: 350px;
+   }
+}
+.modal-new-project{
+   .modal__content{
+      display: none;
+   }
+   &__content_first{
+      width: 558px;
+   }
+   &__content_second{
+      width: 705px;
+   }
+   &__content_third{
+      width: 460px;
+   }
+   &__address{
+      justify-content: space-between;
+      input{
+         width: 300px;
+      }
+      button{
+         width: 185px;
+         height: 38px;
+      }
+   }
+   &__link{
+      align-items: center;
+      span{
+         margin: 0;
+         font-size: 13px;
+         line-height: 16px;
+         margin-right: 8px;
+      }
+   }
+   &__calendar{
+      margin-bottom: 32px;
+   }
+   &__top{
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+   }
+   &__copy-schedule{
+      top: 36px;
+      right: 0;
+   }
+   &__project-link{
+      display: block;
+      margin-bottom: 32px;
+      color: $main-color;
+      transition: all .3s;
+      &:hover{
+         color: $main-blue;
+      }
+   }
+   &__project-name{
+      margin-bottom: 16px;
+      span{
+         font-size: inherit;
+         color: $main-blue;
+      }
+   }
+   &__google-import{
+      white-space: nowrap;
+      top: 48px;
+      right: -24px;
+   }
+}
+.modal-customer-schedule{
+   .modal__content{
+      display: none;
+   }
+   &__content_1{
+      width: 460px;
+   }
+   &__content_3{
+      width: 706px;
+      .progress__line-active{
+         width: 50%;
+      }
+   }
+   &__top{
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+   }
+   &__title{
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 22px;
+      margin-bottom: 12px;
+   }
+   &__radio{
+      margin-bottom: 24px;
+   }
+   &__other{
+      input{
+         margin-left: 8px;
+      }
+   }
+   &__descr{
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 18px;
+      margin-bottom: 24px;
+   }
+   &__calendar{
+      margin-bottom: 32px;
+   }
+   &__project-link{
+      display: block;
+      margin-bottom: 32px;
+      color: $main-color;
+      font-weight: 500;
+      transition: all .3s;
+      &:hover{
+         color: $main-blue;
+      }
+   }
+   &__project-name{
+      margin-bottom: 16px;
+      span{
+         font-size: inherit;
+         color: $main-blue;
+      }
+   }
+   .modal__ready{
+      display: flex;
+      align-items: center;
+      &:hover{
+         color: #FFFFFF;
+      }
+      
+   }
+}

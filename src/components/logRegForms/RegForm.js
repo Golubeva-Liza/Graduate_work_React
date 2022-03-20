@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
 import InputWithLabel from '../inputWithLabel/InputWithLabel';
+import Input from '../input/Input';
 import Button from '../button/Button';
 
 const RegForm = ({useValidateInput, formSubmit, active, toggleForm}) => {
@@ -83,35 +84,15 @@ const RegForm = ({useValidateInput, formSubmit, active, toggleForm}) => {
          <h2 className="form__title">Регистрация</h2>
          {errorDiv}
          <form action="#" onSubmit={formSubmit} ref={form}>
-            <InputWithLabel 
-               labelClass="form__label"
-               inputType="text"
-               inputName="name"
-               inputText="Введите своё имя"
-               value={nameInput.value}
-               onChange={nameInput.onChange} 
-            >
-               Имя пользователя
+            <InputWithLabel labelClass="form__label" labelTitle="Имя пользователя">
+               <Input inputType="text" inputName="name" inputText="Введите своё имя" value={nameInput.value} onChange={nameInput.onChange}/>
             </InputWithLabel>
-            <InputWithLabel 
-               labelClass="form__label"
-               inputType="text"
-               inputName="email"
-               inputText="Введите свою почту"
-               value={emailInput.value}
-               onChange={emailInput.onChange} 
-            >
-               Почтовый адрес
+            <InputWithLabel labelClass="form__label" labelTitle="Почтовый адрес">
+               <Input inputType="text" inputName="email" inputText="Введите свою почту" value={emailInput.value} onChange={emailInput.onChange}/>
             </InputWithLabel>
             <div className="form__password">
-               <InputWithLabel 
-                  labelClass="form__label"
-                  inputType={passwordType}
-                  inputName="password"
-                  inputText="Введите пароль"
-                  value={passwordInput.value}
-                  onChange={passwordInput.onChange}>
-                  Пароль
+               <InputWithLabel labelClass="form__label" labelTitle="Пароль">
+                  <Input inputType={passwordType} inputName="password" inputText="Введите пароль" value={passwordInput.value} onChange={passwordInput.onChange}/>
                </InputWithLabel>
                <button className={`button-reset form__eye ${activePassword}`} type="button" onClick={togglePassword}></button>
             </div>

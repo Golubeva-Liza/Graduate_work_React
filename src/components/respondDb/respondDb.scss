@@ -68,6 +68,7 @@
       white-space: nowrap;
       text-overflow: ellipsis;
       box-sizing: content-box;
+      position: relative;
 
       //Галочка
       &:nth-child(1){

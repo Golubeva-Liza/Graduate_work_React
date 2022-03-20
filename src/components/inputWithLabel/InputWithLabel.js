@@ -1,15 +1,14 @@
 import './inputWithLabel.scss';
-import Input from '../input/Input';
 
 const InputWithLabel = (props) => {
-   const {labelClass, children} = props;
+   const {labelClass, labelTitle, children} = props;
 
    const labelClasses = labelClass ? labelClass : '';
 
    return (
       <label className={`form-label ${labelClasses}`}>
-         <span>{children}</span>
-         <Input props={props}/>
+         <span>{labelTitle}</span>
+         {children}
       </label>
    )
 }

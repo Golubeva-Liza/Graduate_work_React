@@ -7,30 +7,35 @@ import './respondDb.scss';
 import useBookmeService from '../../services/BookmeService';
 
 
-const RespondDb = () => {
-   const [respondentsList, setRespondentsList] = useState([]);
+const RespondDb = ({setAddModalActive, setEditModalActive, respondents, setRespondents, setEditRespond}) => {
    
    const [popupActive, setPopupActive] = useState(false);
-   const [addPopupActive, setAddPopupActive] = useState(false);
-   const {getAllRespondents} = useBookmeService();
+
+   const [activeRespond, setActiveRespond] = useState(null);
+   const [removedRespond, setRemovedRespond] = useState(null);
+   
 
    const [rowNum, setRowNum] = useState(0);
    const dotBtns = useRef([]); 
    const popup = useRef(); 
 
+   const {removeRespondent} = useBookmeService();
+
 
    useEffect(() => {
-      updateRespondents();
-   }, []);
+      if (removedRespond || removedRespond === 0){
+         // console.log(`хотим удалить респондента ${respondents[removedRespond]}`);
+         const respondId = respondents[removedRespond][1];
+         removeRespondent(respondId)
+            .then(onRespondentRemoved);
+         const updateResponds = [...respondents.slice(0, removedRespond), ...respondents.slice(removedRespond + 1)];
+         setRespondents(updateResponds);
+         setPopupActive(false);
+      }
+   }, [removedRespond])
 
-   const updateRespondents = async () => {
-      getAllRespondents()
-         .then(onRespondentsLoaded);
-      //массив из массивов, в которых хранятся все значения из таблицы
-   }
-
-   const onRespondentsLoaded = (res) => {
-      setRespondentsList(res);
+   const onRespondentRemoved = (res) => {
+      // console.log(`сервер прислал ${res}`);
    }
 
 
@@ -47,6 +52,7 @@ const RespondDb = () => {
       
       let btnNum = dotBtns.current.findIndex(item => item == e.target);
       setRowNum(btnNum);
+      setActiveRespond(btnNum);
    }
 
    const closePopup = (e) => {
@@ -59,45 +65,52 @@ const RespondDb = () => {
 
    function renderRespondList(arr) {
       console.log('рендер респондентов');
-      const elements = arr.map((value, index) => {
-         const userPhone = value[4].replace(/^(\d)(\d{3})(\d{3})(\d{2})(\d{2})$/, '+$1 $2 $3 $4 $5');
-
-         return (
-            <tr key={value[1]}>
-               <td>
-                  <label className="checkbox respondents-list__label">
-                     <input className="checkbox__input" name="respondent" type="checkbox"/>
-                     <div className="checkbox__check"></div>
-                  </label>
-               </td>
-               <td>{value[2]}</td>
-               <td>{value[5]}</td>
-               <td>{value[6]}</td>
-               <td>{value[7]}</td>
-               <td>{value[8]}</td>
-               <td>{value[9]}</td>
-               <td>{userPhone}</td>
-               <td>{value[10]}</td>
-               <td>
-                  <button className="button-reset more-functions" onClick={toggleSettings} ref={el => dotBtns.current[index] = el}>
-                     <Dots/>
-                  </button>
-               </td>
-            </tr>
-         )
-
-      });
-      return elements;
+      if (arr.length > 0){
+         const elements = arr.map((value, index) => {
+            const userPhone = value[4].replace(/^(\d)(\d{3})(\d{3})(\d{2})(\d{2})$/, '+$1 $2 $3 $4 $5');
+   
+            return (
+               <tr key={value[1]}>
+                  <td>
+                     <label className="checkbox respondents-list__label">
+                        <input className="checkbox__input" name="respondent" type="checkbox"/>
+                        <div className="checkbox__check"></div>
+                     </label>
+                  </td>
+                  <td>{value[2]}</td>
+                  <td>{value[5]}</td>
+                  <td>{value[6]}</td>
+                  <td>{value[7]}</td>
+                  <td>{value[8]}</td>
+                  <td>{value[9]}</td>
+                  <td>{userPhone}</td>
+                  <td>{value[10]}</td>
+                  <td>
+                     <button className="button-reset more-functions" onClick={toggleSettings} ref={el => dotBtns.current[index] = el}>
+                        <Dots/>
+                     </button>
+                  </td>
+               </tr>
+            )
+   
+         });
+         return elements;
+      }
    }
 
-   const comicsItems = renderRespondList(respondentsList);
-   
-   
+   const respondItems = renderRespondList(respondents);   
    return (
       <main className="respondDb">
          <div className="respondDb__table-container">
             {/* modal-closed */}
-            <RespondDbPopup link={popup} popupClass={`respondDb__respondent-options`} popupOpened={popupActive} rowNum={rowNum}/>
+            <RespondDbPopup link={popup} popupClass={`respondDb__respondent-options`} 
+               popupOpened={popupActive} rowNum={rowNum} 
+               activeRespond={activeRespond}
+               setRemovedRespond={setRemovedRespond}
+               setEditModalActive={setEditModalActive}
+               setEditRespond={setEditRespond}
+               setPopupActive={setPopupActive}
+            />
             <table className="respondents-list">
                <thead>
                   <tr>
@@ -119,19 +132,19 @@ const RespondDb = () => {
                   </tr>
                </thead>
                <tbody>
-                  {comicsItems}
+                  {respondItems}
                </tbody>
             </table>
          </div>
 
          <div className="respondDb__btns">
             <button className="button" disabled>Пригласить респондентов в проект</button>
-            <button className="button respondDb__add-btn">Добавить респондента</button>
-            <Popup 
+            <button className="button respondDb__add-btn" onClick={() => setAddModalActive(true)} >Добавить респондента</button>
+            {/* <Popup 
                items={['Добавить одного респондента', 'Импорт из Excel']}
                popupClass={`respondDb__btns-popup`} 
                popupOpened={popupActive}
-            />
+            /> */}
             {/* <div className="popup respondDb__btns-popup" data-popup-target="add-respond">
                <ul className="popup__list">
                   <li className="popup__item">

@@ -5,15 +5,29 @@ const useBookmeService = () => {
 
    const getAllRespondents = async () => {
       const res = await request("http://localhost/bookme-server/respondents.php");
-      return res;
+      const data = await res.json();
+      return data;
    }
 
-   // const getCharacter = async (id) => {
-   //    const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
-   //    return _transformCharacter(res.data.results[0]);//подставляется в char
-   // }
+   const addRespondent = async (form) => {
+      const res = await request("http://localhost/bookme-server/add-responds.php", 'POST', form);
+      const data = await res.json();
+      return data;
+   }
 
-   return {getAllRespondents};
+   const removeRespondent = async (respond) => {
+      const res = await request("http://localhost/bookme-server/remove-respond.php", 'POST', respond);
+      const data = await res.text();
+      return data;
+   }
+
+   const editRespondent = async (form) => {
+      const res = await request("http://localhost/bookme-server/edit-respond.php", 'POST', form);
+      const data = await res.json();
+      return data;
+   }
+
+   return {getAllRespondents, addRespondent, removeRespondent, editRespondent};
 }
 
 export default useBookmeService;

@@ -17,6 +17,7 @@ body {
      sans-serif;
    -webkit-font-smoothing: antialiased;
    -moz-osx-font-smoothing: grayscale;
+   overflow-y: hidden;
 }
 
 ul,
@@ -98,3 +99,4 @@ input::-webkit-inner-spin-button {
 //components
 @import './tag';
 @import './checkbox';
+@import './error-message';

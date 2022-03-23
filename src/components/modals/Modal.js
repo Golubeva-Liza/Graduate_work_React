@@ -1,12 +1,11 @@
 import './modal.scss';
-import { useState, useMemo, useEffect } from 'react';
+// import { useState, useMemo, useEffect } from 'react';
 
 const Modal = ({children, modalClass, active, setActive}) => {
-
+   const activeClass = active ? 'active' : '';
    return (
-      // modal_respond
-      <div className={`modal ${modalClass}`} onClick={() => setActive(false)}>
-         <div className="modal__body" onClick={e => e.stopPropagation()}>
+      <div className={`modal ${modalClass} ${activeClass}`}>
+         <div className="modal__body">
             {children}
          </div>
       </div>

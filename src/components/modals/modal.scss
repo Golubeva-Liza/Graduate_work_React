@@ -1,17 +1,19 @@
 @import '../../styles/variables';
 .modal{
-   position: fixed;
    width: 100%;
    height: 100%;
    background-color: rgba($color: #000000, $alpha: 0.25);
+   position: fixed;
    top: 0;
    left: 0;
    z-index: 5;
+
    overflow-y: auto;
-   opacity: 1;
-   visibility: visible;
-   // transform: scale(1.2);
+   opacity: 0;
+   visibility: hidden;
+   transform: scale(1.2);
    transition: all 0.2s;
+
    &__body{
       min-height: 100%;
       display: flex;
@@ -81,6 +83,7 @@
          font-size: 13px;
          line-height: 16px;
          margin-right: 8px;
+         margin-left: 0;
       }
       &:not(:last-child){
          margin-right: 24px;
@@ -181,7 +184,7 @@
    }
 }
 
-.modal.show{
+.modal.active{
    opacity: 1;
    visibility: visible;
    transform: scale(1);

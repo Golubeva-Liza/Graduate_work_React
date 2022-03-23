@@ -1,13 +1,21 @@
 import './popup.scss';
-import { useState, useRef, useEffect } from 'react';
 
 const RespondDbPopup = (props) => {
-   const {popupClass, popupOpened, rowNum, link} = props;
-   //popupOpened приходит из state компонента, в котором находится кнопка для взаимодействия popup
+   const {popupClass, popupOpened, setPopupActive, rowNum, link, activeRespond, setRemovedRespond, setEditModalActive, setEditRespond} = props;
 
    const popupShow = popupOpened ? 'show' : '';
    const popupTop = `${47 * (rowNum + 2)}px`;
 
+   const removeRespond = () => {
+      setRemovedRespond(activeRespond);
+   }
+   const modalEditRespond = () => {
+      setEditModalActive(true);
+      // console.log(activeRespond);
+      setEditRespond(activeRespond);
+      setPopupActive(false);
+   }
+ 
    return (
       <div className={`popup ${popupClass} ${popupShow}`} style={{top: popupTop}} ref={link}>
          <ul className="popup__list">
@@ -15,10 +23,10 @@ const RespondDbPopup = (props) => {
                <button className="button-reset">Смотреть анкету</button>
             </li>
             <li className="popup__item">
-               <button className="button-reset">Редактировать</button>
+               <button className="button-reset" onClick={modalEditRespond}>Редактировать</button>
             </li>
             <li className="popup__item">
-               <button className="button-reset">Удалить</button>
+               <button className="button-reset" onClick={removeRespond}>Удалить</button>
             </li>
             <li className="popup__item">
                <button className="button-reset">Отправить письмо</button>
@@ -32,21 +40,3 @@ const RespondDbPopup = (props) => {
    )
 }
 export default RespondDbPopup;
-
-
-// {/* <div className="popup main__invite-to-proj" data-popup-target="invite-to-proj">
-//    <ul className="popup__list">
-//       <li className="popup__item">
-//          <button className="button-reset">Расписание1</button>
-//       </li>
-//       <li className="popup__item">
-//          <button className="button-reset">1 семестр 2019</button>
-//       </li>
-//       <li className="popup__item">
-//          <button className="button-reset">Кампания Google март 2018 </button>
-//       </li>
-//       <li className="popup__item">
-//          <button className="button-reset">Расписание на зиму 2018</button>
-//       </li>
-//    </ul>
-// </div> */}

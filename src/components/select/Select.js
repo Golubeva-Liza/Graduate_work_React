@@ -1,8 +1,7 @@
 import './select.scss';
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 
-const Select = (props) => {
-   const {values} = props;
+const Select = ({values, selectName, clearSelect, setClearSelect, selectValue}) => {
 
    const defaultValue = useMemo(() => {
       return values[0];
@@ -12,6 +11,27 @@ const Select = (props) => {
    const [selectOpened, setSelectOpened] = useState(false);
    const listItems = useRef([]); //ссылки на все элементы в dropdown
    const select = useRef([]); 
+
+   
+   useEffect(() => {
+      if (clearSelect){
+         setCurrentValue(defaultValue);
+         listItems.current.forEach(item => item.classList.remove('selected'));
+         setClearSelect(false);
+      }
+   }, [clearSelect]);
+
+   useEffect(() => {
+      if (selectValue){
+         listItems.current.forEach(item => item.classList.remove('selected'));
+         setCurrentValue(selectValue);
+         listItems.current.forEach(item => {
+            if (item.innerHTML == selectValue){
+               item.classList.add('selected');
+            }
+         });
+      }
+   }, [selectValue]);
 
 
    const toggleDropdown = () => {
@@ -61,7 +81,7 @@ const Select = (props) => {
                {selectItems}
             </ul>
          </div>
-         {/* <input className="visually-hidden" type="text" value={currentValue} readOnly/> */}
+         <input className="visually-hidden" type="text" value={currentValue} name={selectName} readOnly/>
       </div>
    )
 }

@@ -1,0 +1,11 @@
+.error-message{
+   width: 100%;
+   padding: 8px 16px;
+   background-color: rgba($color: $main-red, $alpha: 0.2);
+   color: $main-red;
+   border-radius: 4px;
+   text-align: center;
+   font-size: 14px;
+   font-weight: 600;
+   margin-bottom: 24px;
+}

@@ -1,6 +1,5 @@
-
 import './otherModals.scss';
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import InputMask from 'react-input-mask';
 import useBookmeService from '../../services/BookmeService';
 
@@ -11,7 +10,8 @@ import Button from '../button/Button';
 import { useInput } from '../../hooks/useInput';
 import { PlusAdd } from '../../resources';
 
-const ModalAddRespond = ({setModalActive, respondents, setRespondents, regForEmail}) => {
+const ModalEditRespond = ({setModalActive, respondents, setRespondents, editRespond, regForEmail}) => {
+
    const nameInput = useInput('');
    const emailInput = useInput('');
    const phoneInput = useInput('');
@@ -26,8 +26,31 @@ const ModalAddRespond = ({setModalActive, respondents, setRespondents, regForEma
    const [errorMessage, setErrorMessage] = useState('');
    const [genderInput, setGenderInput] = useState('М');
    const [clearSelect, setClearSelect] = useState(false);
+   const [familyStatusValue, setFamilyStatusValue] = useState(null);
+   const [educationValue, setEducationValue] = useState(null);
+   const [respondId, setRespondId] = useState('');
 
-   const {addRespondent} = useBookmeService();
+   const {editRespondent} = useBookmeService();
+
+
+   useEffect(() => {
+      if (editRespond || editRespond === 0){
+         // console.log(`хотим редактировать респондента ${respondents[editRespond]}`);
+
+         //заполняем поля формы имеющимися данными
+         nameInput.setValue(respondents[editRespond][2]);
+         emailInput.setValue(respondents[editRespond][3]);
+         phoneInput.setValue(respondents[editRespond][4]);
+         dateInput.setValue('');//!
+         ageInput.setValue(respondents[editRespond][6]);
+         sityInput.setValue(respondents[editRespond][8]);
+         tagsInput.setValue(respondents[editRespond][10]);
+         setGenderInput(respondents[editRespond][5]);
+         setEducationValue(respondents[editRespond][7]);
+         setFamilyStatusValue(respondents[editRespond][9]);
+         setRespondId(respondents[editRespond][1]);
+      }
+   }, [editRespond])
 
 
    const scrollIntoTop = () => {
@@ -67,30 +90,21 @@ const ModalAddRespond = ({setModalActive, respondents, setRespondents, regForEma
 
       const formData = new FormData(form.current);
 
-      addRespondent(formData).then(onRespondentLoaded);
+      editRespondent(formData)
+         .then(onRespondentUpdate);
    }
 
-   const onRespondentLoaded = (newRespond) => {
-      setRespondents(respondents => [...respondents, ...newRespond]);
+   const onRespondentUpdate = (editedRespond) => {
+      const updatedResponds = [...respondents.slice(0, editRespond), ...editedRespond, ...respondents.slice(editRespond + 1)];
+      console.log(updatedResponds);
+      setRespondents(updatedResponds);
       setModalActive(false);
-      
-      //очистка формы
-      form.current.reset();
-      nameInput.removeValue();
-      emailInput.removeValue();
-      phoneInput.removeValue();
-      dateInput.removeValue();
-      ageInput.removeValue();
-      sityInput.removeValue();
-      tagsInput.removeValue();
-      setGenderInput('М');
-      setClearSelect(true);
    }
 
    const errorDiv = errorMessage ? <div className="error-message">{errorMessage}</div> : null;
    return (
       <div className="modal__content" ref={modal} onClick={e => e.stopPropagation()}>
-         <h3 className="modal__title">Добавить респондента</h3>
+         <h3 className="modal__title">Редактировать респондента</h3>
          {errorDiv}
          <form className="modal__form" ref={form} onSubmit={e => e.preventDefault()}>
             <InputWithLabel labelClass="modal__label" labelTitle="ФИО">
@@ -132,7 +146,7 @@ const ModalAddRespond = ({setModalActive, respondents, setRespondents, regForEma
                </div>
             </InputWithLabel>
             <InputWithLabel labelClass="modal__label" labelTitle="Образование">
-               <Select clearSelect={clearSelect} setClearSelect={setClearSelect} selectName="education"
+               <Select clearSelect={clearSelect} setClearSelect={setClearSelect} selectName="education" selectValue={educationValue}
                   values={['Не важно', 'Среднее общее', 'Среднее профессиональное', 'Высшее', 'Школьник', 'Студент']}
                />
             </InputWithLabel>
@@ -140,7 +154,7 @@ const ModalAddRespond = ({setModalActive, respondents, setRespondents, regForEma
                <Input inputType="text" inputName="sity" inputText="Введите свой город" value={sityInput.value} onChange={sityInput.onChange}/>
             </InputWithLabel>
             <InputWithLabel labelClass="modal__label" labelTitle="Семейное положение">
-               <Select clearSelect={clearSelect} setClearSelect={setClearSelect} selectName="familyStatus"
+               <Select clearSelect={clearSelect} setClearSelect={setClearSelect} selectName="familyStatus" selectValue={familyStatusValue}
                   values={['Не важно', 'Разведен(а)', 'Состоит в браке', 'В отношениях', 'Не в отношениях']}
                />
             </InputWithLabel>
@@ -152,6 +166,7 @@ const ModalAddRespond = ({setModalActive, respondents, setRespondents, regForEma
                   </button>
                </div>
             </InputWithLabel>
+            <input className="visually-hidden" type="text" value={respondId} name="uniqueid" readOnly/>
 
             <div className="modal__bottom-btns">
                <button className="button-reset button modal__btn modal__close" type="button" onClick={() => setModalActive(false)}>Отмена</button>
@@ -161,4 +176,4 @@ const ModalAddRespond = ({setModalActive, respondents, setRespondents, regForEma
       </div>
    )
 }
-export default ModalAddRespond;
+export default ModalEditRespond;

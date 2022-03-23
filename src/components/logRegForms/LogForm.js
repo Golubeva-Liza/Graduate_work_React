@@ -69,7 +69,7 @@ const LogForm = ({useValidateInput, formSubmit, active, toggleForm}) => {
    }
 
    const activePassword = passwordBtnActive ? 'active' : '';
-   const errorDiv = errorMessage ? <div className="form__message">{errorMessage}</div> : null;
+   const errorDiv = errorMessage ? <div className="error-message form__error-message">{errorMessage}</div> : null;
    const formActiveClass = active === "login" ? 'active' : '';
    return (
       <div className={`form login-form ${formActiveClass}`}>

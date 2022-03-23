@@ -6,5 +6,9 @@ export function useInput(initialValue) {
       setValue(e.target.value);
    }
 
-   return {value, onChange};
+   const removeValue = e => {
+      setValue(initialValue);
+   }
+
+   return {value, setValue, onChange, removeValue};
 }

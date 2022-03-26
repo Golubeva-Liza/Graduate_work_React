@@ -1,12 +1,14 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 
 import InputWithLabel from '../inputWithLabel/InputWithLabel';
 import Input from '../input/Input';
 import Button from '../button/Button';
+import useBookmeService from '../../services/BookmeService';
 
-const RegForm = ({useValidateInput, formSubmit, active, toggleForm}) => {
-   let navigate = useNavigate();
+
+const RegForm = ({useValidateInput, formSubmit, active, toggleForm, emailReg}) => {
+   
    const nameInput = useValidateInput('');
    const emailInput = useValidateInput('');
    const passwordInput = useValidateInput('');
@@ -15,12 +17,8 @@ const RegForm = ({useValidateInput, formSubmit, active, toggleForm}) => {
    const [passwordBtnActive, setPasswordBtnActive] = useState(false);
    const [errorMessage, setErrorMessage] = useState('');
 
-   const regForEmail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
-         regForPassword  = /^[a-zA-Z0-9!@#$%^&*]{6,16}$/;
-
-   useEffect(() => {
-      localStorage.removeItem('authorized');
-   }, []);
+   const {registration} = useBookmeService();
+   let navigate = useNavigate();
 
    const clickHandler = async () => {
 
@@ -29,7 +27,7 @@ const RegForm = ({useValidateInput, formSubmit, active, toggleForm}) => {
          setErrorMessage('Имя пользователя должно быть длиной от 3 до 30 символов');
          return;
          
-      } else if (!regForEmail.test(String(emailInput.value).toLocaleLowerCase())){
+      } else if (!emailReg.test(String(emailInput.value).toLocaleLowerCase())){
          setErrorMessage('Введите корректный почтовый адрес');
          return;
 
@@ -41,30 +39,19 @@ const RegForm = ({useValidateInput, formSubmit, active, toggleForm}) => {
       setErrorMessage('');
 
       const formData = new FormData(form.current);
-      console.log(formData);
 
-      const response = await fetch("http://localhost/bookme-server/signup.php", {
-         method : 'POST',
-         header : {
-            'Content-Type': 'application/json'
-         },
-         body: formData,
-      });
+      registration(formData).then(onUserRegistered);
+   }
 
-      if (!response.ok) {
-         throw new Error(`Could not fetch this, status: ${response.status}`);
-      }
-
-      const data = await response.text();
-
-      if (data === "success"){
-         setErrorMessage('');
-         navigate('/moderator');
-         localStorage.setItem('authorized', emailInput.value);
-      } else {
-         setErrorMessage(data);
-      }
-      // console.log(data);
+   const onUserRegistered = (res) => {
+      // if (data === "success"){
+      //    setErrorMessage('');
+      //    navigate('/moderator');
+      //    localStorage.setItem('authorized', emailInput.value);
+      // } else {
+      //    setErrorMessage(data);
+      // }
+      console.log(res);
    }
 
    const togglePassword = () => {

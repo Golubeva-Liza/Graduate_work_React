@@ -1,0 +1,122 @@
+@import '../../styles/variables';
+.account-settings{
+   padding: 73px 40px 60px 40px;
+   height: 100vh;
+   width: 380px;
+   border-right: 1px solid #979797;
+   color: $main-color;
+   position: relative;
+   &__photo{
+      position: relative;
+      display: flex;
+      justify-content: center;
+   }
+   &__photo-btn{
+      width: 250px;
+      height: 250px;
+      border-radius: 100%;
+      overflow: hidden;
+      margin-bottom: 16px;
+      img{
+         width: 100%;
+         height: 100%;
+         object-fit: cover;
+         pointer-events: none;
+      }
+   }
+   &__photo-btn.default{
+      border: 2px solid #BEBEBE;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      img{
+         width: 85%;
+         height: 85%;
+         margin-bottom: -16px;
+      }
+   }
+   &__name{
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 24px;
+      text-align: center;
+      display: block;
+      margin-bottom: 60px;
+   }
+   &__label{
+      margin: 0;
+      width: 100%;
+      padding-right: 16px;
+   }
+   &__edit{
+      color: $main-blue;
+      &:hover{
+         color: $blue-hover;
+      }
+   }
+   &__setting{
+      margin-bottom: 40px;
+   }
+   &__setting.changing{
+      .account-settings__label{
+         margin-bottom: 16px;
+      }
+   }
+   &__setting-wrapper{
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 16px;
+   }
+   &__setting-title{
+      display: block;
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 24px;
+      margin-bottom: 8px;
+   }
+   &__setting-value{
+      font-size: 14px;
+      line-height: 16px;
+   }
+
+   &__password{
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 24px;
+      color: $main-blue;
+      &:hover{
+         color: $blue-hover; 
+      }
+   }
+   &__logout{
+      position: absolute;
+      bottom: 60px;
+      left: 0;
+      margin: 0 40px;
+      display: flex;
+      align-items: center;
+      background-color: $main-red;
+      &:hover{
+         background-color: $red-hover !important;
+      }
+   }
+   &__save{
+      opacity: 0;
+      visibility: hidden;
+   }
+   &__save.active{
+      opacity: 1;
+      visibility: visible;
+   }
+   
+   &__add-photo{
+      top: 50%;
+      right: 0;
+      transform: translateX(102%) translateY(-50%);
+   }
+   &__error-message{
+      margin-top: 4px;
+      color: $main-red;
+   }
+}

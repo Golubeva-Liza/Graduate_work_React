@@ -27,7 +27,31 @@ const useBookmeService = () => {
       return data;
    }
 
-   return {getAllRespondents, addRespondent, removeRespondent, editRespondent};
+   const login = async (form) => {
+      const res = await request("http://localhost/bookme-server/login.php", 'POST', form);
+      const data = await res.text();
+      return data;
+   }
+
+   const registration = async (form) => {
+      const res = await request("http://localhost/bookme-server/signup.php", 'POST', form);
+      const data = await res.text();
+      return data;
+   }
+
+   const getLoggedUser = async (userId) => {
+      const res = await request("http://localhost/bookme-server/get-user.php", 'POST', userId);
+      const data = await res.json();
+      return data;
+   }
+
+   const updateUserData = async (form) => {
+      const res = await request("http://localhost/bookme-server/update-user.php", 'POST', form);
+      const data = await res.text();
+      return data;
+   }
+
+   return {getAllRespondents, addRespondent, removeRespondent, editRespondent, login, registration, getLoggedUser, updateUserData};
 }
 
 export default useBookmeService;

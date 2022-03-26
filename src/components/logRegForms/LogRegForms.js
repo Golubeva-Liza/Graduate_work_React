@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useMemo } from 'react';
 
 import './logRegForms.scss';
 import { useInput } from '../../hooks/useInput';
@@ -20,13 +20,17 @@ const LogRegForms = () => {
       }
    }
 
+   const regForEmail = useMemo(() => {
+      return /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+   }, []);
+
    return (
       <section className="log-reg-forms">
          <div className="container">
             <div className="log-reg-forms__container">
                <div className="log-reg-forms__forms">
-                  <LogForm useValidateInput={useInput} formSubmit={formSubmit} active={activeForm} toggleForm={toggleForm}/>
-                  <RegForm useValidateInput={useInput} formSubmit={formSubmit} active={activeForm} toggleForm={toggleForm}/>
+                  <LogForm useValidateInput={useInput} formSubmit={formSubmit} active={activeForm} toggleForm={toggleForm} emailReg={regForEmail}/>
+                  <RegForm useValidateInput={useInput} formSubmit={formSubmit} active={activeForm} toggleForm={toggleForm} emailReg={regForEmail}/>
                </div>
             </div>
          </div>

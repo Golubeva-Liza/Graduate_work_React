@@ -1,9 +1,9 @@
 import './popup.scss';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 
-const Popup = (props) => {
-   const {popupClass, popupOpened, items} = props;
+const Popup = ({popupClass, popupOpened, setPopupActive, items}) => {
    const popupShow = popupOpened ? 'show' : '';
+   const popup = useRef();
 
    function renderItems(values){
       const elements = values.map((value, index) => (
@@ -18,8 +18,22 @@ const Popup = (props) => {
       return renderItems(items);
    }, []);
 
+   
+   useEffect(() => {
+      if (popupOpened === true){
+         document.addEventListener('click', closePopup);
+      }
+   }, [popupOpened]);
+
+   const closePopup = (e) => {
+      if(!popup.current.contains(e.target)){
+         setPopupActive(false);
+         document.removeEventListener('click', closePopup);
+      }
+   }
+
    return (
-      <div className={`popup ${popupClass} ${popupShow}`}>
+      <div className={`popup ${popupClass} ${popupShow}`} ref={popup}>
          <ul className="popup__list">
             {selectItems}
          </ul>

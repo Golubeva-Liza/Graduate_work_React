@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from "react-router-dom";
 
 import HeaderSide from '../components/headerSide/HeaderSide';
 import RespondDbSettings from '../components/respondDbSettings/RespondDbSettings';
@@ -10,6 +11,21 @@ import useBookmeService from '../services/BookmeService';
 
 
 const ModeratorPage = () => {
+   let navigate = useNavigate();
+   const {getAllRespondents, getLoggedUser} = useBookmeService();
+   const [user, setUser] = useState('');
+
+   useEffect(() => {
+      if (!localStorage.getItem('authorized')){
+         navigate('/');
+      }else{
+         getLoggedUser(localStorage.getItem('authorized'))
+            .then(res => {
+               setUser(res[0]);
+            })
+      }
+   }, []);
+
    const [modalAddActive, setModalAddActive] = useState(false);
    const [modalEditActive, setModalEditActive] = useState(false);
    const [respondents, setRespondents] = useState([]);
@@ -18,8 +34,6 @@ const ModeratorPage = () => {
    const regForEmail = useMemo(() => {
       return /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
    }, []);
-
-   const {getAllRespondents} = useBookmeService();
 
    useEffect(() => {
       loadRespondents();
@@ -38,7 +52,7 @@ const ModeratorPage = () => {
    return (
       <>
          <div className='wrapper'>
-            <HeaderSide/>
+            <HeaderSide user={user}/>
             <RespondDbSettings/>
             <RespondDb setAddModalActive={setModalAddActive} setEditModalActive={setModalEditActive} 
                respondents={respondents} setRespondents={setRespondents}

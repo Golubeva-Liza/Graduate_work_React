@@ -8,7 +8,7 @@ import { useInput } from '../../hooks/useInput';
 import useBookmeService from '../../services/BookmeService';
 
 
-const ModalChangePass = ({setModalActive}) => {
+const ModalChangePass = ({setModalActive, user}) => {
    const oldPassInput = useInput('');
    const newPassInput = useInput('');
    const repeatPassInput = useInput('');
@@ -18,46 +18,40 @@ const ModalChangePass = ({setModalActive}) => {
    
    const [errorMessage, setErrorMessage] = useState('');
 
-   const {changePassword} = useBookmeService();
+   const {updateUserData} = useBookmeService();
 
-
-   const scrollIntoTop = () => {
-      modal.current.scrollIntoView({
-         behavior: "smooth"
-      });
-   }
 
    const submitForm = async () => {
-      // const phoneNum = phoneInput.value.replace(/[^0-9]/g,"");
 
-      // if (nameInput.value.length < 3 || nameInput.value.length >= 50){
-      //    setErrorMessage('Имя пользователя должно быть длиной от 3 до 50 символов');
-      //    scrollIntoTop();
-      //    return;
-         
-      // } else if (!regForEmail.test(String(emailInput.value).toLocaleLowerCase())){
-      //    setErrorMessage('Введите корректный почтовый адрес');
-      //    scrollIntoTop();
-      //    return;
-
-      // } else if(phoneNum.length !== 11){
-      //    setErrorMessage('Введите корректный номер телефона');
-      //    scrollIntoTop();
-      //    return;
-      // } else if (!dateInput.value && !ageInput.value){
-      //    setErrorMessage('Укажите возраст или дату рождения');
-      //    scrollIntoTop();
-      //    return;
-      // }
+      if (!oldPassInput.value.length || !newPassInput.value.length || !repeatPassInput.value.length){
+         setErrorMessage('Пожалуйста, заполните все поля');
+         return;
+      } else if(newPassInput.value.length < 6 || newPassInput.value.length > 30){
+         setErrorMessage('Пароль должен быть длиной от 6 до 30 символов');
+         return;
+      } else if(newPassInput.value !== repeatPassInput.value){
+         setErrorMessage('Новые пароли не совпадают');
+         return;
+      }
       
       setErrorMessage('');
 
       const formData = new FormData(form.current);
+      formData.append("id", user[1]);
 
-      // addRespondent(formData).then(onRespondentLoaded);
-   }
-
-   const onRespondentLoaded = (newRespond) => {
+      updateUserData(formData).then(res => {
+         if (res === 'error'){
+            setErrorMessage('Старый пароль введен некорректно');
+         } else if (res === 'success'){
+            setModalActive(false);
+            oldPassInput.removeValue();
+            newPassInput.removeValue();
+            repeatPassInput.removeValue();
+            form.current.reset();
+         } else{
+            console.log(res);
+         }
+      });
    }
 
    const errorDiv = errorMessage ? <div className="error-message">{errorMessage}</div> : null;

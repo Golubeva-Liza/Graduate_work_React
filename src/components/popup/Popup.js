@@ -1,13 +1,13 @@
 import './popup.scss';
 import { useState, useMemo, useEffect, useRef } from 'react';
 
-const Popup = ({popupClass, popupOpened, setPopupActive, items}) => {
-   const popupShow = popupOpened ? 'show' : '';
+const Popup = ({popupClass, popupOpened, setPopupActive, items, onClick}) => {
+   //onClick - массив функций, которые должны выполнятся по клику определенного list item (должны совпадать индексы)
    const popup = useRef();
 
    function renderItems(values){
       const elements = values.map((value, index) => (
-         <li className="popup__item" key={index}>
+         <li className="popup__item" key={index} onClick={onClick[index]}>
             <button className="button-reset" data-modal-btn="add-respond">{value}</button>
          </li>
       ));
@@ -33,7 +33,7 @@ const Popup = ({popupClass, popupOpened, setPopupActive, items}) => {
    }
 
    return (
-      <div className={`popup ${popupClass} ${popupShow}`} ref={popup}>
+      <div className={`popup ${popupClass} ${popupOpened ? 'show' : ''}`} ref={popup}>
          <ul className="popup__list">
             {selectItems}
          </ul>

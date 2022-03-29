@@ -26,8 +26,8 @@ const HeaderSide = ({user}) => {
          <button className="button-reset header__arrow" onClick={toggleMenu}>
             <HeaderArrow/>
          </button>
-         <div className={userImg === DefaultUser ? "header__profile-photo default" : "header__profile-photo"}>
-            <img src={userImg} alt="avatar"/>
+         <div className={`header__profile-photo${user[4] ? "" : " default"}`}>
+            <img src={user[4] ? `http://localhost/bookme-server/images/${user[4]}` : DefaultUser} alt="avatar"/>
          </div>
          <div className="main-title header__profile-name">
             {userName}

@@ -1,5 +1,8 @@
 @import '../../styles/variables';
 .modal-add-file{
+   .disabled{
+      display: none;
+   }
    &__content{
       width: 275px;
       display: flex;
@@ -23,13 +26,62 @@
       margin-bottom: 8px;
    }
    &__descr{
-      margin-bottom: 30px;
       font-size: 13px;
       line-height: 16px;
       color: rgba($color: $main-color, $alpha: 0.4);
    }
    &__btn{
       width: 155px;
+      color: $main-blue;
+   }
+   &__upload{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 30px;
+      
+   }
+   &__photo{
+      width: 175px;
+      height: 175px;
+      border-radius: 100%;
+      overflow: hidden;
+      margin-bottom: 30px;
+      border: 1px solid #BEBEBE;
+      position: relative;
+      img{
+         width: 100%;
+         height: 100%;
+         object-fit: cover;
+      }
+      button{
+         position: absolute;
+         bottom: 0;
+         left: 50%;
+         width: 100%;
+         height: 40px;
+         background-color: rgba($color: $main-color, $alpha: 0.7);
+         transform: translateX(-50%);
+         color: #FFFFFF;
+         font-size: 14px;
+         font-weight: 600;
+         opacity: 0;
+         visibility: hidden;
+         transition: opacity .4s, visibility .4s;
+      }
+      &:hover button{
+         opacity: 1;
+         visibility: visible;
+      }
+   }
+   &__save{
+      margin-top: 16px;
+      width: 155px;
+   }
+   form{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
    }
 }
 .modal_respond{

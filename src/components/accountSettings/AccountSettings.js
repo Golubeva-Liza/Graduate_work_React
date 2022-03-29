@@ -12,7 +12,7 @@ import { DefaultUser } from '../../resources';
 
 import './accountSettings.scss';
 
-const AccountSettings = ({setModalActive, user, setUser}) => {
+const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setUser}) => {
    let navigate = useNavigate();
    const { updateUserData } = useBookmeService();
    
@@ -20,31 +20,44 @@ const AccountSettings = ({setModalActive, user, setUser}) => {
    const nameInput = useRef();//ссылка
    const nameForm = useRef();//форма
    const [nameEdit, setNameEdit] = useState(false);//статус: редактируется или нет
+   const [errorNameMessage, setErrorNameMessage] = useState('');
 
-   const userEmail = useInput('');
-   const [userImg, setUserImg] = useState(DefaultUser);
-   const [errorMessage, setErrorMessage] = useState('');
-
+   const userEmail = useInput('');//значение
+   const emailInput = useRef();//ссылка
+   const emailForm = useRef();//форма
+   const [emailEdit, setEmailEdit] = useState(false);//статус: редактируется или нет
+   const [errorEmailMessage, setErrorEmailMessage] = useState('');
    
-
    const [popupActive, setPopupActive] = useState(false);
+
+
 
    const toggleNameInput = () => {
       if (nameEdit){//перед закрытием
          userName.removeValue();
-         setErrorMessage('');
+         setErrorNameMessage('');
       } else{
          nameInput.current.focus();
       }
       setNameEdit(!nameEdit);
    }
 
+   const toggleEmailInput = () => {
+      if (emailEdit){//перед закрытием
+         userEmail.removeValue();
+         setErrorEmailMessage('');
+      } else{
+         emailInput.current.focus();
+      }
+      setEmailEdit(!emailEdit);
+   }
+
    const updateName = () => {
       if (userName.value.length < 3 || userName.value.length >= 30){
-         setErrorMessage('Имя пользователя должно быть длиной от 3 до 30 символов');
+         setErrorNameMessage('Имя пользователя должно быть длиной от 3 до 30 символов');
          return;
       } 
-      setErrorMessage('');
+      setErrorNameMessage('');
       
       const form = new FormData(nameForm.current);
 
@@ -57,7 +70,28 @@ const AccountSettings = ({setModalActive, user, setUser}) => {
             userName.removeValue();
          }
       });
+   }
 
+   const updateEmail = () => {
+      const emailReg = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+      if (!emailReg.test(String(userEmail.value).toLocaleLowerCase())){
+         setErrorEmailMessage('Введите корректный почтовый адрес');
+         return;
+      }
+      setErrorEmailMessage('');
+
+      const form = new FormData(emailForm.current);
+
+      form.append("id", user[1]);
+      updateUserData(form).then(res => {
+         if (res === "success"){
+            const updatedUser = [...user.slice(0, 3), userEmail.value, ...user.slice(4)];
+            setUser(updatedUser);
+            setEmailEdit(false);
+            userEmail.removeValue();
+         }
+      });
    }
 
    const logout = () => {
@@ -65,19 +99,29 @@ const AccountSettings = ({setModalActive, user, setUser}) => {
       navigate('/');
    }
 
-   const errorDiv = errorMessage ? <div className="account-settings__error-message">{errorMessage}</div> : null;
+   const onUploadPhoto = () => {
+      setModalFileActive(true);
+      setPopupActive(false);
+   }
+   const function2 = () => {
+      console.log("действие2");
+   }
+
+   const errorName = errorNameMessage ? <div className="account-settings__error-message">{errorNameMessage}</div> : null;
+   const errorEmail = errorEmailMessage ? <div className="account-settings__error-message">{errorEmailMessage}</div> : null;
 
    return (
       <aside className="account-settings">
          <div className="account-settings__photo">
-            <button className={`button-reset account-settings__photo-btn${userImg === DefaultUser ? " default" : ""}`} onClick={() => setPopupActive(!popupActive)}>
-               <img src={userImg} alt="avatar"/>
+            <button className={`button-reset account-settings__photo-btn${user[4] ? "" : " default"}`} onClick={() => setPopupActive(!popupActive)}>
+               <img src={user[4] ? `http://localhost/bookme-server/images/${user[4]}` : DefaultUser} alt="avatar"/>
             </button>
             <Popup 
                items={['Загрузить новую', 'Удалить']}
                popupClass={'account-settings__add-photo'} 
                popupOpened={popupActive}
                setPopupActive={setPopupActive}
+               onClick={[onUploadPhoto, function2]}
             />
          </div>
          <span className="account-settings__name">{user[2]}</span>
@@ -99,19 +143,33 @@ const AccountSettings = ({setModalActive, user, setUser}) => {
                   onChange={userName.onChange}
                   ref={nameInput}
                />
-               {errorDiv}
+               {errorName}
             </div>
             <button className={`button-reset button ${nameEdit ? '' : 'visually-hidden'}`} type='submit' onClick={updateName} disabled={userName.value == '' ? true : false}>Сохранить изменения</button>
          </form>
-         
-         <div className="account-settings__setting">
-            <label className="account-settings__label">
+
+         <form className={`account-settings__setting ${emailEdit ? 'changing' : ''}`} onSubmit={(e) => e.preventDefault()} ref={emailForm}>
+            <div className="account-settings__label">
                <span className="account-settings__setting-title">Почтовый адрес</span>
-               <span className="account-settings__setting-value">someEmail@yandex.ru</span>
-               <input type="text" className="input visually-hidden" placeholder="someEmail@yandex.ru"/>
-            </label>
-         </div>
-         <button className="button-reset account-settings__password" onClick={() => setModalActive(true)}>Изменить пароль</button>
+               <div className="account-settings__setting-wrapper">
+                  <span className="account-settings__setting-value">{user[3]}</span>
+                  <button className={'button-reset account-settings__edit'} onClick={toggleEmailInput}>{emailEdit ? 'Отменить' : 'Изменить'}</button>
+               </div>
+               <input 
+                  className={`input ${emailEdit ? '' : 'visually-hidden'}`}
+                  type="text"
+                  name="useremail"
+                  autoComplete="off"
+                  value={userEmail.value}
+                  onChange={userEmail.onChange}
+                  ref={emailInput}
+               />
+               {errorEmail}
+            </div>
+            <button className={`button-reset button ${emailEdit ? '' : 'visually-hidden'}`} type='submit' onClick={updateEmail} disabled={userEmail.value == '' ? true : false}>Сохранить изменения</button>
+         </form>
+
+         <button className="button-reset account-settings__password" onClick={() => setModalPasswordActive(true)}>Изменить пароль</button>
 
          <Button buttonClass="account-settings__logout" onClick={logout}>Выйти из системы</Button>
       </aside>

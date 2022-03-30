@@ -1,0 +1,18 @@
+@import '../../styles/variables';
+.input-btns{
+   display: flex;
+   justify-content: space-between;
+   label{
+      margin: 0;
+   }
+   .button{
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+   }
+   input:checked + div{
+      color: #FFFFFF;
+      background-color: $main-blue;
+   }
+}

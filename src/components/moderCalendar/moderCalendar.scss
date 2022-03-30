@@ -1,0 +1,12 @@
+.moder-calendar{
+   padding: 70px 40px;
+   width: 730px;
+   border-right: 1px solid #979797;
+   position: relative;
+   &__btn{
+      width: 225px;
+      position: absolute;
+      bottom: 60px;
+      right: 40px;
+   }
+}

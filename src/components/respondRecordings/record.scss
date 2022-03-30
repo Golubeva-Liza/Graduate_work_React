@@ -1,0 +1,44 @@
+@import '../../styles/variables';
+.recording{
+   &:not(:last-child){
+      margin-bottom: 20px;
+   }
+   &__time{
+      display: inline-block;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 16px;
+      color: $main-blue;
+      margin-bottom: 6px;
+   }
+   &__content{
+      background: #FFFFFF;
+      border: 1px solid $main-grey;
+      border-radius: 4px;
+      padding: 14px 16px;
+      font-size: 13px;
+      line-height: 16px;
+      position: relative;
+   }
+   &__name, &__email{
+      display: block;
+      font-weight: 600;
+   }
+   &__name{
+      margin-bottom: 2px;
+   }
+   &__comment{
+      display: block;
+      margin-top: 16px;
+   }
+   &__btn{
+      position: absolute;
+      top: 0;
+      right: 8px;
+   }
+   &__popup{
+      top: 208px;
+      right: calc(35px + 8px + 10px + 12px);
+   }
+
+}

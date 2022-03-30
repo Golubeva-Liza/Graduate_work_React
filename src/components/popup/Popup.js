@@ -1,16 +1,19 @@
 import './popup.scss';
 import { useState, useMemo, useEffect, useRef } from 'react';
 
-const Popup = ({popupClass, popupOpened, setPopupActive, items, onClick}) => {
+const Popup = ({popupClass, popupOpened, setPopupActive, items, onClick, line}) => {
    //onClick - массив функций, которые должны выполнятся по клику определенного list item (должны совпадать индексы)
    const popup = useRef();
 
    function renderItems(values){
-      const elements = values.map((value, index) => (
+      let elements = values.map((value, index) => (
          <li className="popup__item" key={index} onClick={onClick[index]}>
-            <button className="button-reset" data-modal-btn="add-respond">{value}</button>
+            <button className="button-reset">{value}</button>
          </li>
       ));
+      if (line){
+         elements = [...elements.slice(0, line), <hr className="popup__line" key={Math.floor(Math.random() * (100 - 20)) + 20}/>, ...elements.slice(line)];
+      }
       return elements;
    }
 

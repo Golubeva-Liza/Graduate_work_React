@@ -126,6 +126,9 @@
    .modal__content{
       display: none;
    }
+   .modal__content.active{
+      display: block;
+   }
    &__content_first{
       width: 558px;
    }
@@ -197,9 +200,6 @@
    }
    &__content_3{
       width: 706px;
-      .progress__line-active{
-         width: 50%;
-      }
    }
    &__top{
       display: flex;

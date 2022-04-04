@@ -63,19 +63,23 @@
          font-size: 13px;
          color: $main-color;
          text-align: center;
-         transition: all .3s;
+         transition: border .3s;
          border: 1px solid white;
          display: flex;
          justify-content: center;
          padding-top: 1px;
-         cursor: pointer;
-         &:hover{
+         cursor: default;
+         &:not(.calendar__prev-date):not(.calendar__next-date):not(.calendar__prev):hover{
+            cursor: pointer;
             border: 1px solid $main-blue;
          }
       }
       .calendar__prev-date, .calendar__next-date{
-         padding-top: 12px;
-         color: #878787;
+         padding-top: 13px;
+         color: #c4c4c4;
+      }
+      .calendar__prev{
+         color: #c4c4c4;
       }
       span{
          display: block;
@@ -125,11 +129,14 @@
          grid-auto-rows: 27px;
          div{
             // background-color: rgb(212, 166, 38);
+            align-items: center;
             font-size: 12px;
             padding-top: 0;
          }
-         .calendar__prev-date, .calendar__next-date{
-            padding-top: 4px;
+         div.active{
+            // border-radius: 100%;
+            background-color: $main-blue;
+            color: #FFFFFF;
          }
          span{
             width: 24px;

@@ -1,0 +1,55 @@
+@import '../../styles/variables';
+.respondent-calendar{
+   width: 730px;
+   padding: 40px;
+   border-right: 1px solid #979797;
+   &__title{
+      font-weight: 600;
+      font-size: 25px;
+      line-height: 30px;
+      margin-bottom: 16px;
+   }
+   &__calendar{
+      margin-bottom: 32px;
+   }
+   &__hints{
+      display: flex;
+   }
+   &__hint{
+      font-size: 12px;
+      line-height: 20px;
+      padding-left: 30px;
+      position: relative;
+      &:not(:last-child){
+         margin-right: 40px;
+      }
+      &:before{
+         content: '';
+         width: 20px;
+         height: 20px;
+         position: absolute;
+         top: 0;
+         left: 0;
+         background: #C4E2F4;
+         border: 1px solid #DADCD7;
+      }
+      &:first-child{
+         &:before{
+            background: #FFFFFF;
+            border: 1px solid #DADCD7;
+         }
+      }
+      &:last-child{
+         &:after{
+            content: '';
+            width: 6px;
+            height: 6px;
+            position: absolute;
+            bottom: 4px;
+            left: 8px;
+            background: $main-blue;
+            border-radius: 100%;
+         }
+      }
+   }
+}

@@ -190,6 +190,41 @@
       top: 48px;
       right: -24px;
    }
+   &__period{
+      margin-bottom: 32px;
+   }
+   &__period-content{
+      display: flex;
+      justify-content: space-between;
+   }
+   &__period-time{
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 16px;
+      position: relative;
+      button{
+         margin: 0 5px;
+         color: $main-blue;
+         &:hover{
+            color: $blue-hover;
+         }
+         &:disabled{
+            cursor: default;
+            color: rgba($main-blue, 0.5);
+         }
+      }
+   }
+   &__calendar{
+      display: none;
+      position: absolute;
+      bottom: 22px;
+      left: 0;
+      width: 225px !important;
+      margin: 0;
+   }
+   &__calendar.active{
+      display: block;
+   }
 }
 .modal-customer-schedule{
    .modal__content{

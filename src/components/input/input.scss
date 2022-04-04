@@ -15,9 +15,9 @@
    &::placeholder{
       color: rgba(44, 44, 44, .5);
    }
-   // &_textarea{
-   //    resize: none;
-   //    padding: 10px 14px;
-   //    height: 115px;
-   // }
+   &_textarea{
+      resize: none;
+      padding: 10px 14px;
+      height: 115px;
+   }
 }

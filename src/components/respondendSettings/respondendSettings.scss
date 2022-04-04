@@ -1,0 +1,70 @@
+@import '../../styles/variables';
+
+.respondent-settings{
+   flex: 1;
+   padding: 40px;
+   &__title{
+      font-weight: 600;
+      font-size: 25px;
+      line-height: 30px;
+      margin-bottom: 16px;
+   }
+   &__date{
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 22px;
+      margin-bottom: 16px;
+   }
+   &__select{
+      width: 230px;
+      margin-bottom: 32px;
+   }
+   &__label{
+      margin-bottom: 16px;
+      width: 100%;
+      span{
+         display: block;
+         font-weight: 500;
+         font-size: 18px;
+         line-height: 22px;
+         margin-bottom: 6px;
+      }
+   }
+   &__checkbox{
+      margin-bottom: 10px;
+   }
+   &__call{
+      margin-bottom: 16px;
+   }
+   .input_textarea{
+      height: 90px;
+   }
+   &__agreement{
+      font-size: 13px;
+      line-height: 16px;
+      margin-bottom: 24px;
+      a{
+         text-decoration: underline;
+         color: $main-blue;
+         &:hover{
+            color: $blue-hover;
+         }
+      }
+   }
+   &__btns{
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      button{
+         padding: 0 16px;
+      }
+   }
+
+   &__error-message{
+      margin-top: 4px;
+      color: $main-red;
+   }
+   &__another-time{
+      
+   }
+}

@@ -1,0 +1,29 @@
+@import '../../styles/variables';
+.about-project{
+   padding: 40px 50px 40px 0;
+   border-right: 1px solid #979797;
+   width: 270px;
+   &__title{
+      font-weight: 600;
+      font-size: 25px;
+      line-height: 30px;
+      color: $main-blue;
+      margin-bottom: 40px;
+   }
+   &__descr{
+      font-size: 14px;
+      line-height: 17px;
+      margin-bottom: 40px;
+   }
+   &__info{
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 17px;
+      span{
+         font-weight: 400;
+      }
+      &:not(:last-child){
+         margin-bottom: 17px;
+      }
+   }
+}

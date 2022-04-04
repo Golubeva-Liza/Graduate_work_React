@@ -7,12 +7,13 @@ const Calendar = ({classes, small}) => {
    const yearTitle = useRef();
    const monthDays = useRef();
 
+   const date = useMemo(() => new Date(), []);
+
    useEffect(() => {
       renderCalendar();
    }, [])
 
    const renderCalendar = () => {
-      const date = new Date();
       let days = "";
       const monthsNames = [
          "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август",
@@ -60,17 +61,26 @@ const Calendar = ({classes, small}) => {
          monthDays.current.innerHTML = days;
       }
    }
+
+   const onLeftArrow = () => {
+      date.setMonth(date.getMonth() - 1);
+      renderCalendar();
+   }
+   const onRightArrow = () => {
+      date.setMonth(date.getMonth() + 1);
+      renderCalendar();
+   }
    
    return (
-      <div className={`calendar ${classes}`}>
+      <div className={`calendar ${small ? 'calendar_small' : ''} ${classes}`}>
          <div className="calendar__month">
-            <button className="button-reset calendar__arrow">
+            <button className="button-reset calendar__arrow" onClick={onLeftArrow} type="button">
                {small ? <CalendarArrowSmall/>: <CalendarArrow/>}
             </button>
             <p>
                <span className="calendar__month-name" ref={monthTitle}></span> <span className="calendar__year" ref={yearTitle}></span>
             </p>
-            <button className="button-reset calendar__arrow">
+            <button className="button-reset calendar__arrow" onClick={onRightArrow} type="button">
                {small ? <CalendarArrowSmall/>: <CalendarArrow/>}
             </button>
          </div>

@@ -161,21 +161,6 @@
          color: $blue-hover;
       }
    }
-   &__period{
-      margin-bottom: 32px;
-      div, button{
-         font-weight: 500;
-         font-size: 13px;
-         line-height: 16px;
-      }
-      button{
-         margin: 0 5px;
-         color: $main-blue;
-         &:hover{
-            color: $blue-hover;
-         }
-      }
-   }
    &__steps{
       display: flex;
       justify-content: space-between;

@@ -2,7 +2,7 @@ import './headerSide.scss';
 import { HeaderArrow, Calendar, Respond, Settings, ProfilePhoto, DefaultUser } from '../../resources';
 import { useState, useEffect } from 'react';
 
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const HeaderSide = ({user}) => {
    const [headerClosed, setHeaderClosed] = useState(false);

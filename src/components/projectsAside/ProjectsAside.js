@@ -8,7 +8,7 @@ const ProjectsAside = ({setModalActive}) => {
 
    return (
       <aside className="projects-aside">
-         <Calendar classes="calendar_small projects-aside__calendar" small/>
+         <Calendar classes="projects-aside__calendar" small/>
 
          <Accordion accordClass="projects-aside__project" name="1 семестр 2019"
             items={['Редактировать', 'Копировать ссылку', 'Удалить', 'Режим совместной работы']}

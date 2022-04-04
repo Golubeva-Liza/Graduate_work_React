@@ -11,6 +11,7 @@ import Input from '../input/Input';
 import ProgressBtns from '../progressBtns/ProgressBtns';
 import Button from '../button/Button';
 import Calendar from '../calendar/Calendar';
+import CalendarProj from '../calendar/CalendarProj';
 import Popup from '../popup/Popup';
 
 
@@ -23,9 +24,12 @@ const ModalNewProject = ({setModalActive}) => {
    const addressInput = useInput('');
    const projSurveyLink = useInput('');
    const projLink = useInput('');
+   const [durationRadio, setDurationRadio] = useState(null);
 
    const [step, setStep] = useState(1);
+   const [errorMessage, setErrorMessage] = useState('');
    const [popupCopyActive, setPopupCopyActive] = useState(false);
+   
 
    const formSubmit = () => {
       // const formData = new FormData(form.current);
@@ -35,12 +39,15 @@ const ModalNewProject = ({setModalActive}) => {
       // });
    }
 
+   const errorDiv = errorMessage ? <div className="error-message form__error-message">{errorMessage}</div> : null;
    return (
       <form className="modal__form" method="POST" ref={form}>
          <NewProjData setModalActive={setModalActive} 
             nameInput={nameInput} descrInput={descrInput} addressInput={addressInput}
             projSurveyLink={projSurveyLink} projLink={projLink} 
             active={step === 1 ? true : false} step={step} setStep={setStep}
+            durationRadio={durationRadio} setDurationRadio={setDurationRadio}
+            errorDiv={errorDiv}
          />
          <NewProjCalendar
             active={step === 2 ? true : false} step={step} setStep={setStep}
@@ -55,8 +62,30 @@ const ModalNewProject = ({setModalActive}) => {
 export default ModalNewProject;
 
 
-const NewProjData = ({setModalActive, active, step, setStep, nameInput, descrInput, addressInput, projSurveyLink, projLink}) => {
+const NewProjData = ({setModalActive, active, step, setStep, nameInput, descrInput, addressInput, projSurveyLink, projLink, durationRadio, setDurationRadio, errorDiv}) => {
    
+   const [calendarActive, setCalendarActive] = useState(false);
+   const [firstDate, setFirstDate] = useState(null);
+   const [lastDate, setLastDate] = useState(null);
+   const [activeDate, setActiveDate] = useState(null);
+
+   const choosePrevDate = () => {
+      if(!calendarActive){
+         setActiveDate('prev');
+      }else{
+         setActiveDate(null);
+      }
+      setCalendarActive(!calendarActive);
+   }
+   const chooseNextDate = () => {
+      if(!calendarActive){
+         setActiveDate('next');
+      }else{
+         setActiveDate(null);
+      }
+      setCalendarActive(!calendarActive);
+   }
+
    return (
       <div className={`modal__content modal-new-project__content_first ${active ? 'active' : ''}`}>
          <div className="modal__back">
@@ -66,12 +95,14 @@ const NewProjData = ({setModalActive, active, step, setStep, nameInput, descrInp
             <h3 className="modal__title">Создание проекта</h3>
          </div>
 
+         {errorDiv}
+
          <InputWithLabel labelClass="modal__label" labelTitle="Название проекта *">
             <Input inputType="text" inputName="name" inputText="Введите название" value={nameInput.value} onChange={nameInput.onChange}/>
          </InputWithLabel>
          <InputWithLabel labelClass="modal__label" labelTitle="Описание *">
             <textarea className="input modal__textarea" type="text" name="project-descr" autoComplete="off"
-               placeholder="Добавьте описание проекта" value={descrInput.value} onChange={descrInput.onChange}
+               placeholder="Опишите суть проекта или какие люди нужны для тестирования (требования)" value={descrInput.value} onChange={descrInput.onChange}
             ></textarea>
          </InputWithLabel>
          <div className="modal__label">
@@ -91,15 +122,35 @@ const NewProjData = ({setModalActive, active, step, setStep, nameInput, descrInp
             </div>
          </InputWithLabel>
          <InputWithLabel labelClass="modal__label" labelTitle="Длительность тестирования *" question>
-            <InputBtns values={['30 минут', '45 минут', '60 минут', '90 минут', 'Другое']}/>
+            <InputBtns 
+               values={['30 минут', '45 минут', '60 минут', '90 минут', 'Другое']}
+               radioValue={durationRadio} setRadioValue={setDurationRadio}
+            />
          </InputWithLabel>
-         <div className="modal__label modal__period">
-            <span className="modal__input-name">Период тестирования</span>
-            <div>
-               С 
-               <button className="button-reset" type="button">12.12.19</button>
-               по 
-               <button className="button-reset" type="button">выбрать дату</button>
+         <div className="modal__label modal-new-project__period">
+            <span className="modal__input-name">Период тестирования *</span>
+
+            <div className="modal-new-project__period-content">
+               <div className="modal-new-project__period-time">
+                  С 
+                  <button className="button-reset" type="button" onClick={choosePrevDate}>{firstDate ? firstDate : 'выбрать дату'}</button>
+                  по 
+                  <button className="button-reset" type="button" onClick={chooseNextDate} disabled={firstDate ? false : true}>{lastDate ? lastDate : 'выбрать дату'}</button>
+                  <CalendarProj classes={`modal-new-project__calendar ${calendarActive ? 'active' : ''}`} small
+                     firstDate={firstDate}
+                     setFirstDate={setFirstDate} setCalendarActive={setCalendarActive}
+                     lastDate={lastDate} setLastDate={setLastDate} 
+                     activeDate={activeDate} setActiveDate={setActiveDate}
+                  /> 
+               </div>
+
+               {/* <div className="modal-new-project__choose-time">
+                  <button className="button-reset" type="button">Выбрать даты</button>
+                  <CalendarProj classes="modal-new-project__calendar" small
+                     setFirstDate={setFirstDate}
+                     setLastDate={setLastDate}
+                  />
+               </div> */}
             </div>
          </div>
 

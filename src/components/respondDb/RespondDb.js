@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 
 import RespondDbPopup from '../popup/RespondDbPopup';
 import Popup from '../popup/Popup';
@@ -7,7 +7,7 @@ import './respondDb.scss';
 import useBookmeService from '../../services/BookmeService';
 
 
-const RespondDb = ({setAddModalActive, setEditModalActive, respondents, setRespondents, setEditRespond}) => {
+const RespondDb = ({setAddModalActive, setEditModalActive, respondents, setRespondents, setEditRespond, filteredResponds, resultsFound, loading}) => {
    
    const [popupActive, setPopupActive] = useState(false);
 
@@ -28,14 +28,14 @@ const RespondDb = ({setAddModalActive, setEditModalActive, respondents, setRespo
          const respondId = respondents[removedRespond][1];
          removeRespondent(respondId)
             .then(onRespondentRemoved);
-         const updateResponds = [...respondents.slice(0, removedRespond), ...respondents.slice(removedRespond + 1)];
-         setRespondents(updateResponds);
-         setPopupActive(false);
+         
       }
    }, [removedRespond])
 
    const onRespondentRemoved = (res) => {
-      // console.log(`сервер прислал ${res}`);
+      const updateResponds = [...respondents.slice(0, removedRespond), ...respondents.slice(removedRespond + 1)];
+      setRespondents(updateResponds);
+      setPopupActive(false);
    }
 
 
@@ -56,7 +56,7 @@ const RespondDb = ({setAddModalActive, setEditModalActive, respondents, setRespo
    }
 
    const closePopup = (e) => {
-      if(!popup.current.contains(e.target) && !e.target.classList.contains('more-functions')){
+      if(popup.current && !popup.current.contains(e.target) && !e.target.classList.contains('more-functions')){
          setPopupActive(false);
          document.removeEventListener('click', closePopup);
       }
@@ -98,7 +98,9 @@ const RespondDb = ({setAddModalActive, setEditModalActive, respondents, setRespo
       }
    }
 
-   const respondItems = renderRespondList(respondents);   
+   const respondItems = useMemo(() => renderRespondList(filteredResponds), [filteredResponds]);   
+   const loader = loading ? <div className="respondDb__loader"><div className="loader"></div></div> : null;
+   // const loader = loading;
    return (
       <main className="respondDb">
          <div className="respondDb__table-container">
@@ -136,6 +138,12 @@ const RespondDb = ({setAddModalActive, setEditModalActive, respondents, setRespo
                </tbody>
             </table>
          </div>
+
+         <div className={`respondDb__message ${resultsFound ? '' : 'show'}`}>
+            Таких респондентов нет в базе данных :(
+         </div>
+         
+         {loader}
 
          <div className="respondDb__btns">
             <button className="button" disabled>Пригласить респондентов в проект</button>

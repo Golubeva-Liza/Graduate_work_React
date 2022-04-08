@@ -12,7 +12,7 @@ import useBookmeService from '../services/BookmeService';
 
 const ModeratorPage = () => {
    let navigate = useNavigate();
-   const {getAllRespondents, getLoggedUser} = useBookmeService();
+   const {loading, setLoading, getAllRespondents, getLoggedUser} = useBookmeService();
    const [user, setUser] = useState('');
 
    useEffect(() => {
@@ -30,14 +30,18 @@ const ModeratorPage = () => {
    const [modalEditActive, setModalEditActive] = useState(false);
    const [respondents, setRespondents] = useState([]);
    const [editRespond, setEditRespond] = useState(null);
-
-   const regForEmail = useMemo(() => {
-      return /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-   }, []);
+   const [filteredResponds, setFilteredResponds] = useState([]);
+   const [resultsFound, setResultsFound] = useState(true);
 
    useEffect(() => {
       loadRespondents();
    }, []);
+
+   useEffect(() => {
+      if (respondents){
+         setFilteredResponds(respondents);
+      }
+   }, [respondents]);
 
    const loadRespondents = async () => {
       getAllRespondents()
@@ -47,28 +51,40 @@ const ModeratorPage = () => {
 
    const onRespondentsLoaded = (res) => {
       setRespondents(res);
+      setLoading(false);
    }
+
 
    return (
       <>
          <div className='wrapper'>
             <HeaderSide user={user}/>
-            <RespondDbSettings/>
-            <RespondDb setAddModalActive={setModalAddActive} setEditModalActive={setModalEditActive} 
+            <RespondDbSettings 
+               respondents={respondents} 
+               filteredResponds={filteredResponds} setFilteredResponds={setFilteredResponds}
+               setResultsFound={setResultsFound}
+            />
+            <RespondDb 
+               setAddModalActive={setModalAddActive} 
+               setEditModalActive={setModalEditActive} 
                respondents={respondents} setRespondents={setRespondents}
-               setEditRespond={setEditRespond}
+               setEditRespond={setEditRespond} 
+               filteredResponds={filteredResponds} 
+               resultsFound={resultsFound}
+               loading={loading}
             />
          </div>
          <Modal modalClass={'modal_respond'} active={modalAddActive} setActive={setModalAddActive}>
-            <ModalAddRespond setModalActive={setModalAddActive} 
+            <ModalAddRespond 
+               setModalActive={setModalAddActive} 
                respondents={respondents} setRespondents={setRespondents} 
-               regForEmail={regForEmail}
             />
          </Modal>
          <Modal modalClass={'modal_respond'} active={modalEditActive} setActive={setModalEditActive}>
-            <ModalEditRespond setModalActive={setModalEditActive} 
+            <ModalEditRespond 
+               setModalActive={setModalEditActive} 
                respondents={respondents} setRespondents={setRespondents}
-               editRespond={editRespond} regForEmail={regForEmail}
+               editRespond={editRespond}
             />
          </Modal>
       </>

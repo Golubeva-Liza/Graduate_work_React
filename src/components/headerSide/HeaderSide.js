@@ -5,10 +5,9 @@ import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 
 const HeaderSide = ({user}) => {
-   const [headerClosed, setHeaderClosed] = useState(false);
+   const [headerClosed, setHeaderClosed] = useState(localStorage.getItem('headerClosed') == 'true' ? true : false);
 
    const [userName, setUserName] = useState('');
-   const [userImg, setUserImg] = useState(DefaultUser);
 
    const toggleMenu = () => {
       setHeaderClosed(!headerClosed);
@@ -18,8 +17,12 @@ const HeaderSide = ({user}) => {
       if (user){
          setUserName(user[2]);
       }
-      // console.log(user);
    }, [user])
+
+   useEffect(() => {
+      localStorage.setItem('headerClosed', headerClosed);
+   }, [headerClosed])
+
 
    return (
       <header className={headerClosed ? "header closed" : "header"}>

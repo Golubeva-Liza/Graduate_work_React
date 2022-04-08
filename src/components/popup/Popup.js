@@ -29,7 +29,7 @@ const Popup = ({popupClass, popupOpened, setPopupActive, items, onClick, line}) 
    }, [popupOpened]);
 
    const closePopup = (e) => {
-      if(!popup.current.contains(e.target)){
+      if(popup.current && !popup.current.contains(e.target)){
          setPopupActive(false);
          document.removeEventListener('click', closePopup);
       }

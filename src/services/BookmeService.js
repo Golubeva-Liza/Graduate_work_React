@@ -1,11 +1,13 @@
 import {useHttp} from '../hooks/http.hook';
 
 const useBookmeService = () => {
-   const {request} = useHttp();
+   const {loading, setLoading, request} = useHttp();
 
    const getAllRespondents = async () => {
       const res = await request("http://localhost/bookme-server/respondents.php");
+      // console.log(loading);
       const data = await res.json();
+      // setLoading(false);
       return data;
    }
 
@@ -51,7 +53,7 @@ const useBookmeService = () => {
       return data;
    }
 
-   return {getAllRespondents, addRespondent, removeRespondent, editRespondent, login, registration, getLoggedUser, updateUserData};
+   return {loading, setLoading, getAllRespondents, addRespondent, removeRespondent, editRespondent, login, registration, getLoggedUser, updateUserData};
 }
 
 export default useBookmeService;

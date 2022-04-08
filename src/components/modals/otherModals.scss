@@ -88,7 +88,7 @@
    &__date{
       input:first-child{
          margin-right: 16px;
-         width: 150px;
+         width: 140px;
       }
       input:last-child{
          width: 47px;
@@ -109,6 +109,18 @@
       svg{
          width: 16px;
          height: 16px;
+      }
+   }
+   &__tags{
+      // margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      li{
+         margin-right: 8px;
+         margin-top: 8px;
+      }
+      .tag {
+         white-space: nowrap;
       }
    }
 }

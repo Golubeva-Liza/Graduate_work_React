@@ -1,5 +1,4 @@
 import './inputBtns.scss';
-import { useMemo, useRef, useEffect} from 'react';
 import {translit} from '../../hooks/translit';
 
 const InputBtns = (props) => {

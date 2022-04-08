@@ -2,8 +2,8 @@
 .header{
    padding: 73px 0px;
    background-color: $main-color;
-   min-width: 285px;
-   width: 285px;
+   min-width: 250px;
+   width: 250px;
    height: 100vh;
    color: #FFFFFF;
    position: relative;
@@ -81,7 +81,7 @@
       }
    }
    &__link{
-      padding-left: 35px;
+      padding-left: 26px;
       height: 80px;
       display: flex;
       align-items: center;
@@ -106,8 +106,8 @@
 }
 
 .header.closed{
-   width: 96px;
-   min-width: 96px;
+   width: 78px;
+   min-width: 78px;
    .header__nav-text{
       opacity: 0;
       font-size: 0;

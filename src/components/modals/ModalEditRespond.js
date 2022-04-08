@@ -2,6 +2,8 @@ import './otherModals.scss';
 import { useState, useMemo, useRef, useEffect } from 'react';
 import InputMask from 'react-input-mask';
 import useBookmeService from '../../services/BookmeService';
+import useValidation from '../../hooks/useValidation';
+import dateToAge from '../../hooks/dateToAge';
 
 import InputWithLabel from '../inputWithLabel/InputWithLabel';
 import Input from '../input/Input';
@@ -10,7 +12,7 @@ import Button from '../button/Button';
 import { useInput } from '../../hooks/useInput';
 import { PlusAdd } from '../../resources';
 
-const ModalEditRespond = ({setModalActive, respondents, setRespondents, editRespond, regForEmail}) => {
+const ModalEditRespond = ({setModalActive, respondents, setRespondents, editRespond}) => {
 
    const nameInput = useInput('');
    const emailInput = useInput('');
@@ -31,72 +33,58 @@ const ModalEditRespond = ({setModalActive, respondents, setRespondents, editResp
    const [respondId, setRespondId] = useState('');
 
    const {editRespondent} = useBookmeService();
+   const {respondDbValidation} = useValidation();
 
 
    useEffect(() => {
       if (editRespond || editRespond === 0){
-         // console.log(`хотим редактировать респондента ${respondents[editRespond]}`);
-
+         const currentRespond = respondents[editRespond];
          //заполняем поля формы имеющимися данными
-         nameInput.setValue(respondents[editRespond][2]);
-         emailInput.setValue(respondents[editRespond][3]);
-         phoneInput.setValue(respondents[editRespond][4]);
+         nameInput.setValue(currentRespond[2]);
+         emailInput.setValue(currentRespond[3]);
+         phoneInput.setValue(currentRespond[4]);
          dateInput.setValue('');//!
-         ageInput.setValue(respondents[editRespond][6]);
-         sityInput.setValue(respondents[editRespond][8]);
-         tagsInput.setValue(respondents[editRespond][10]);
-         setGenderInput(respondents[editRespond][5]);
-         setEducationValue(respondents[editRespond][7]);
-         setFamilyStatusValue(respondents[editRespond][9]);
-         setRespondId(respondents[editRespond][1]);
+         ageInput.setValue(currentRespond[6]);
+         setGenderInput(currentRespond[5]);
+
+         sityInput.setValue(currentRespond[8] === '-' ? '' : currentRespond[8]);
+         tagsInput.setValue(currentRespond[10] === '-' ? '' : currentRespond[10]);
+         setEducationValue(currentRespond[7] === '-' ? 'Не важно' : currentRespond[7]);
+         setFamilyStatusValue(currentRespond[9] === '-' ? 'Не важно' : currentRespond[9]);
+
+         setRespondId(currentRespond[1]);
       }
    }, [editRespond])
 
-
-   const scrollIntoTop = () => {
-      modal.current.scrollIntoView({
-         behavior: "smooth"
-      });
-   }
-
-   const changeRadio = (e) => {
-      setGenderInput(e.target.value);
-   }
-
    const submitForm = async () => {
-      const phoneNum = phoneInput.value.replace(/[^0-9]/g,"");
+      const successValid = respondDbValidation(modal.current, nameInput.value, emailInput.value, phoneInput.value, dateInput.value, ageInput.value);
 
-      if (nameInput.value.length < 3 || nameInput.value.length >= 50){
-         setErrorMessage('Имя пользователя должно быть длиной от 3 до 50 символов');
-         scrollIntoTop();
-         return;
-         
-      } else if (!regForEmail.test(String(emailInput.value).toLocaleLowerCase())){
-         setErrorMessage('Введите корректный почтовый адрес');
-         scrollIntoTop();
-         return;
+      if (successValid === true){
+         setErrorMessage('');
 
-      } else if(phoneNum.length !== 11){
-         setErrorMessage('Введите корректный номер телефона');
-         scrollIntoTop();
-         return;
-      } else if (!dateInput.value && !ageInput.value){
-         setErrorMessage('Укажите возраст или дату рождения');
-         scrollIntoTop();
-         return;
+         const formData = new FormData(form.current);
+
+         // перезапись возраста с учетом даты рождения
+         if (dateInput.value.replace(/[^0-9]/g,"")){
+            const strokeDate = dateInput.value.split('.').reverse().join('-');
+            const age = dateToAge(strokeDate);
+            formData.set('age', age);
+         } 
+         if (formData.get('education') == 'Не важно'){
+            formData.set('education', '-');
+         }
+         if (formData.get('familyStatus') == 'Не важно'){
+            formData.set('familyStatus', '-');
+         }
+
+         editRespondent(formData).then(onRespondentUpdate);
+      } else {
+         setErrorMessage(successValid);
       }
-      
-      setErrorMessage('');
-
-      const formData = new FormData(form.current);
-
-      editRespondent(formData)
-         .then(onRespondentUpdate);
    }
 
    const onRespondentUpdate = (editedRespond) => {
       const updatedResponds = [...respondents.slice(0, editRespond), ...editedRespond, ...respondents.slice(editRespond + 1)];
-      console.log(updatedResponds);
       setRespondents(updatedResponds);
       setModalActive(false);
    }
@@ -124,7 +112,7 @@ const ModalEditRespond = ({setModalActive, respondents, setRespondents, editResp
                   <label className="checkbox modal__checkbox">
                      <span>Мужской</span>
                      <input className="visually-hidden checkbox__input" type="radio" name="gender" value="М" 
-                        onChange={changeRadio}
+                        onChange={(e) => setGenderInput(e.target.value)}
                         checked={genderInput == "М" ? true : false}
                      />
                      <div className="checkbox__check"></div>
@@ -132,7 +120,7 @@ const ModalEditRespond = ({setModalActive, respondents, setRespondents, editResp
                   <label className="checkbox modal__checkbox">
                      <span>Женский</span>
                      <input className="visually-hidden checkbox__input" type="radio" name="gender" value="Ж" 
-                        onChange={changeRadio}
+                        onChange={(e) => setGenderInput(e.target.value)}
                         checked={genderInput == "Ж" ? true : false}
                      />
                      <div className="checkbox__check"></div>
@@ -141,7 +129,9 @@ const ModalEditRespond = ({setModalActive, respondents, setRespondents, editResp
             </div>
             <InputWithLabel labelClass="modal__label" labelTitle="Дата рождения / возраст">
                <div className="modal__some-inputs modal_respond__date">
-                  <Input inputType="date" inputName="birthday-date" inputText="Дата" value={dateInput.value} onChange={dateInput.onChange}/>
+                  <InputMask mask="99.99.9999" value={dateInput.value} onChange={dateInput.onChange}>
+                     <Input inputType="text" inputName="birthday-date" inputText="Дата"/>
+                  </InputMask>
                   <Input inputType="number" inputName="age" inputText="0" value={ageInput.value} onChange={ageInput.onChange}/>
                </div>
             </InputWithLabel>
@@ -169,8 +159,8 @@ const ModalEditRespond = ({setModalActive, respondents, setRespondents, editResp
             <input className="visually-hidden" type="text" value={respondId} name="uniqueid" readOnly/>
 
             <div className="modal__bottom-btns">
-               <button className="button-reset button modal__btn modal__close" type="button" onClick={() => setModalActive(false)}>Отмена</button>
-               <button className="button-reset button modal__btn modal__ready" type="submit" onClick={submitForm}>Готово</button>
+               <Button buttonClass="modal__btn modal__close" onClick={() => setModalActive(false)}>Отмена</Button>
+               <Button buttonClass="modal__btn modal__ready" onClick={submitForm} type="submit">Готово</Button>
             </div>
          </form>
       </div>

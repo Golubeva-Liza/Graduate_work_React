@@ -3,6 +3,8 @@ import './otherModals.scss';
 import { useState, useMemo, useRef } from 'react';
 import InputMask from 'react-input-mask';
 import useBookmeService from '../../services/BookmeService';
+import useValidation from '../../hooks/useValidation';
+import dateToAge from '../../hooks/dateToAge';
 
 import InputWithLabel from '../inputWithLabel/InputWithLabel';
 import Input from '../input/Input';
@@ -11,7 +13,7 @@ import Button from '../button/Button';
 import { useInput } from '../../hooks/useInput';
 import { PlusAdd } from '../../resources';
 
-const ModalAddRespond = ({setModalActive, respondents, setRespondents, regForEmail}) => {
+const ModalAddRespond = ({setModalActive, respondents, setRespondents, validation}) => {
    const nameInput = useInput('');
    const emailInput = useInput('');
    const phoneInput = useInput('');
@@ -26,48 +28,42 @@ const ModalAddRespond = ({setModalActive, respondents, setRespondents, regForEma
    const [errorMessage, setErrorMessage] = useState('');
    const [genderInput, setGenderInput] = useState('М');
    const [clearSelect, setClearSelect] = useState(false);
+   const [tagsList, setTagsList] = useState([]);
 
    const {addRespondent} = useBookmeService();
+   const {respondDbValidation} = useValidation();
+   
 
-
-   const scrollIntoTop = () => {
-      modal.current.scrollIntoView({
-         behavior: "smooth"
-      });
-   }
-
-   const changeRadio = (e) => {
-      setGenderInput(e.target.value);
+   const addTag = () => {
+      setTagsList(tags => [...tags, tagsInput.value]);
+      tagsInput.removeValue();
    }
 
    const submitForm = async () => {
-      const phoneNum = phoneInput.value.replace(/[^0-9]/g,"");
-
-      if (nameInput.value.length < 3 || nameInput.value.length >= 50){
-         setErrorMessage('Имя пользователя должно быть длиной от 3 до 50 символов');
-         scrollIntoTop();
-         return;
-         
-      } else if (!regForEmail.test(String(emailInput.value).toLocaleLowerCase())){
-         setErrorMessage('Введите корректный почтовый адрес');
-         scrollIntoTop();
-         return;
-
-      } else if(phoneNum.length !== 11){
-         setErrorMessage('Введите корректный номер телефона');
-         scrollIntoTop();
-         return;
-      } else if (!dateInput.value && !ageInput.value){
-         setErrorMessage('Укажите возраст или дату рождения');
-         scrollIntoTop();
-         return;
-      }
+      const successValid = respondDbValidation(modal.current, nameInput.value, emailInput.value, phoneInput.value, dateInput.value, ageInput.value);
       
-      setErrorMessage('');
+      if (successValid === true){
+         setErrorMessage('');
 
-      const formData = new FormData(form.current);
+         const formData = new FormData(form.current);
+         
+         //перезапись возраста с учетом даты рождения
+         if (dateInput.value.replace(/[^0-9]/g,"")){
+            const strokeDate = dateInput.value.split('.').reverse().join('-');
+            const age = dateToAge(strokeDate);
+            formData.set('age', age);
+         } 
+         if (formData.get('education') == 'Не важно'){
+            formData.set('education', '-');
+         }
+         if (formData.get('familyStatus') == 'Не важно'){
+            formData.set('familyStatus', '-');
+         }
 
-      addRespondent(formData).then(onRespondentLoaded);
+         addRespondent(formData).then(onRespondentLoaded);
+      } else {
+         setErrorMessage(successValid);
+      }
    }
 
    const onRespondentLoaded = (newRespond) => {
@@ -85,6 +81,7 @@ const ModalAddRespond = ({setModalActive, respondents, setRespondents, regForEma
       tagsInput.removeValue();
       setGenderInput('М');
       setClearSelect(true);
+      setTagsList([]);
    }
 
    const errorDiv = errorMessage ? <div className="error-message">{errorMessage}</div> : null;
@@ -110,7 +107,7 @@ const ModalAddRespond = ({setModalActive, respondents, setRespondents, regForEma
                   <label className="checkbox modal__checkbox">
                      <span>Мужской</span>
                      <input className="visually-hidden checkbox__input" type="radio" name="gender" value="М" 
-                        onChange={changeRadio}
+                        onChange={(e) => setGenderInput(e.target.value)}
                         checked={genderInput == "М" ? true : false}
                      />
                      <div className="checkbox__check"></div>
@@ -118,16 +115,19 @@ const ModalAddRespond = ({setModalActive, respondents, setRespondents, regForEma
                   <label className="checkbox modal__checkbox">
                      <span>Женский</span>
                      <input className="visually-hidden checkbox__input" type="radio" name="gender" value="Ж" 
-                        onChange={changeRadio}
+                        onChange={(e) => setGenderInput(e.target.value)}
                         checked={genderInput == "Ж" ? true : false}
                      />
                      <div className="checkbox__check"></div>
                   </label>
                </div>
             </div>
-            <InputWithLabel labelClass="modal__label" labelTitle="Дата рождения / возраст">
+            <InputWithLabel labelClass="modal__label" labelTitle="Дата рождения или возраст">
                <div className="modal__some-inputs modal_respond__date">
-                  <Input inputType="date" inputName="birthday-date" inputText="Дата" value={dateInput.value} onChange={dateInput.onChange}/>
+                  <InputMask mask="99.99.9999" value={dateInput.value} onChange={dateInput.onChange}>
+                     <Input inputType="text" inputName="birthday-date" inputText="Дата"/>
+                  </InputMask>
+                  {/* <Input inputType="date" inputName="birthday-date" inputText="Дата" value={dateInput.value} onChange={dateInput.onChange}/> */}
                   <Input inputType="number" inputName="age" inputText="0" value={ageInput.value} onChange={ageInput.onChange}/>
                </div>
             </InputWithLabel>
@@ -146,16 +146,34 @@ const ModalAddRespond = ({setModalActive, respondents, setRespondents, regForEma
             </InputWithLabel>
             <InputWithLabel labelClass="modal__label" labelTitle="Добавить тэги">
                <div className="modal__some-inputs modal_respond__tags-input">
-                  <Input inputType="text" inputName="tags" inputText="Название тэга" value={tagsInput.value} onChange={tagsInput.onChange}/>
-                  <button className="button-reset button modal_respond__tag-btn" disabled type="button">
+                  {/* <Input inputType="text" inputText="Название тэга" value={tagsInput.value} onChange={tagsInput.onChange}/> */}
+                  <input className="input" type="text" placeholder="Название тэга" 
+                     value={tagsInput.value} onChange={tagsInput.onChange}
+                     onKeyPress={(e) => {
+                        if (e.code == 'Enter'){
+                           e.preventDefault();
+                           addTag();
+                        }
+                     }}
+                  />
+
+                  <button className="button-reset button modal_respond__tag-btn" 
+                     disabled={tagsInput.value == '' ? true : false} 
+                     type="button" onClick={addTag}
+                  >
                      <PlusAdd/>
                   </button>
+                  <input className="visually-hidden" type="text" name="tags" value={tagsList.join(', ')} readOnly/>
                </div>
+
+               <ul className="modal_respond__tags">
+                  {tagsList.map((el, id) => <li key={id}><div className="tag">{el}</div></li>)}
+               </ul>
             </InputWithLabel>
 
             <div className="modal__bottom-btns">
-               <button className="button-reset button modal__btn modal__close" type="button" onClick={() => setModalActive(false)}>Отмена</button>
-               <button className="button-reset button modal__btn modal__ready" type="submit" onClick={submitForm}>Готово</button>
+               <Button buttonClass="modal__btn modal__close" onClick={() => setModalActive(false)}>Отмена</Button>
+               <Button buttonClass="modal__btn modal__ready" onClick={submitForm} type="submit">Готово</Button>
             </div>
          </form>
       </div>

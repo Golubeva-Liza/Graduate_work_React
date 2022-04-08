@@ -1,7 +1,7 @@
 import './select.scss';
 import { useState, useMemo, useRef, useEffect } from 'react';
 
-const Select = ({values, selectName, clearSelect, setClearSelect, selectValue}) => {
+const Select = ({values, selectName, clearSelect, setClearSelect, selectValue, setSelectValue}) => {
 
    const defaultValue = useMemo(() => {
       return values[0];
@@ -54,6 +54,9 @@ const Select = ({values, selectName, clearSelect, setClearSelect, selectValue}) 
       setCurrentValue(e.target.innerHTML);
       setSelectOpened(false);
       e.target.classList.add('selected');
+      if (setSelectValue){
+         setSelectValue(e.target.innerHTML);
+      }
    }
 
 

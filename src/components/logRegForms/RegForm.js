@@ -44,13 +44,13 @@ const RegForm = ({useValidateInput, formSubmit, active, toggleForm, emailReg}) =
    }
 
    const onUserRegistered = (res) => {
-      // if (data === "success"){
-      //    setErrorMessage('');
-      //    navigate('/moderator');
-      //    localStorage.setItem('authorized', emailInput.value);
-      // } else {
-      //    setErrorMessage(data);
-      // }
+      if (/^(0|[1-9]\d*)$/.test(res)){
+         setErrorMessage('');
+         navigate('/moderator');
+         localStorage.setItem('authorized', res);
+      } else {
+         setErrorMessage(res);
+      }
       console.log(res);
    }
 

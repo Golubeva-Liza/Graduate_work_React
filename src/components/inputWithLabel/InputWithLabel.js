@@ -1,9 +1,7 @@
 import './inputWithLabel.scss';
 import { Info } from '../../resources';
 
-const InputWithLabel = (props) => {
-   const {labelClass, labelTitle, children, question} = props;
-
+const InputWithLabel = ({labelClass, labelTitle, children, question}) => {
    const labelClasses = labelClass ? labelClass : '';
    
    if (question){

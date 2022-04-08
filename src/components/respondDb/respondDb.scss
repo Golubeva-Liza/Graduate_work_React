@@ -43,6 +43,24 @@
       top: -100px;
       right: 0;
    }
+   &__message{
+      display: none;
+      margin-top: 24px;
+      text-align: center;
+      font-size: 24px;
+      color: #c5c5c5;
+   }
+   &__message.show{
+      display: block;
+   }
+   &__loader{
+      display: flex;
+      justify-content: center;
+      margin-top: 90px;
+      .loader{
+         transform: scale(1.8);
+      }
+   }
 }
 .respondents-list{
    width: 100%;
@@ -51,6 +69,12 @@
    table-layout: fixed;
    border-spacing: 0px;
    border-collapse: collapse;
+
+   // display: grid;//
+   // grid-template-columns: 30px minmax(100px, 160px) 26px 54px 88px 125px 143px 115px minmax(100px, 160px) 24px;//
+   // grid-auto-rows: 47px;
+   // align-items: center;
+   // grid-column-gap: 21px;
    tbody{
       position: relative;
    }
@@ -77,6 +101,7 @@
       }
       //ФИО
       &:nth-child(2){
+         // width: 160px;
       }
       //Пол
       &:nth-child(3){
@@ -84,19 +109,19 @@
       }
       //Возраст
       &:nth-child(4){
-         width: 55px;
+         width: 54px;
       }
       //Образование
       &:nth-child(5){
-         width: 90px;
+         width: 88px;
       }
       //Место жительства
       &:nth-child(6){
-         width: 130px;
+         width: 125px;
       }
       //Семейное положение
       &:nth-child(7){
-         width: 145px;
+         width: 143px;
       }
       //Телефон
       &:nth-child(8){
@@ -104,7 +129,7 @@
       }
       //Тэги
       &:nth-child(9){
-         // background-color: red;
+         // width: 160px;
       }
       //Опции
       &:last-child{

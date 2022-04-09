@@ -6,12 +6,14 @@ import Input from '../input/Input';
 import Select from '../select/Select';
 import RangeSlider from '../rangeSlider/RangeSlider';
 
-const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, setResultsFound}) => {
+const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, setResultsFound, citiesValues, tagsValues}) => {
 
    const searchInput = useInput('');
    const [genderSelect, setGenderSelect] = useState(null);
    const [educationSelect, setEducationSelect] = useState(null);
    const [familySelect, setFamilySelect] = useState(null);
+   const [citySelect, setCitySelect] = useState(null);
+   const [tagsSelect, setTagsSelect] = useState([]);
 
    const applyFilters = () => {
       let updatedList = respondents;
@@ -42,6 +44,11 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
       }
 
       //City Filter
+      if (citySelect && citySelect !== "Не важно") {
+         updatedList = updatedList.filter(
+            (item) => item[8] === citySelect
+         );
+      }
 
       //Family status Filter
       if (familySelect && familySelect !== "Не важно") {
@@ -50,7 +57,20 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
          );
       }
 
+      //Tags Filter
+      if (tagsSelect.length) {
+         updatedList = updatedList.filter((item) => (
+            item[10].split(', ').find(value =>
+               tagsSelect.some(element => value === element)
+            )
+         ));
+         // console.log(updatedList);
+      }
+      
+      console.log('у фильтров');
       setFilteredResponds(updatedList);
+      
+      // console.log(updatedList);
 
       !updatedList.length ? setResultsFound(false) : setResultsFound(true);
    };
@@ -60,7 +80,36 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
       if (respondents.length){ 
          applyFilters();
       }
-   }, [genderSelect, educationSelect, searchInput.value, familySelect]);
+   }, [respondents, genderSelect, educationSelect, searchInput.value, familySelect, citySelect, tagsSelect]);
+
+   const selectingTag = (e) => {
+      if (e.target.classList.contains('tag_selected')){
+         e.target.classList.remove('tag_selected');
+         //удаляем из массива выбранный элемент
+         setTagsSelect(tagsSelect => [...tagsSelect.slice(0, tagsSelect.indexOf(e.target.innerHTML)), ...tagsSelect.slice(tagsSelect.indexOf(e.target.innerHTML) + 1)]);
+
+      } else {
+         e.target.classList.add('tag_selected')
+         setTagsSelect(tagsSelect => [...tagsSelect, e.target.innerHTML]);
+      }      
+   }
+
+
+   function renderTagsItems(values){
+      const elements = values.map((value) => (
+         <li key={value}>
+            <span className="tag respond-db-settings__tag" onClick={selectingTag}>{value}</span>
+         </li>
+         // <li className="select__item" key={index} onClick={selectingItem} ref={el => listItems.current[index] = el}>{value}</li>
+      ));
+      return elements;
+   }
+
+   const tagsItems = useMemo(() => {
+      if (tagsValues.length){
+         return renderTagsItems(tagsValues);
+      }
+   }, [tagsValues]);
    
 
    return (
@@ -71,7 +120,7 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
             />
          </div>
          <label className="label respond-db-settings__label">
-            <span>Пол:</span>
+            <span>Пол</span>
             <Select selectName="gender" setSelectValue={setGenderSelect}
                values={['Не важно', 'Мужской', 'Женский']}
             />
@@ -88,8 +137,8 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
          </label>
          <label className="label respond-db-settings__label">
             <span>Место жительства:</span>
-            <Select 
-               values={['Не важно', 'Санкт-Петербург', 'Москва', 'Ростов-на-Дону', 'Нижний Новгород', 'Волгоград', 'Юпитер']}
+            <Select selectName="city" setSelectValue={setCitySelect} 
+               values={citiesValues.length ? citiesValues : ['Не важно']}
             />
          </label>
          <label className="label respond-db-settings__label">
@@ -102,14 +151,8 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
             <span>Теги:</span>
             <div className="select respond-db-settings__tags">
                <ul className="respond-db-settings__tag-wrapper">
-                  <li><span className="tag tag_selected respond-db-settings__tag">Есть дети</span></li>
-                  <li><span className="tag respond-db-settings__tag">Машина</span></li>
-                  <li><span className="tag respond-db-settings__tag">Дача</span></li>
-                  <li><span className="tag respond-db-settings__tag">Метеоролог</span></li>
-                  <li><span className="tag respond-db-settings__tag">Рыбалка</span></li>
-                  <li><span className="tag respond-db-settings__tag">Велосипед</span></li>
-                  <li><span className="tag respond-db-settings__tag">Рыбалка</span></li>
-                  <li><span className="tag respond-db-settings__tag">Велосипед</span></li>
+                  {tagsItems}
+                  {/* <li><span className="tag tag_selected respond-db-settings__tag">Есть дети</span></li> */}
                </ul>
             </div>
          </label>

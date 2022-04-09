@@ -90,19 +90,19 @@ const ModalAddRespond = ({setModalActive, respondents, setRespondents, validatio
          <h3 className="modal__title">Добавить респондента</h3>
          {errorDiv}
          <form className="modal__form" ref={form} onSubmit={e => e.preventDefault()}>
-            <InputWithLabel labelClass="modal__label" labelTitle="ФИО">
+            <InputWithLabel labelClass="modal__label" labelTitle="ФИО *">
                <Input inputType="text" inputName="name" inputText="Введите ФИО" value={nameInput.value} onChange={nameInput.onChange}/>
             </InputWithLabel>
-            <InputWithLabel labelClass="modal__label" labelTitle="Почта">
+            <InputWithLabel labelClass="modal__label" labelTitle="Почта *">
                <Input inputType="email" inputName="email" inputText="Введите почту" value={emailInput.value} onChange={emailInput.onChange}/>
             </InputWithLabel>
-            <InputWithLabel labelClass="modal__label" labelTitle="Телефон">
+            <InputWithLabel labelClass="modal__label" labelTitle="Телефон *">
                <InputMask mask="+7 (999) 999-99-99" value={phoneInput.value} onChange={phoneInput.onChange}>
                   <Input inputType="tel" inputName="phone" inputText="Введите номер телефона"/>
                </InputMask>
             </InputWithLabel>
             <div className="modal__label">
-               <span className="modal__input-name">Пол</span>
+               <span className="modal__input-name">Пол *</span>
                <div className="modal__some-inputs">
                   <label className="checkbox modal__checkbox">
                      <span>Мужской</span>
@@ -122,7 +122,7 @@ const ModalAddRespond = ({setModalActive, respondents, setRespondents, validatio
                   </label>
                </div>
             </div>
-            <InputWithLabel labelClass="modal__label" labelTitle="Дата рождения или возраст">
+            <InputWithLabel labelClass="modal__label" labelTitle="Дата рождения или возраст *">
                <div className="modal__some-inputs modal_respond__date">
                   <InputMask mask="99.99.9999" value={dateInput.value} onChange={dateInput.onChange}>
                      <Input inputType="text" inputName="birthday-date" inputText="Дата"/>

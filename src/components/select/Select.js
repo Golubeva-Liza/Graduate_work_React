@@ -43,7 +43,7 @@ const Select = ({values, selectName, clearSelect, setClearSelect, selectValue, s
    }
 
    const closeSelect = (e) => {
-      if(!select.current.contains(e.target)){
+      if(select.current && !select.current.contains(e.target)){
          setSelectOpened(false);
          // document.removeEventListener('click', closeSelect);
       }
@@ -70,7 +70,7 @@ const Select = ({values, selectName, clearSelect, setClearSelect, selectValue, s
 
    const selectItems = useMemo(() => {
       return renderListItems(values);
-   }, []);
+   }, [values]);
 
 
    const dropdownClass = selectOpened ? 'select_open' : '';

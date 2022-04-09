@@ -20,7 +20,7 @@ const ModalEditRespond = ({setModalActive, respondents, setRespondents, editResp
    const dateInput = useInput('');
    const ageInput = useInput('');
    const sityInput = useInput('');
-   const tagsInput = useInput([]);
+   const tagsInput = useInput('');
 
    const modal = useRef();
    const form = useRef();
@@ -31,6 +31,7 @@ const ModalEditRespond = ({setModalActive, respondents, setRespondents, editResp
    const [familyStatusValue, setFamilyStatusValue] = useState(null);
    const [educationValue, setEducationValue] = useState(null);
    const [respondId, setRespondId] = useState('');
+   const [tagsList, setTagsList] = useState([]);
 
    const {editRespondent} = useBookmeService();
    const {respondDbValidation} = useValidation();
@@ -48,7 +49,7 @@ const ModalEditRespond = ({setModalActive, respondents, setRespondents, editResp
          setGenderInput(currentRespond[5]);
 
          sityInput.setValue(currentRespond[8] === '-' ? '' : currentRespond[8]);
-         tagsInput.setValue(currentRespond[10] === '-' ? '' : currentRespond[10]);
+         setTagsList(currentRespond[10] === '-' ? [] : currentRespond[10].split(', '));
          setEducationValue(currentRespond[7] === '-' ? 'Не важно' : currentRespond[7]);
          setFamilyStatusValue(currentRespond[9] === '-' ? 'Не важно' : currentRespond[9]);
 
@@ -61,6 +62,7 @@ const ModalEditRespond = ({setModalActive, respondents, setRespondents, editResp
 
       if (successValid === true){
          setErrorMessage('');
+         tagsInput.removeValue();
 
          const formData = new FormData(form.current);
 
@@ -83,10 +85,24 @@ const ModalEditRespond = ({setModalActive, respondents, setRespondents, editResp
       }
    }
 
+   const addTag = () => {
+      setTagsList(tags => [...tags, tagsInput.value]);
+      tagsInput.removeValue();
+   }
+
    const onRespondentUpdate = (editedRespond) => {
       const updatedResponds = [...respondents.slice(0, editRespond), ...editedRespond, ...respondents.slice(editRespond + 1)];
       setRespondents(updatedResponds);
       setModalActive(false);
+   }
+
+   const closeModal = () => {
+      setModalActive(false);
+      tagsInput.removeValue();
+   }
+
+   const onTagDelete = (e) => {
+      console.log(e.target);
    }
 
    const errorDiv = errorMessage ? <div className="error-message">{errorMessage}</div> : null;
@@ -148,18 +164,37 @@ const ModalEditRespond = ({setModalActive, respondents, setRespondents, editResp
                   values={['Не важно', 'Разведен(а)', 'Состоит в браке', 'В отношениях', 'Не в отношениях']}
                />
             </InputWithLabel>
+
             <InputWithLabel labelClass="modal__label" labelTitle="Добавить тэги">
                <div className="modal__some-inputs modal_respond__tags-input">
-                  <Input inputType="text" inputName="tags" inputText="Название тэга" value={tagsInput.value} onChange={tagsInput.onChange}/>
-                  <button className="button-reset button modal_respond__tag-btn" disabled type="button">
+                  <input className="input" type="text" placeholder="Название тэга" 
+                     value={tagsInput.value} onChange={tagsInput.onChange}
+                     onKeyPress={(e) => {
+                        if (e.code == 'Enter'){
+                           e.preventDefault();
+                           addTag();
+                        }
+                     }}
+                  />
+
+                  <button className="button-reset button modal_respond__tag-btn" 
+                     disabled={tagsInput.value == '' ? true : false} 
+                     type="button" onClick={addTag}
+                  >
                      <PlusAdd/>
                   </button>
+                  <input className="visually-hidden" type="text" name="tags" value={tagsList.join(', ')} readOnly/>
                </div>
+
+               <ul className="modal_respond__tags">
+                  {tagsList.map((el, id) => <li key={id} onClick={onTagDelete}><div className="tag tag_can-delete">{el}</div></li>)}
+               </ul>
             </InputWithLabel>
+            
             <input className="visually-hidden" type="text" value={respondId} name="uniqueid" readOnly/>
 
             <div className="modal__bottom-btns">
-               <Button buttonClass="modal__btn modal__close" onClick={() => setModalActive(false)}>Отмена</Button>
+               <Button buttonClass="modal__btn modal__close" onClick={closeModal}>Отмена</Button>
                <Button buttonClass="modal__btn modal__ready" onClick={submitForm} type="submit">Готово</Button>
             </div>
          </form>

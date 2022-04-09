@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import useBookmeService from '../../services/BookmeService';
 import {translit} from '../../hooks/translit';
+import useValidation from '../../hooks/useValidation';
 
 import './otherModals.scss';
 import { CalendarArrowSmall, Info } from '../../resources';
@@ -12,12 +13,12 @@ import ProgressBtns from '../progressBtns/ProgressBtns';
 import Button from '../button/Button';
 import Calendar from '../calendar/Calendar';
 import CalendarProj from '../calendar/CalendarProj';
+import CalendarCreateSchedule from '../calendar/CalendarCreateSchedule';
 import Popup from '../popup/Popup';
 
 
 const ModalNewProject = ({setModalActive}) => {
    const form = useRef();
-   const {updateUserData} = useBookmeService();
 
    const nameInput = useInput('');
    const descrInput = useInput('');
@@ -27,7 +28,6 @@ const ModalNewProject = ({setModalActive}) => {
    const [durationRadio, setDurationRadio] = useState(null);
 
    const [step, setStep] = useState(1);
-   const [errorMessage, setErrorMessage] = useState('');
    const [popupCopyActive, setPopupCopyActive] = useState(false);
    
 
@@ -39,7 +39,7 @@ const ModalNewProject = ({setModalActive}) => {
       // });
    }
 
-   const errorDiv = errorMessage ? <div className="error-message form__error-message">{errorMessage}</div> : null;
+   
    return (
       <form className="modal__form" method="POST" ref={form}>
          <NewProjData setModalActive={setModalActive} 
@@ -47,7 +47,6 @@ const ModalNewProject = ({setModalActive}) => {
             projSurveyLink={projSurveyLink} projLink={projLink} 
             active={step === 1 ? true : false} step={step} setStep={setStep}
             durationRadio={durationRadio} setDurationRadio={setDurationRadio}
-            errorDiv={errorDiv}
          />
          <NewProjCalendar
             active={step === 2 ? true : false} step={step} setStep={setStep}
@@ -62,12 +61,16 @@ const ModalNewProject = ({setModalActive}) => {
 export default ModalNewProject;
 
 
-const NewProjData = ({setModalActive, active, step, setStep, nameInput, descrInput, addressInput, projSurveyLink, projLink, durationRadio, setDurationRadio, errorDiv}) => {
+const NewProjData = ({setModalActive, active, step, setStep, nameInput, descrInput, addressInput, projSurveyLink, projLink, durationRadio, setDurationRadio}) => {
    
    const [calendarActive, setCalendarActive] = useState(false);
    const [firstDate, setFirstDate] = useState(null);
    const [lastDate, setLastDate] = useState(null);
    const [activeDate, setActiveDate] = useState(null);
+   const [errorMessage, setErrorMessage] = useState('');
+
+   const {projectDataValidation} = useValidation();
+   const modal = useRef();
 
    const choosePrevDate = () => {
       if(!calendarActive){
@@ -86,8 +89,21 @@ const NewProjData = ({setModalActive, active, step, setStep, nameInput, descrInp
       setCalendarActive(!calendarActive);
    }
 
+   const toSchedule = () => {
+      const successValid = projectDataValidation(modal.current, nameInput.value, descrInput.value, addressInput.value, durationRadio, firstDate, lastDate);
+      
+      if (successValid === true){
+         setErrorMessage('');
+         console.log('всё норм');
+         setStep(step + 1);
+      } else {
+         setErrorMessage(successValid);
+      }
+   }
+
+   const errorDiv = errorMessage ? <div className="error-message form__error-message">{errorMessage}</div> : null;
    return (
-      <div className={`modal__content modal-new-project__content_first ${active ? 'active' : ''}`}>
+      <div className={`modal__content modal-new-project__content_first ${active ? 'active' : ''}`} ref={modal}>
          <div className="modal__back">
             <button className="button-reset modal__back-button" type="button" onClick={() => setModalActive(false)}>
                <CalendarArrowSmall/>
@@ -156,7 +172,7 @@ const NewProjData = ({setModalActive, active, step, setStep, nameInput, descrInp
 
          <div className="modal__btns modal__steps">
             <ProgressBtns steps={2} activeStep={1}/>
-            <Button buttonClass="modal__btn modal__ready" onClick={() => setStep(step + 1)}>Выбор дат и времени</Button>
+            <Button buttonClass="modal__btn modal__ready" onClick={toSchedule}>Выбор дат и времени</Button>
          </div>
       </div>
    )
@@ -185,7 +201,7 @@ const NewProjCalendar = ({active, step, setStep, popupCopyActive, setPopupCopyAc
             />
          </div>
 
-         <Calendar classes="modal-new-project__calendar"/>
+         <CalendarCreateSchedule classes="modal-new-project__schedule"/>
 
          <div className="modal__btns modal__steps">
             <ProgressBtns steps={2} activeStep={2}/>

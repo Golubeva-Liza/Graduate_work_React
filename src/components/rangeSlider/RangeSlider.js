@@ -1,10 +1,10 @@
 import './rangeSlider.scss';
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 
 const RangeSlider = (props) => {
    // const {values} = props;
-   const [minValue, setMinValue] = useState(15);
-   const [maxValue, setMaxValue] = useState(60);
+   const [minValue, setMinValue] = useState(0);
+   const [maxValue, setMaxValue] = useState(100);
 
    const leftInput = useRef();
    const rightInput = useRef(); 
@@ -15,30 +15,33 @@ const RangeSlider = (props) => {
    const rightValueNum = useRef();
    const gap = useMemo(() => (15), []);
 
-   
-
-   const onInputsChange = (e) => {
+   useEffect(() => {
+      // console.log(minValue, maxValue);
       let leftPercent = (minValue / leftInput.current.max) * 100 + '%';
       let rightPercent = 100 - (maxValue / rightInput.current.max) * 100 + '%';
 
-      if (maxValue - minValue < gap){
-         if (e.target == leftInput.current){
-            setMinValue(maxValue - gap);
-         }else{
-            setMaxValue(minValue + gap);
+      progressLine.current.style.left = leftPercent;
+      progressLine.current.style.right = rightPercent;
+      leftValue.current.style.left = leftPercent;
+      rightValue.current.style.left = (maxValue / rightInput.current.max) * 100 + '%';
+      leftValueNum.current.innerHTML = minValue;
+      rightValueNum.current.innerHTML = maxValue;
+
+   }, [minValue, maxValue])
+
+   const onInputsChange = (e) => {
+      if (e.target == leftInput.current){
+         if ((maxValue - e.target.value < gap)){
+            setMinValue(+maxValue - gap);
+         } else {
+            setMinValue(+e.target.value);
          }
       }else{
-         if (e.target == leftInput.current){
-            setMinValue(e.target.value);
-         } else{
-            setMaxValue(e.target.value);
+         if ((e.target.value - minValue < gap)){
+            setMaxValue(+minValue + gap);
+         } else {
+            setMaxValue(+e.target.value);
          }
-         progressLine.current.style.left = leftPercent;
-         progressLine.current.style.right = rightPercent;
-         leftValue.current.style.left = leftPercent;
-         rightValue.current.style.left = (maxValue / rightInput.current.max) * 100 + '%';
-         leftValueNum.current.innerHTML = minValue;
-         rightValueNum.current.innerHTML = maxValue;
       }
    }
    

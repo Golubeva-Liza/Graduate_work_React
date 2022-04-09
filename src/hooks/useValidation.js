@@ -39,7 +39,32 @@ const useValidation = () => {
       return true;
    }
 
-   return {respondDbValidation};
+   const projectDataValidation = (modal, projName, descr, address, durationRadio, firstDate, lastDate) => {
+      if (projName.length < 5 || projName.length >= 50){
+         scrollIntoTop(modal);
+         return 'Название проекта должно быть длиной от 5 до 50 символов';
+         
+      } else if (!descr){
+         scrollIntoTop(modal);
+         return 'Описание не должно быть пустым';
+
+      } else if (!address){
+         scrollIntoTop(modal);
+         return 'Адрес не должен быть пустым';
+
+      } else if (!durationRadio){
+         scrollIntoTop(modal);
+         return 'Выберите длительность тестирования';
+
+      } else if (!firstDate || !lastDate){
+         scrollIntoTop(modal);
+         return 'Выберите период тестирования';
+      }
+
+      return true;
+   }
+
+   return {respondDbValidation, projectDataValidation};
 }
 
 export default useValidation;

@@ -32,21 +32,15 @@ const ModeratorPage = () => {
    const [editRespond, setEditRespond] = useState(null);
    const [filteredResponds, setFilteredResponds] = useState([]);
    const [resultsFound, setResultsFound] = useState(true);
+   const [citiesValues, setCitiesValues] = useState([]);
+   const [tagsValues, setTagsValues] = useState([]);
 
    useEffect(() => {
       loadRespondents();
    }, []);
 
-   useEffect(() => {
-      if (respondents){
-         setFilteredResponds(respondents);
-      }
-   }, [respondents]);
-
    const loadRespondents = async () => {
-      getAllRespondents()
-         .then(onRespondentsLoaded);
-      //массив из массивов, в которых хранятся все значения из таблицы
+      getAllRespondents().then(onRespondentsLoaded);
    }
 
    const onRespondentsLoaded = (res) => {
@@ -54,7 +48,24 @@ const ModeratorPage = () => {
       setLoading(false);
    }
 
+   useEffect(() => {
+      if (respondents.length){
+         // setFilteredResponds(respondents);
 
+         //обновляем список городов
+         let citiesElements = [...new Set(respondents.map(item => item[8]))]; //убираем повторяющиеся элементы
+         citiesElements = citiesElements.filter(item => item !== '-'); //убираем '-'
+         citiesElements.unshift('Не важно');
+         setCitiesValues(citiesElements);
+
+         //обновляем список тэгов
+         let tagsElements = respondents.map(item => item[10]).join(', ').split(', '); //преобразуем все тэги в массив
+         tagsElements = [...new Set(tagsElements.filter(item => item !== '-'))]; //избавляемся от дубликатов и '-'
+         setTagsValues(tagsElements);
+      }
+   }, [respondents]);
+
+   
    return (
       <>
          <div className='wrapper'>
@@ -63,6 +74,7 @@ const ModeratorPage = () => {
                respondents={respondents} 
                filteredResponds={filteredResponds} setFilteredResponds={setFilteredResponds}
                setResultsFound={setResultsFound}
+               citiesValues={citiesValues} tagsValues={tagsValues}
             />
             <RespondDb 
                setAddModalActive={setModalAddActive} 

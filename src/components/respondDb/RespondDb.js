@@ -51,8 +51,15 @@ const RespondDb = ({setAddModalActive, setEditModalActive, respondents, setRespo
       }
       
       let btnNum = dotBtns.current.findIndex(item => item == e.target);
+
+      //ищем респондента, к которому относилась кнопка (3 точки), предполагая, что не будет двух респондентов с одинаковым именем и телефоном
+      const name = e.target.closest('tr').childNodes[1].innerHTML;
+      const phone = e.target.closest('tr').childNodes[7].innerHTML.replace(/[^0-9]/g,"");
+      const repondNum = respondents.findIndex(el => el[2] == name && el[4] == phone);
+      // console.log(respondents, repondNum, phone);
+
       setRowNum(btnNum);
-      setActiveRespond(btnNum);
+      setActiveRespond(repondNum);
    }
 
    const closePopup = (e) => {

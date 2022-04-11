@@ -9,6 +9,7 @@ import RespondRecordings from '../components/respondRecordings/RespondRecordings
 
 import Modal from '../components/modals/Modal';
 import ModalNewProject from '../components/modals/ModalNewProject';
+import ModalSetTime from '../components/modals/ModalSetTime';
 
 
 const ProjectsPage = () => {
@@ -29,8 +30,11 @@ const ProjectsPage = () => {
    }, []);
 
 
-
    const [modalProjectActive, setModalProjectActive] = useState(false);
+   const [modalTimeActive, setModalTimeActive] = useState(false);
+
+   const [date, setDate] = useState(false);
+   const [time, setTime] = useState(false);
 
    return (
       <>
@@ -41,11 +45,11 @@ const ProjectsPage = () => {
             <RespondRecordings/>
          </div>
          <Modal modalClass={'modal-new-project'} active={modalProjectActive} setActive={setModalProjectActive}>
-            <ModalNewProject setModalActive={setModalProjectActive}/>
+            <ModalNewProject setModalActive={setModalProjectActive} setModalTimeActive={setModalTimeActive} setDate={setDate} setTime={setTime}/>
          </Modal>
-         {/* <Modal modalClass={'modal-add-file'} active={modalFileActive} setActive={setModalFileActive} outClick>
-            <ModalAddFile modalActive={modalFileActive} setModalActive={setModalFileActive} user={user} setUser={setUser}/>
-         </Modal> */}
+         <Modal modalClass={'modal-set-time'} active={modalTimeActive} setActive={setModalTimeActive} outClick>
+            <ModalSetTime setModalActive={setModalTimeActive} date={date} setDate={setDate} time={time} setTime={setTime}/>
+         </Modal>
       </>
    )
 }

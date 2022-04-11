@@ -77,8 +77,13 @@ const ModalEditRespond = ({setModalActive, respondents, setRespondents, editResp
          }
          if (formData.get('familyStatus') == 'Не важно'){
             formData.set('familyStatus', '-');
+         }  
+         if (tagsList.length){
+            const strokeTags = tagsList.map(el => (
+               el[0].toUpperCase() + el.slice(1)
+            ));
+            formData.set('tags', strokeTags.join(', '));
          }
-
          editRespondent(formData).then(onRespondentUpdate);
       } else {
          setErrorMessage(successValid);
@@ -102,7 +107,9 @@ const ModalEditRespond = ({setModalActive, respondents, setRespondents, editResp
    }
 
    const onTagDelete = (e) => {
-      console.log(e.target);
+      const removedTag = tagsList.findIndex(el => el === e.target.innerHTML);
+      const updatedTags = [...tagsList.slice(0, removedTag), ...tagsList.slice(removedTag + 1)];
+      setTagsList(updatedTags);
    }
 
    const errorDiv = errorMessage ? <div className="error-message">{errorMessage}</div> : null;
@@ -183,7 +190,6 @@ const ModalEditRespond = ({setModalActive, respondents, setRespondents, editResp
                   >
                      <PlusAdd/>
                   </button>
-                  <input className="visually-hidden" type="text" name="tags" value={tagsList.join(', ')} readOnly/>
                </div>
 
                <ul className="modal_respond__tags">

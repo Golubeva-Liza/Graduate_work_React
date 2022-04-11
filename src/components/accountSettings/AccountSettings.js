@@ -9,7 +9,6 @@ import Button from '../button/Button';
 import Popup from '../popup/Popup';
 import { DefaultUser } from '../../resources';
 
-
 import './accountSettings.scss';
 
 const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setUser}) => {
@@ -29,7 +28,6 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
    const [errorEmailMessage, setErrorEmailMessage] = useState('');
    
    const [popupActive, setPopupActive] = useState(false);
-
 
 
    const toggleNameInput = () => {

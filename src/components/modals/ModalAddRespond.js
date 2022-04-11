@@ -59,6 +59,12 @@ const ModalAddRespond = ({setModalActive, respondents, setRespondents, validatio
          if (formData.get('familyStatus') == 'Не важно'){
             formData.set('familyStatus', '-');
          }
+         if (tagsList.length){
+            const strokeTags = tagsList.map(el => (
+               el[0].toUpperCase() + el.slice(1)
+            ));
+            formData.set('tags', strokeTags.join(', '));
+         }
 
          addRespondent(formData).then(onRespondentLoaded);
       } else {
@@ -82,6 +88,12 @@ const ModalAddRespond = ({setModalActive, respondents, setRespondents, validatio
       setGenderInput('М');
       setClearSelect(true);
       setTagsList([]);
+   }
+
+   const onTagDelete = (e) => {
+      const removedTag = tagsList.findIndex(el => el === e.target.innerHTML);
+      const updatedTags = [...tagsList.slice(0, removedTag), ...tagsList.slice(removedTag + 1)];
+      setTagsList(updatedTags);
    }
 
    const errorDiv = errorMessage ? <div className="error-message">{errorMessage}</div> : null;
@@ -163,11 +175,10 @@ const ModalAddRespond = ({setModalActive, respondents, setRespondents, validatio
                   >
                      <PlusAdd/>
                   </button>
-                  <input className="visually-hidden" type="text" name="tags" value={tagsList.join(', ')} readOnly/>
                </div>
 
                <ul className="modal_respond__tags">
-                  {tagsList.map((el, id) => <li key={id}><div className="tag">{el}</div></li>)}
+                  {tagsList.map((el, id) => <li key={id} onClick={onTagDelete}><div className="tag tag_can-delete">{el}</div></li>)}
                </ul>
             </InputWithLabel>
 

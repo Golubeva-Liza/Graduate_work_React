@@ -75,6 +75,7 @@ const ModeratorPage = () => {
                filteredResponds={filteredResponds} setFilteredResponds={setFilteredResponds}
                setResultsFound={setResultsFound}
                citiesValues={citiesValues} tagsValues={tagsValues}
+               loading={loading}
             />
             <RespondDb 
                setAddModalActive={setModalAddActive} 

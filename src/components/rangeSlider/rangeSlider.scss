@@ -14,8 +14,8 @@
       height: 3px;
       position: absolute;
       top: 0;
-      left: 15%;
-      right: 40%;
+      left: 0%;
+      right: 0%;
    }
    &__inputs{
       position: relative;
@@ -69,10 +69,10 @@
          color: #FFFFFF;
       }
       &:first-child{
-         left: 15%;
+         left: 0%;
       }
       &:last-child{
-         left: 60%;
+         left: 100%;
       }
    }
    &__fields{

@@ -1,10 +1,13 @@
+import './respondDb.scss';
+
 import { useState, useRef, useEffect, useMemo } from 'react';
+import useBookmeService from '../../services/BookmeService';
 
 import RespondDbPopup from '../popup/RespondDbPopup';
 import Popup from '../popup/Popup';
 import { Dots } from '../../resources';
-import './respondDb.scss';
-import useBookmeService from '../../services/BookmeService';
+import Loader from '../loader/Loader';
+
 
 
 const RespondDb = ({setAddModalActive, setEditModalActive, respondents, setRespondents, setEditRespond, filteredResponds, resultsFound, loading}) => {
@@ -106,7 +109,7 @@ const RespondDb = ({setAddModalActive, setEditModalActive, respondents, setRespo
    }
 
    const respondItems = useMemo(() => renderRespondList(filteredResponds), [filteredResponds]);   
-   const loader = loading ? <div className="respondDb__loader"><div className="loader"></div></div> : null;
+   const loader = loading ? <Loader classes="respondDb__loader"/> : null; 
    // const loader = loading;
    return (
       <main className="respondDb">

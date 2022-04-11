@@ -13,7 +13,7 @@ const CalendarProj = ({classes, small, firstDate, setFirstDate, lastDate, setLas
    ], []);
 
    function renderCalendar() {
-      console.log('календарь обновился');
+      // console.log('календарь обновился');
 
       let days = [];
 
@@ -33,23 +33,23 @@ const CalendarProj = ({classes, small, firstDate, setFirstDate, lastDate, setLas
 
       //формируем последние числа предыдущего месяца
       for (let x = firstDayIndex; x > 0; x--){
-         days.push(<div className="calendar__prev-date" key={`${x}prev`}>{prevLastDay - x + 1}</div>);
+         days.push(<div className="calendar__date calendar__prev-date" key={`${x}prev`}>{prevLastDay - x + 1}</div>);
       }
 
       //формируем числа месяца
       for (let i = 1; i <= lastDayOfCurrentMonth; i++){
          
          if (i < new Date().getDate() && currentDate.getMonth() === new Date().getMonth()){
-            days.push(<div className="calendar__prev" key={i} ref={el => currentDays.current[i-1] = el}>{i}</div>);
+            days.push(<div className="calendar__date calendar__prev" key={i} ref={el => currentDays.current[i-1] = el}>{i}</div>);
          }
          else {
-            days.push(<div key={i} ref={el => currentDays.current[i-1] = el}>{i}</div>);
+            days.push(<div className="calendar__date" key={i} ref={el => currentDays.current[i-1] = el}>{i}</div>);
          }
       }
 
       //формируем первые числа следующего месяца
       for (let j = 1; j <= nextDays; j++){
-         days.push(<div className="calendar__next-date" key={`${j}next`}>{j}</div>);
+         days.push(<div className="calendar__date calendar__next-date" key={`${j}next`}>{j}</div>);
       }
 
       return days;

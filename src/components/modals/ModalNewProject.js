@@ -1,9 +1,12 @@
+import './otherModals.scss';
+import 'react-dadata/dist/react-dadata.css';
+
 import { useState, useRef, useEffect } from 'react';
 import useBookmeService from '../../services/BookmeService';
 import {translit} from '../../hooks/translit';
 import useValidation from '../../hooks/useValidation';
+import { AddressSuggestions } from 'react-dadata';
 
-import './otherModals.scss';
 import { CalendarArrowSmall, Info } from '../../resources';
 import { useInput } from '../../hooks/useInput';
 import InputWithLabel from '../inputWithLabel/InputWithLabel';
@@ -16,8 +19,7 @@ import CalendarProj from '../calendar/CalendarProj';
 import CalendarCreateSchedule from '../calendar/CalendarCreateSchedule';
 import Popup from '../popup/Popup';
 
-
-const ModalNewProject = ({setModalActive}) => {
+const ModalNewProject = ({setModalActive, setModalTimeActive, setDate, setTime}) => {
    const form = useRef();
 
    const nameInput = useInput('');
@@ -29,6 +31,8 @@ const ModalNewProject = ({setModalActive}) => {
 
    const [step, setStep] = useState(1);
    const [popupCopyActive, setPopupCopyActive] = useState(false);
+   const [firstDate, setFirstDate] = useState(null);
+   const [lastDate, setLastDate] = useState(null);
    
 
    const formSubmit = () => {
@@ -47,10 +51,14 @@ const ModalNewProject = ({setModalActive}) => {
             projSurveyLink={projSurveyLink} projLink={projLink} 
             active={step === 1 ? true : false} step={step} setStep={setStep}
             durationRadio={durationRadio} setDurationRadio={setDurationRadio}
+            firstDate={firstDate} setFirstDate={setFirstDate} lastDate={lastDate} setLastDate={setLastDate}
          />
          <NewProjCalendar
             active={step === 2 ? true : false} step={step} setStep={setStep}
             popupCopyActive={popupCopyActive} setPopupCopyActive={setPopupCopyActive}
+            firstDate={firstDate} lastDate={lastDate}
+            setModalTimeActive={setModalTimeActive}
+            setDate={setDate} setTime={setTime}
          />
          <NewProjReady
             active={step === 3 ? true : false} step={step} setStep={setStep}
@@ -61,16 +69,21 @@ const ModalNewProject = ({setModalActive}) => {
 export default ModalNewProject;
 
 
-const NewProjData = ({setModalActive, active, step, setStep, nameInput, descrInput, addressInput, projSurveyLink, projLink, durationRadio, setDurationRadio}) => {
+const NewProjData = ({setModalActive, active, 
+      step, setStep, 
+      nameInput, descrInput, projSurveyLink, projLink,
+      durationRadio, setDurationRadio,
+      firstDate, setFirstDate, lastDate, setLastDate,
+   }) => {
    
    const [calendarActive, setCalendarActive] = useState(false);
-   const [firstDate, setFirstDate] = useState(null);
-   const [lastDate, setLastDate] = useState(null);
    const [activeDate, setActiveDate] = useState(null);
    const [errorMessage, setErrorMessage] = useState('');
+   const [projAddress, setProjAddress] = useState();
 
    const {projectDataValidation} = useValidation();
    const modal = useRef();
+
 
    const choosePrevDate = () => {
       if(!calendarActive){
@@ -90,15 +103,19 @@ const NewProjData = ({setModalActive, active, step, setStep, nameInput, descrInp
    }
 
    const toSchedule = () => {
-      const successValid = projectDataValidation(modal.current, nameInput.value, descrInput.value, addressInput.value, durationRadio, firstDate, lastDate);
+      // const successValid = projectDataValidation(modal.current, nameInput.value, descrInput.value, projAddress, durationRadio, firstDate, lastDate);
       
-      if (successValid === true){
-         setErrorMessage('');
-         console.log('всё норм');
+      // if (successValid === true){
+      //    setErrorMessage('');
+      //    console.log('всё норм');
+      //    setStep(step + 1);
+      // } else {
+      //    setErrorMessage(successValid);
+      // }
+      if (firstDate && lastDate){
          setStep(step + 1);
-      } else {
-         setErrorMessage(successValid);
       }
+      // setStep(step + 1);
    }
 
    const errorDiv = errorMessage ? <div className="error-message form__error-message">{errorMessage}</div> : null;
@@ -124,7 +141,14 @@ const NewProjData = ({setModalActive, active, step, setStep, nameInput, descrInp
          <div className="modal__label">
             <span className="modal__input-name">Адрес проведения тестирований *</span>
             <div className="modal__some-inputs modal-new-project__address">
-               <Input inputType="text" inputName="projAddress" inputText="Добавьте адрес" value={addressInput.value} onChange={addressInput.onChange}/>
+               <AddressSuggestions 
+                  token="abbb9f71a457db183a05fe468d78b9657ca2546a" 
+                  value={projAddress} onChange={setProjAddress} 
+                  minChars={6} 
+                  inputProps={{name: "projAddress", placeholder: "Добавьте адрес", className: "input"}}
+                  count={5} delay={500}
+               />
+               {/* <Input inputType="text" inputName="projAddress" inputText="Добавьте адрес" value={addressInput.value} onChange={addressInput.onChange}/> */}
                <Button linear>Выбрать сохраненный</Button>
             </div>
          </div>
@@ -178,8 +202,13 @@ const NewProjData = ({setModalActive, active, step, setStep, nameInput, descrInp
    )
 }
 
-const NewProjCalendar = ({active, step, setStep, popupCopyActive, setPopupCopyActive}) => {
-   
+const NewProjCalendar = ({
+      active, step, setStep, 
+      popupCopyActive, setPopupCopyActive, 
+      firstDate, lastDate, 
+      setModalTimeActive,
+      setDate, setTime
+   }) => {
    return (
       <div className={`modal__content modal-new-project__content_second ${active ? 'active' : ''}`}>
          <div className="modal-new-project__top">
@@ -201,7 +230,15 @@ const NewProjCalendar = ({active, step, setStep, popupCopyActive, setPopupCopyAc
             />
          </div>
 
-         <CalendarCreateSchedule classes="modal-new-project__schedule"/>
+         {step === 2 
+         ? 
+            <CalendarCreateSchedule classes="modal-new-project__schedule" firstDate={firstDate} lastDate={lastDate}
+               step={step}
+               setModalTimeActive={setModalTimeActive}
+               setDate={setDate} setTime={setTime}
+            />
+         : null}
+         
 
          <div className="modal__btns modal__steps">
             <ProgressBtns steps={2} activeStep={2}/>

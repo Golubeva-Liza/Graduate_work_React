@@ -42,22 +42,22 @@ const Calendar = ({classes, small}) => {
 
       //формируем последние числа предыдущего месяца
       for (let x = firstDayIndex; x > 0; x--){
-         days += `<div class="calendar__prev-date">${prevLastDay - x + 1}</div>`
+         days += `<div class="calendar__date calendar__prev-date">${prevLastDay - x + 1}</div>`
       }
 
       //формируем числа месяца
       for (let i = 1; i <= lastDayOfCurrentMonth; i++){
          if (i === new Date().getDate() && date.getMonth() === new Date().getMonth()){
-            days += `<div class="calendar__today"><span>${i}</span></div>`;
+            days += `<div class="calendar__date calendar__today"><span>${i}</span></div>`;
          } else {
-            days += `<div><span>${i}</span></div>`;
+            days += `<div class="calendar__date"><span>${i}</span></div>`;
          }
          monthDays.current.innerHTML = days;
       }
 
       //формируем первые числа следующего месяца
       for (let j = 1; j <= nextDays; j++){
-         days += `<div class="calendar__next-date">${j}</div>`
+         days += `<div class="calendar__date calendar__next-date">${j}</div>`
          monthDays.current.innerHTML = days;
       }
    }

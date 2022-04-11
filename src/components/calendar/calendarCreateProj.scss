@@ -1,0 +1,14 @@
+@import '../../styles/variables';
+.calendar_create-schedule{
+   .calendar__selected{
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      background-color: rgba($main-blue, 0.1);
+      border-color: rgba($main-blue, 0.1);
+      padding-top: 2px;
+      div{
+         font-size: 11px;
+      }
+   }
+}

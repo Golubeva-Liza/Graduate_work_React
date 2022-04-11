@@ -2,7 +2,8 @@
 .respond-db-settings{
    padding: 70px 36px;
    height: 100vh;
-   min-width: 338px;
+   min-width: 280px;
+   // max-width: 338px;
    width: 338px;
    border-right: 1px solid #979797;
    &__search{
@@ -31,7 +32,8 @@
    }
    &__tags{
       height: 210px;
-      overflow-y: scroll;
+      overflow-y: auto;
+      padding-right: 12px;
       &::-webkit-scrollbar{
          width: 5px;
       }
@@ -57,5 +59,23 @@
    &__tag{
       display: inline-block;
       margin-bottom: 7px;
+   }
+   &__loader{
+      margin: 24px auto 0 auto;
+      display: flex;
+      justify-content: center;
+   }
+   &__apply{
+      color: $main-blue;
+      &:hover{
+         color: $blue-hover;
+      }
+      &:disabled{
+         color: rgba(24, 160, 251, 0.4);
+         cursor: default;
+      }
+      // &:focus{
+      //    color: red;
+      // }
    }
 }

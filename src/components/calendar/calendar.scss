@@ -57,7 +57,7 @@
       grid-template-columns: repeat(7, 1fr);//1fr получается равным 82.7
       grid-template-rows: repeat(4, 82px);
       grid-auto-rows: 82px;
-      div{
+      .calendar__date{
          // background-color: rgb(212, 166, 38);
          font-weight: 500;
          font-size: 13px;
@@ -67,9 +67,9 @@
          border: 1px solid white;
          display: flex;
          justify-content: center;
-         padding-top: 1px;
+         padding-top: 13px;
          cursor: default;
-         &:not(.calendar__prev-date):not(.calendar__next-date):not(.calendar__prev):hover{
+         &:not(.calendar__prev-date):not(.calendar__next-date):not(.calendar__prev):not(.calendar__disabled):hover{
             cursor: pointer;
             border: 1px solid $main-blue;
          }
@@ -78,7 +78,7 @@
          padding-top: 13px;
          color: #c4c4c4;
       }
-      .calendar__prev{
+      .calendar__prev, .calendar__disabled{
          color: #c4c4c4;
       }
       span{
@@ -127,13 +127,13 @@
       .calendar__days{
          grid-template-rows: repeat(4, 27px);
          grid-auto-rows: 27px;
-         div{
+         .calendar__date{
             // background-color: rgb(212, 166, 38);
             align-items: center;
             font-size: 12px;
             padding-top: 0;
          }
-         div.active{
+         .calendar__date.active{
             // border-radius: 100%;
             background-color: $main-blue;
             color: #FFFFFF;

@@ -69,7 +69,7 @@
          justify-content: center;
          padding-top: 13px;
          cursor: default;
-         &:not(.calendar__prev-date):not(.calendar__next-date):not(.calendar__prev):not(.calendar__disabled):hover{
+         &:not(.calendar__prev-date):not(.calendar__next-date):not(.calendar__prev):not(.calendar__disabled):not(.calendar__unavailable):hover{
             cursor: pointer;
             border: 1px solid $main-blue;
          }
@@ -78,7 +78,7 @@
          padding-top: 13px;
          color: #c4c4c4;
       }
-      .calendar__prev, .calendar__disabled{
+      .calendar__prev, .calendar__unavailable, .calendar__disabled{
          color: #c4c4c4;
       }
       span{

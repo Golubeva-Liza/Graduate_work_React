@@ -80,6 +80,120 @@ console.log(persistence(39));
 
 const persistence2 = num => {
    return `${num}`.length > 1 
-      ? 1 + persistence(`${num}`.split('').reduce((a, b) => a * +b)) 
+      ? 1 + persistence2(`${num}`.split('').reduce((a, b) => a * +b)) 
       : 0;
 }
+
+
+
+
+
+function zero(params) {
+   return params ? outerNum(0, params.oper, params.num) : 0;
+}
+function one(params) {
+   return params ? outerNum(1, params.oper, params.num) : 1;
+}
+function two(params) {
+   return params ? outerNum(2, params.oper, params.num) : 2;
+}
+function three(params) {
+   return params ? outerNum(3, params.oper, params.num) : 3;
+}
+function four(params) {
+   return params ? outerNum(4, params.oper, params.num) : 4;
+}
+function five(params) {
+   return params ? outerNum(5, params.oper, params.num) : 5;
+}
+function six(params) {
+   return params ? outerNum(6, params.oper, params.num) : 6;
+}
+function seven(params) {
+   return params ? outerNum(7, params.oper, params.num) : 7;
+}
+function eight(params) {
+   return params ? outerNum(8, params.oper, params.num) : 8;
+}
+function nine(params) {
+   return params ? outerNum(9, params.oper, params.num) : 9;
+}
+
+function plus(num) {
+   return {
+      oper: 'plus',
+      num
+   }
+}
+function minus(num) {
+   return {
+      oper: 'minus',
+      num
+   }
+}
+function times(num) {
+   return {
+      oper: 'times',
+      num
+   }
+}
+function dividedBy(num) {
+   return {
+      oper: 'dividedBy',
+      num
+   }
+}
+
+function outerNum(funcNum, oper, num) {
+   switch (oper) {
+      case 'plus':
+        return funcNum + num;
+      case 'minus':
+         return funcNum - num;
+      case 'times':
+         return funcNum * num;
+      case 'dividedBy':
+         return Math.floor(funcNum / num);
+      default:
+        return funcNum;
+   }
+}
+
+console.log(seven(times(five())));
+console.log(four(plus(nine())));
+console.log(eight(minus(three())));
+console.log(six(dividedBy(two())));
+
+//довольно длинное решение, поэтому посмотреть это: https://www.codewars.com/kata/525f3eda17c7cd9f9e000b39/solutions/javascript/all/best_practice
+
+
+
+
+//1^3 + 5^3 + 3^3 = 1 + 125 + 27 = 153
+
+// function narcissistic(value) {
+//    let arr = (""+value).split("").map(Number);
+//    let res = 0;
+//    arr.forEach(num => res+=Math.pow(num, arr.length));
+//    return res === value ? true : false;
+// }
+function narcissistic(value) {
+   let res = 0;
+   (""+value).split("").map(Number).forEach(num => res+=Math.pow(num, (""+value).length));
+   return res === value ? true : false;
+}
+ 
+console.log(narcissistic(153));
+
+// function narcissistic(value) {
+//    return value.toString()
+//    .split('')
+//    .map( (x,i,arr) => x ** arr.length)
+//    .reduce( (a,b)=> +a + +b) 
+//     === value
+// }
+// function narcissistic( value ) {
+//    return ('' + value).split('').reduce(function(p, c){
+//      return p + Math.pow(c, ('' + value).length)
+//      }, 0) == value;
+// }

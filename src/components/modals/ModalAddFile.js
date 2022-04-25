@@ -22,7 +22,6 @@ const ModalAddFile = ({modalActive, setModalActive, user, setUser}) => {
       if (!e.target.files.length){
          return;
       }
-
       const reader = new FileReader();
       reader.onload = (event) => {
          setImage(event.target.result);
@@ -38,8 +37,8 @@ const ModalAddFile = ({modalActive, setModalActive, user, setUser}) => {
          if (res !== 'error'){
             const updatedUser = [...user.slice(0, 4), res];
             setUser(updatedUser);
-            setModalActive(false);
             setImage('');
+            setModalActive(false);
          }
       });
    }
@@ -59,7 +58,7 @@ const ModalAddFile = ({modalActive, setModalActive, user, setUser}) => {
             {/* <button className="button-reset" onClick={removePhoto}>Удалить</button> */}
          </div>
          
-         <form className="modal__form" method="POST" ref={form} onSubmit={e => e.preventDefault()}>
+         <form className="modal__form" method="POST" ref={form} onSubmit={e => e.preventDefault()} encType="multipart/form-data">
             <input ref={uploadBtn} className="visually-hidden" type="file" name="photo" onChange={onUpload} accept=".png,.jpg,.jpeg"/>
             <button className="button-reset button button_linear modal__btn modal-add-file__btn" type="button" onClick={() => uploadBtn.current.click()}>Выбрать файл</button>
             <button className={`button-reset button modal__btn modal-add-file__save ${image ? '' : 'disabled'}`} type="submit" onClick={formSubmit}>Сохранить</button>

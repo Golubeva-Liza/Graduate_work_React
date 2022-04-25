@@ -115,7 +115,16 @@ input::-webkit-inner-spin-button {
       height: 100%;
    }
 }
-
+.main-loader{
+   flex: 1 1;
+   div{
+      display: block;
+      margin: 0 auto;
+      margin-top: 150px;
+      transform: scale(1.5);
+   }
+   
+}
 
 //components
 @import './tag';

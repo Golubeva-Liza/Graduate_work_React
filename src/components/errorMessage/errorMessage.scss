@@ -1,0 +1,8 @@
+@import '../../styles/variables';
+.error-hint{
+   margin-top: 4px;
+   color: $main-red;
+}
+.error-hint.warning{
+   color: $main-blue;
+}

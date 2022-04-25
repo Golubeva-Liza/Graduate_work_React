@@ -1,7 +1,7 @@
 import './rangeSlider.scss';
 import { useState, useMemo, useRef, useEffect } from 'react';
 
-const RangeSlider = ({setAge}) => {
+const RangeSlider = ({age, setAge, clearAge, setClearAge}) => {
    const [minValue, setMinValue] = useState(0);
    const [maxValue, setMaxValue] = useState(100);
 
@@ -28,22 +28,36 @@ const RangeSlider = ({setAge}) => {
       if (e.target == leftInput.current){
          if ((maxValue - e.target.value < gap)){
             setMinValue(+maxValue - gap);
-            setAge(age => [+maxValue - gap, age[1]]);
+            // setAge(age => [+maxValue - gap, age[1]]);
          } else {
             setMinValue(+e.target.value);
-            setAge(age => [+e.target.value, age[1]]);
+            // setAge(age => [+e.target.value, age[1]]);
          }
       }else{
          if ((e.target.value - minValue < gap)){
             setMaxValue(+minValue + gap);
-            setAge(age => [age[0], +minValue + gap]);
+            // setAge(age => [age[0], +minValue + gap]);
          } else {
             setMaxValue(+e.target.value);
-            setAge(age => [age[0], +e.target.value]);
+            // setAge(age => [age[0], +e.target.value]);
          }
       }
    }
+   const inputsMouseUp = () => {
+      if (age[0] !== minValue || age[1] !== maxValue){
+         setAge([minValue, maxValue]);
+      }
+   }
    
+   useEffect(() => {
+      if (clearAge){
+         console.log('очистка возраста')
+         setMinValue(0);
+         setMaxValue(100);
+         setClearAge(false);
+      }
+   }, [clearAge]);
+
    return (
       <div className="range-slider">
          <div className="range-slider__values">
@@ -60,8 +74,14 @@ const RangeSlider = ({setAge}) => {
          </div>
          
          <div className="range-slider__inputs">
-            <input className="range-slider__min" type="range" min="0" max="100" onChange={onInputsChange} value={minValue} ref={leftInput}/>
-            <input className="range-slider__max" type="range" min="0" max="100" onChange={onInputsChange} value={maxValue} ref={rightInput}/>
+            <input className="range-slider__min" type="range" min="0" max="100"
+               onChange={onInputsChange} value={minValue} ref={leftInput}
+               onMouseUp={inputsMouseUp}
+            />
+            <input className="range-slider__max" type="range" min="0" max="100" 
+               onChange={onInputsChange} value={maxValue} ref={rightInput}
+               onMouseUp={inputsMouseUp}
+            />
          </div>
          
       </div>

@@ -1,16 +1,27 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import useBookmeService from '../services/BookmeService';
+
 import './App.scss';
-// import {LoginPage, ModeratorPage, SettingsPage, ProjectsPage, RespondPage} from '../pages';
-import {RespondPage} from '../pages';
 
 const LoginPage = lazy(() => import('../pages/LoginPage'));
 const ModeratorPage = lazy(() => import('../pages/ModeratorPage'));
-const SettingsPage = lazy(() => import('../pages/SettingsPage'));
-const ProjectsPage = lazy(() => import('../pages/ProjectsPage'));
+const RespondPage = lazy(() => import('../pages/RespondPage'));
+
 
 const App = () => {
-   
+   const {getLoggedUser} = useBookmeService();
+   const [user, setUser] = useState('');
+
+   useEffect(() => {
+      if (localStorage.getItem('authorized')){
+         getLoggedUser(localStorage.getItem('authorized'))
+            .then(res => {
+               setUser(res[0]);
+            })
+      }
+   }, []);
+
    return (
       <Router>
          <div className = "App">
@@ -18,9 +29,7 @@ const App = () => {
                <Routes>
                   <Route path='/' element={<LoginPage/>}/>
 
-                  <Route path='/moderator' element={<ModeratorPage/>}/>
-                  <Route path='/settings' element={<SettingsPage/>}/>
-                  <Route path='/projects' element={<ProjectsPage/>}/>
+                  <Route path='/moderator/*' element={<ModeratorPage user={user} setUser={setUser}/>}/>
 
                   <Route path='/respondent' element={<RespondPage/>}/>
 

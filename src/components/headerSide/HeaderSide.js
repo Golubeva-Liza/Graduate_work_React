@@ -38,19 +38,19 @@ const HeaderSide = ({user}) => {
          <nav className="header__nav">
             <ul className="header__list">
                <li className="header__item">
-                  <NavLink end className={({ isActive }) => "header__link" + (isActive ? " header__item_active" : "")} to="/projects">
+                  <NavLink end className={({ isActive }) => "header__link" + (isActive ? " header__item_active" : "")} to="/moderator/projects">
                      <Calendar className="header__icon"/>
                      <span className="main-title header__nav-text">Проекты</span>
                   </NavLink>
                </li>
                <li className="header__item">
-                  <NavLink end className={({ isActive }) => "header__link" + (isActive ? " header__item_active" : "")} to="/moderator">
+                  <NavLink end className={({ isActive }) => "header__link" + (isActive ? " header__item_active" : "")} to="/moderator/">
                      <Respond className="header__icon"/>
                      <span className="main-title header__nav-text">Респонденты</span>
                   </NavLink>
                </li>
                <li className="header__item">
-                  <NavLink end className={({ isActive }) => "header__link" + (isActive ? " header__item_active" : "")} to="/settings">
+                  <NavLink end className={({ isActive }) => "header__link" + (isActive ? " header__item_active" : "")} to="/moderator/settings">
                      <Settings className="header__icon"/>
                      <span className="main-title header__nav-text">Настройки</span>
                   </NavLink>

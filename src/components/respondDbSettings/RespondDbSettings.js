@@ -1,12 +1,14 @@
 import './respondDbSettings.scss';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useInput } from '../../hooks/useInput';
+import selectValues from '../../hooks/selectValues';
 
 import Input from '../input/Input';
 import Select from '../select/Select';
 import RangeSlider from '../rangeSlider/RangeSlider';
 import Loader from '../loader/Loader';
+import Button from '../button/Button';
 
 const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, setResultsFound, citiesValues, tagsValues, loading}) => {
 
@@ -17,8 +19,13 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
    const [citySelect, setCitySelect] = useState(null);
    const [tagsSelect, setTagsSelect] = useState([]);
 
-   const [ageNow, setAgeNow] = useState([0, 100]);
-   const [agePrev, setAgePrev] = useState([]);
+   const [ageNow, setAgeNow] = useState([]);
+   const [isFilters, setIsFilters] = useState([]);
+   const [clearAge, setClearAge] = useState(false);
+   const [clearSelect, setClearSelect] = useState(false);
+   const tagsList = useRef([]);
+
+   const {educationValues, familyStatusValues} = selectValues();
 
    const applyFilters = () => {
       let updatedList = respondents;
@@ -39,7 +46,7 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
       }
 
       //Age Filter
-      if (ageNow[0] !== 0 || ageNow[1] !== 100) {
+      if (ageNow.length && (ageNow[0] !== 0 || ageNow[1] !== 100)) {
          updatedList = updatedList.filter(
             (item) => +item[6] >= ageNow[0] && +item[6] <= ageNow[1]
          );
@@ -75,7 +82,13 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
          ));
       }
       
-      console.log('у фильтров');
+      if (respondents == updatedList){
+         setIsFilters(false);
+      } else {
+         setIsFilters(true);
+      }
+
+      // console.log('у фильтров');
       setFilteredResponds(updatedList);
 
       !updatedList.length ? setResultsFound(false) : setResultsFound(true);
@@ -88,18 +101,12 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
       }
    }, [respondents, genderSelect, educationSelect, searchInput.value, familySelect, citySelect, tagsSelect]);
 
-   const applyAge = () => {
-      if(ageNow[0] !== agePrev[0] || ageNow[1] !== agePrev[1]){
-         setAgePrev(ageNow);
-      }
-   }
-
    useEffect(() => {
-      if (agePrev.length){ 
+      if (ageNow.length){ 
          console.log('применить фильтры')
          applyFilters();
       }
-   }, [agePrev]);
+   }, [ageNow]);
 
 
    const selectingTag = (e) => {
@@ -114,10 +121,9 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
       }      
    }
 
-
    function renderTagsItems(values){
-      const elements = values.sort().map((value) => (
-         <li key={value}>
+      const elements = values.sort().map((value, index) => (
+         <li key={value} ref={el => tagsList.current[index] = el}>
             <span className="tag respond-db-settings__tag" onClick={selectingTag}>{value}</span>
          </li>
          // <li className="select__item" key={index} onClick={selectingItem} ref={el => listItems.current[index] = el}>{value}</li>
@@ -131,61 +137,75 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
       }
    }, [tagsValues]);
 
+   const resetFilters = () => {
+      searchInput.removeValue();
+      setClearSelect(true);
+      setAgeNow([]);
+      setClearAge(true);
+      setGenderSelect(null);
+      setEducationSelect(null);
+      setFamilySelect(null);
+      setCitySelect(null);
+      setTagsSelect([]);
+      tagsList.current.forEach(item => item.childNodes[0].classList.remove('tag_selected'));
+
+
+      setFilteredResponds(respondents);
+      setIsFilters(false);
+      setResultsFound(true);
+   }
+
    
    const loader = loading ? <Loader classes="respond-db-settings__loader"/> : null; 
    return (
       <aside className="respond-db-settings">
-         <div className="respond-db-settings__search">
-            <Input inputType="text" inputName="search" inputText="Поиск респондента" inputClass="input_search"
-               value={searchInput.value} onChange={searchInput.onChange}
-            />
-         </div>
-         <label className="label respond-db-settings__label">
-            <span>Пол</span>
-            <Select selectName="gender" setSelectValue={setGenderSelect}
-               values={['Не важно', 'Мужской', 'Женский']}
-            />
-         </label>
-         <div className="label respond-db-settings__label">
-            <div style={{'display': 'flex', 'justifyContent': 'space-between', 'marginBottom': '6px'}}>
+         <div>
+            <div className="respond-db-settings__search">
+               <Input inputType="text" inputName="search" inputText="Поиск по ФИО" inputClass="input_search"
+                  value={searchInput.value} onChange={searchInput.onChange}
+               />
+            </div>
+            <label className="label respond-db-settings__label">
+               <span>Пол</span>
+               <Select selectName="gender" setSelectValue={setGenderSelect} clearSelect={clearSelect} setClearSelect={setClearSelect}
+                  values={['Не важно', 'Мужской', 'Женский']}
+               />
+            </label>
+            <div className="label respond-db-settings__label">
                <span>Возраст:</span>
-               <button className="button-reset respond-db-settings__apply" 
-                  disabled={(ageNow[0] == 0 && ageNow[1] == 100 && !agePrev.length) ? true : false}
-                  onClick={applyAge}
-               >
-                  Применить
-               </button>
+               <RangeSlider age={ageNow} setAge={setAgeNow} clearAge={clearAge} setClearAge={setClearAge}/>
             </div>
-            <RangeSlider setAge={setAgeNow}/>
+            <label className="label respond-db-settings__label">
+               <span>Образование:</span>
+               <Select selectName="education" setSelectValue={setEducationSelect} clearSelect={clearSelect} setClearSelect={setClearSelect}
+                  values={educationValues}
+               />
+            </label>
+            <label className="label respond-db-settings__label">
+               <span>Место жительства:</span>
+               <Select selectName="city" setSelectValue={setCitySelect} clearSelect={clearSelect} setClearSelect={setClearSelect}
+                  values={citiesValues.length ? citiesValues : ['Не важно']}
+               />
+            </label>
+            <label className="label respond-db-settings__label">
+               <span>Семейное положение:</span> 
+               <Select selectName="familyStatus" setSelectValue={setFamilySelect} clearSelect={clearSelect} setClearSelect={setClearSelect}
+                  values={familyStatusValues}
+               />
+            </label>
+            <label className="label respond-db-settings__label">
+               <span>Теги:</span>
+               {loader}
+               <div className="select respond-db-settings__tags">
+                  <ul className="respond-db-settings__tag-wrapper">
+                     {tagsItems}
+                  </ul>
+               </div>
+            </label>
          </div>
-         <label className="label respond-db-settings__label">
-            <span>Образование:</span>
-            <Select selectName="education" setSelectValue={setEducationSelect}
-               values={['Не важно', 'Среднее общее', 'Среднее профессиональное', 'Высшее', 'Школьник', 'Студент']}
-            />
-         </label>
-         <label className="label respond-db-settings__label">
-            <span>Место жительства:</span>
-            <Select selectName="city" setSelectValue={setCitySelect} 
-               values={citiesValues.length ? citiesValues : ['Не важно']}
-            />
-         </label>
-         <label className="label respond-db-settings__label">
-            <span>Семейное положение:</span> 
-            <Select selectName="familyStatus" setSelectValue={setFamilySelect}
-               values={['Не важно', 'Разведен(а)', 'Состоит в браке', 'В отношениях', 'Не в отношениях']}
-            />
-         </label>
-         <label className="label respond-db-settings__label">
-            <span>Теги:</span>
-            {loader}
-            <div className="select respond-db-settings__tags">
-               <ul className="respond-db-settings__tag-wrapper">
-                  {tagsItems}
-                  {/* <li><span className="tag tag_selected respond-db-settings__tag">Есть дети</span></li> */}
-               </ul>
-            </div>
-         </label>
+         <div>
+            <Button buttonClass="respond-db-settings__btn" onClick={resetFilters} disabled={isFilters == true ? false : true}>Сбросить фильтры</Button>
+         </div>
       </aside>
    )
 }

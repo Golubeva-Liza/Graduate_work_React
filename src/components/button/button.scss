@@ -28,4 +28,10 @@
          background-color: $main-blue;
       }
    }
+   &_red{
+      background-color: $main-red;
+      &:hover:not(:disabled){
+         background-color: $red-hover;
+      }
+   }
 }

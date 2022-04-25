@@ -20,6 +20,7 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
    const nameForm = useRef();//форма
    const [nameEdit, setNameEdit] = useState(false);//статус: редактируется или нет
    const [errorNameMessage, setErrorNameMessage] = useState('');
+   const [removePhoto, setRemovePhoto] = useState(false);
 
    const userEmail = useInput('');//значение
    const emailInput = useRef();//ссылка
@@ -101,8 +102,32 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
       setModalFileActive(true);
       setPopupActive(false);
    }
-   const function2 = () => {
-      console.log("действие2");
+
+   useEffect(() => {
+      if (removePhoto){
+         console.log('удаление фотографии');
+
+         const formData = new FormData();
+         formData.append("id", user[1]);
+         formData.append("removePhoto", true);
+
+         updateUserData(formData).then(res => {
+            if (res == 'success'){
+               console.log('success');
+               const updatedUser = [...user.slice(0, 4), ''];
+               setUser(updatedUser);
+               setModalFileActive(false);
+               setPopupActive(false);
+            }
+         });
+
+         setRemovePhoto(false);
+      }
+      
+   }, [removePhoto])
+
+   const onRemovePhoto = () => {
+      setRemovePhoto(true);
    }
 
    const errorName = errorNameMessage ? <div className="account-settings__error-message">{errorNameMessage}</div> : null;
@@ -119,7 +144,7 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
                popupClass={'account-settings__add-photo'} 
                popupOpened={popupActive}
                setPopupActive={setPopupActive}
-               onClick={[onUploadPhoto, function2]}
+               onClick={[onUploadPhoto, onRemovePhoto]}
             />
          </div>
          <span className="account-settings__name">{user[2]}</span>

@@ -1,15 +1,38 @@
 @import '../../styles/variables';
 .respondDb{
-   padding: 73px 55px 60px 39px;
-   flex: 1;
+   padding: $ptb-sections 50px $ptb-sections 40px;
+   flex: 1 1;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+   height: 100vh;
+   overflow: auto;
    position: relative;
-   &__table-container{
+   &::-webkit-scrollbar {
+      width: 0;//ширина scrollbar
+   }
+   &__table{
       position: relative;
+      min-height: 47px;
+      // height: 47px;
+      max-height: 708px;
+      overflow: auto;
+      // flex: 1 1 auto;
+   }
+   &__table::-webkit-scrollbar {
+      width: 12px;//ширина scrollbar
+   }
+   &__table::-webkit-scrollbar-track {
+      background: $main-grey;//дорожка
+   }
+   &__table::-webkit-scrollbar-thumb {
+      background-color: $main-blue;//цвет плашка
+      border-radius: 4px;
    }
    &__btns{
-      position: absolute;
-      bottom: 60px;
-      right: 57px;
+      margin-top: 40px;
+      display: flex;
+      justify-content: flex-end;
       button{
          &:first-child{
             margin-right: 22px;
@@ -32,7 +55,7 @@
    }
    &__respondent-options{
       // top: calc(47px * 2);
-      right: 15px;
+      right: calc(50px + 15px);
    }
    &__invite-to-proj{
       top: 0;
@@ -56,91 +79,10 @@
    &__loader{
       display: flex;
       justify-content: center;
-      margin-top: 90px;
+      // margin-top: 90px;
       .loader{
          transform: scale(1.8);
       }
-   }
-}
-.respondents-list{
-   width: 100%;
-   border-radius: 5px;
-   border: 1px solid $main-grey;
-   table-layout: fixed;
-   border-spacing: 0px;
-   border-collapse: collapse;
-
-   // display: grid;//
-   // grid-template-columns: 30px minmax(100px, 160px) 26px 54px 88px 125px 143px 115px minmax(100px, 160px) 24px;//
-   // grid-auto-rows: 47px;
-   // align-items: center;
-   // grid-column-gap: 21px;
-   tbody{
-      position: relative;
-   }
-   tr{
-      height: 47px;
-      border-bottom: 1px solid $main-grey;
-   }
-   th{
-      font-weight: 600;
-      text-align: left;
-   }
-   td, th{
-      padding-right: 21px;
-      overflow-x: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      box-sizing: content-box;
-      position: relative;
-
-      //Галочка
-      &:nth-child(1){
-         width: 16px;
-         padding-left: 14px;
-      }
-      //ФИО
-      &:nth-child(2){
-         // width: 160px;
-      }
-      //Пол
-      &:nth-child(3){
-         width: 26px;
-      }
-      //Возраст
-      &:nth-child(4){
-         width: 54px;
-      }
-      //Образование
-      &:nth-child(5){
-         width: 88px;
-      }
-      //Место жительства
-      &:nth-child(6){
-         width: 125px;
-      }
-      //Семейное положение
-      &:nth-child(7){
-         width: 143px;
-      }
-      //Телефон
-      &:nth-child(8){
-         width: 115px;
-      }
-      //Тэги
-      &:nth-child(9){
-         // width: 160px;
-      }
-      //Опции
-      &:last-child{
-         width: 24px;
-         padding-right: 15px;
-      }
-   }
-
-   &__label{
-      margin-bottom: 0;
-      transform: translateY(2px);
    }
 }
 
@@ -157,5 +99,55 @@
    }
    &:hover svg{
       fill: rgba($color: #2C2C2C, $alpha: 0.4);
+   }
+}
+.more-functions.active {
+   svg{
+      fill: $main-blue;
+   }
+}
+
+.table{
+   width: 100%;
+   border-radius: 5px;
+   border: 1px solid $main-grey;
+   position: relative;
+   &__content{
+      border-top: 1px solid $main-grey;
+   }
+   &__row, &__title{
+      display: grid;  
+      align-items: center;
+      grid-template-columns: 30px minmax(135px, 1fr) 26px 54px minmax(88px, 140px) 125px minmax(110px, 143px) 115px minmax(135px, 1fr) 39px;
+      height: 47px;
+      column-gap: 21px;
+      background-color: #FFFFFF;
+      
+      & > div:not(.popup1){
+         box-sizing: content-box;
+         white-space: nowrap;
+         text-overflow: ellipsis;
+         overflow-x: hidden;
+         &:nth-child(1){
+            padding-left: 14px;
+         }
+         &:last-child{
+            padding-right: 14px;
+         }
+      }
+   }
+   &__title{
+      & > div{
+         font-weight: 600;
+      }
+   }
+   &__row:not(:last-child){
+      border-bottom: 1px solid $main-grey;
+   }
+   &__row:last-child:not(:first-child){
+      .popup1{
+         top: auto; 
+         bottom: 28px;
+      }
    }
 }

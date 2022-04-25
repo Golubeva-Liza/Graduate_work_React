@@ -16,7 +16,7 @@ const Select = ({values, selectName, clearSelect, setClearSelect, selectValue, s
    useEffect(() => {
       if (clearSelect){
          setCurrentValue(defaultValue);
-         listItems.current.forEach(item => item.classList.remove('selected'));
+         listItems.current.forEach(item => item ? item.classList.remove('selected') : null);
          setClearSelect(false);
       }
    }, [clearSelect]);

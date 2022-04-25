@@ -1,10 +1,7 @@
 import './popup.scss';
 
 const RespondDbPopup = (props) => {
-   const {popupClass, popupOpened, setPopupActive, rowNum, link, activeRespond, setRemovedRespond, setEditModalActive, setEditRespond} = props;
-
-   const popupShow = popupOpened ? 'show' : '';
-   const popupTop = `${47 * (rowNum + 2)}px`;
+   const {popupClass, popupOpened, setPopupActive, rowNum, link, activeRespond, setRemovedRespond, setEditModalActive, setEditRespond, isLow, dotBtns} = props;
 
    const removeRespond = () => {
       setRemovedRespond(activeRespond);
@@ -14,10 +11,14 @@ const RespondDbPopup = (props) => {
       // console.log(activeRespond);
       setEditRespond(activeRespond);
       setPopupActive(false);
+      dotBtns.current.forEach(item => item ? item.classList.remove('active') : null);
    }
  
    return (
-      <div className={`popup ${popupClass} ${popupShow}`} style={{top: popupTop}} ref={link}>
+      <div className={`popup ${popupClass} ${popupOpened ? 'show' : ''}`} 
+         style={{top: `${isLow == true ? rowNum - 195 : rowNum + 40}px`}} 
+         ref={link}
+      >
          <ul className="popup__list">
             <li className="popup__item">
                <button className="button-reset">Смотреть анкету</button>

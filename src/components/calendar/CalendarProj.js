@@ -38,7 +38,6 @@ const CalendarProj = ({classes, small, firstDate, setFirstDate, lastDate, setLas
 
       //формируем числа месяца
       for (let i = 1; i <= lastDayOfCurrentMonth; i++){
-         
          if (i < new Date().getDate() && currentDate.getMonth() === new Date().getMonth()){
             days.push(<div className="calendar__date calendar__prev" key={i} ref={el => currentDays.current[i-1] = el}>{i}</div>);
          }
@@ -83,18 +82,19 @@ const CalendarProj = ({classes, small, firstDate, setFirstDate, lastDate, setLas
       //       day.classList.add('active');
       //    }
       // }
+      console.log(activeDate);
       if (activeDate == 'next'){
          currentDays.current.forEach(el => {
             if (el && el.innerHTML < +firstDate.substr(0, 2) && currentDate.getMonth() + 1 === +firstDate.substr(3, 2)){
-               el.classList.add('calendar__prev');
+               el.classList.add('calendar__unavailable');
             } else if (el) {
-               el.classList.remove('calendar__prev');
+               el.classList.remove('calendar__unavailable');
             }
          })
       } else if (activeDate == 'prev'){
          currentDays.current.forEach(el => {
             if (el){
-               el.classList.remove('calendar__prev');
+               el.classList.remove('calendar__unavailable');
             }
          })
       }
@@ -113,7 +113,7 @@ const CalendarProj = ({classes, small, firstDate, setFirstDate, lastDate, setLas
    }
 
    const changeDate = (e) => {
-      if(!e.target.classList.contains('calendar__prev') && !e.target.classList.contains('calendar__prev-date') && !e.target.classList.contains('calendar__next-date')){
+      if(!e.target.classList.contains('calendar__prev') && !e.target.classList.contains('calendar__prev-date') && !e.target.classList.contains('calendar__next-date') && !e.target.classList.contains('calendar__unavailable')){
          const day = e.target.innerHTML < 10 ? `0${e.target.innerHTML}` : e.target.innerHTML;
          const month = (currentDate.getMonth() + 1) < 10 ? `0${currentDate.getMonth() + 1}` : currentDate.getMonth() + 1;
          const year = currentDate.getFullYear();

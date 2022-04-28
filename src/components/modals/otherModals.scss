@@ -135,19 +135,13 @@
    }
 }
 .modal-new-project{
-   .modal__content{
-      display: none;
-   }
-   .modal__content.active{
-      display: block;
-   }
-   &__content_first{
+   &__data{
       width: 558px;
    }
-   &__content_second{
+   &__schedule{
       width: 705px;
    }
-   &__content_third{
+   &__ready{
       width: 460px;
    }
    &__address{
@@ -169,7 +163,7 @@
          margin-right: 8px;
       }
    }
-   &__schedule{
+   &__schedule-calendar{
       margin-bottom: 32px;
    }
    &__top{
@@ -300,5 +294,83 @@
          color: #FFFFFF;
       }
       
+   }
+}
+.modal-set-time{
+   &__content{
+      width: 350px;
+   }
+   &__title{
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 22px;
+      margin-bottom: 16px;
+   }
+   &__intervals{
+      margin-bottom: 16px;
+   }
+   &__interval{
+      display: flex;
+      align-items: center;
+      &:not(:last-child){
+         margin-bottom: 8px;
+      }
+      span{
+         font-weight: 500;
+         font-size: 13px;
+         line-height: 16px;
+         margin-right: 8px;
+      }
+      input{
+         width: 70px;
+         margin-right: 24px;
+      }
+   }
+   &__add-btns{
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      button{
+         padding: 0 16px;
+      }
+   }
+   &__apply-btns{
+      display: flex;
+      justify-content: flex-end;
+      button{
+         padding: 0 16px;
+      }
+   }
+   &__delete{
+      background-color: rgba($dark-grey, 0.2);
+      display: flex;
+      align-items: center;
+      border-radius: 100%;
+      transition: background-color .4s;
+      svg{
+         fill: white;
+      }
+      &:hover{
+         background-color: rgba($dark-grey, 0.4);
+      }
+   }
+   &__radio{
+      margin-bottom: 24px;
+      label:not(:last-child){
+         margin-bottom: 8px;
+      }
+   }
+   &__weekdays{
+      margin-bottom: 16px;
+   }
+   &__weekdays-list{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 16px;
+      label{
+         // width: 50%;
+         height: 24px;
+         margin-bottom: 12px;
+      }
    }
 }

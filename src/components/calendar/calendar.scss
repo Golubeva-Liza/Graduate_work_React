@@ -133,10 +133,11 @@
             font-size: 12px;
             padding-top: 0;
          }
-         .calendar__date.active{
+         .calendar__date.prev-active, .calendar__date.last-active{
             // border-radius: 100%;
             background-color: $main-blue;
             color: #FFFFFF;
+            border: 1px solid $main-blue;
          }
          span{
             width: 24px;

@@ -1,0 +1,38 @@
+.radio{
+   display: flex;
+   align-items: center;
+   cursor: pointer;
+   &__check{
+      border: 1px solid $main-grey;
+      border-radius: 100%;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      position: relative;
+      transition: border .4s, background-color .4s;
+   }
+   &__input{
+      display: none;
+      &:checked+.radio__check{
+         border: 1px solid $main-blue;
+         background-color: $main-blue;
+      }
+      &:checked+.radio__check::before{
+         content: "";
+         border-radius: 100%;
+         position: absolute;
+         left: 50%;
+         top: 50%;
+         width: 8px;
+         height: 8px;
+         background-color: #FFFFFF;
+         transform: translate(-50%, -50%);
+      }
+   }
+   span{
+      margin-left: 8px;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 16px;
+   }
+}

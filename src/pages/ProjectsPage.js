@@ -23,8 +23,11 @@ const ProjectsPage = () => {
    const [modalProjectActive, setModalProjectActive] = useState(false);
    const [modalTimeActive, setModalTimeActive] = useState(false);
 
-   const [date, setDate] = useState(false);
+   const [selectedDays, setSelectedDays] = useState();
+   const [selectedDate, setSelectedDate] = useState(null);
    const [time, setTime] = useState(false);
+
+   // [{date: date, intervals: ['15:00-19:00']}]
 
    return (
       <>
@@ -32,10 +35,23 @@ const ProjectsPage = () => {
          <ModerCalendar/>
          <RespondRecordings/>
          <Modal modalClass={'modal-new-project'} active={modalProjectActive} setActive={setModalProjectActive}>
-            <ModalNewProject setModalActive={setModalProjectActive} setModalTimeActive={setModalTimeActive} setDate={setDate} setTime={setTime}/>
+            <ModalNewProject 
+               setModalActive={setModalProjectActive} 
+               setModalTimeActive={setModalTimeActive} 
+               setSelectedDate={setSelectedDate} 
+               setTime={setTime}
+               setSelectedDays={setSelectedDays}
+               selectedDays={selectedDays}
+            />
          </Modal>
-         <Modal modalClass={'modal-set-time'} active={modalTimeActive} setActive={setModalTimeActive} outClick>
-            <ModalSetTime setModalActive={setModalTimeActive} date={date} setDate={setDate} time={time} setTime={setTime}/>
+         <Modal modalClass={'modal-set-time'} active={modalTimeActive} setActive={setModalTimeActive}>
+            <ModalSetTime 
+               setModalActive={setModalTimeActive} 
+               date={selectedDate} setDate={setSelectedDate} 
+               time={time} setTime={setTime}
+               selectedDays={selectedDays}
+               setSelectedDays={setSelectedDays}
+            />
          </Modal>
       </>
    )

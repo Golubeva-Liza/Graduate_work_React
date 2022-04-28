@@ -59,33 +59,34 @@ const CalendarProj = ({classes, small, firstDate, setFirstDate, lastDate, setLas
    
    useEffect(() => {
       if (firstDate){
-         const num = currentDays.current.find(item => item && item.classList.contains('active'));
+         const num = currentDays.current.find(item => item && item.classList.contains('prev-active'));
          if (num) {
-            num.classList.remove('active');
+            num.classList.remove('prev-active');
          }
 
          //нахожу день, который соответствует начальной выбранной дате того же месяца
          const day = currentDays.current.find(item => item && item.innerHTML == +firstDate.substr(0, 2) && currentDate.getMonth() + 1 === +firstDate.substr(3, 2));
          if (day){
-            day.classList.add('active');
+            day.classList.add('prev-active');
          }
       }
-      // if (lastDate){
-      //    const num = currentDays.current.find(item => item && item.classList.contains('active'));
-      //    if (num) {
-      //       num.classList.remove('active');
-      //    }
+      if (lastDate){
+         const num = currentDays.current.find(item => item && item.classList.contains('last-active'));
+         if (num) {
+            num.classList.remove('last-active');
+         }
 
-      //    //нахожу день, который соответствует начальной выбранной дате того же месяца
-      //    const day = currentDays.current.find(item => item && item.innerHTML == +firstDate.substr(0, 2) && currentDate.getMonth() + 1 === +firstDate.substr(3, 2));
-      //    if (day){
-      //       day.classList.add('active');
-      //    }
-      // }
-      console.log(activeDate);
+         //нахожу день, который соответствует начальной выбранной дате того же месяца
+         const day = currentDays.current.find(item => item && item.innerHTML == +lastDate.substr(0, 2) && currentDate.getMonth() + 1 === +lastDate.substr(3, 2));
+         if (day){
+            day.classList.add('last-active');
+         }
+      }
+      // console.log(activeDate, firstDate, lastDate);
+
       if (activeDate == 'next'){
          currentDays.current.forEach(el => {
-            if (el && el.innerHTML < +firstDate.substr(0, 2) && currentDate.getMonth() + 1 === +firstDate.substr(3, 2)){
+            if (el && lastDate && ((el.innerHTML < +firstDate.substr(0, 2) && currentDate.getMonth() + 1 === +firstDate.substr(3, 2)) || currentDate.getMonth() + 1 > +lastDate.substr(3, 2))) {
                el.classList.add('calendar__unavailable');
             } else if (el) {
                el.classList.remove('calendar__unavailable');
@@ -93,7 +94,9 @@ const CalendarProj = ({classes, small, firstDate, setFirstDate, lastDate, setLas
          })
       } else if (activeDate == 'prev'){
          currentDays.current.forEach(el => {
-            if (el){
+            if (el && firstDate && ((el.innerHTML > +lastDate.substr(0, 2) && currentDate.getMonth() + 1 === +lastDate.substr(3, 2)) || currentDate.getMonth() + 1 > +lastDate.substr(3, 2))){
+               el.classList.add('calendar__unavailable');
+            }else if (el) {
                el.classList.remove('calendar__unavailable');
             }
          })

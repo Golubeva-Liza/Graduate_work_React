@@ -34,4 +34,13 @@
          background-color: $red-hover;
       }
    }
+   &_line-red{
+      border: 1px solid $main-red;
+      color: $main-red;
+      background-color: #FFFFFF;
+      &:hover:not(:disabled){
+         color: #FFFFFF;
+         background-color: $main-red;
+      }
+   }
 }

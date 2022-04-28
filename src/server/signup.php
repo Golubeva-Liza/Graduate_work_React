@@ -17,9 +17,8 @@
       if($record){
          $sq12 = mysqli_query($conn, "SELECT * FROM users WHERE user_email = '{$email}'");
          if(mysqli_num_rows($sq12) > 0){
-            // $row = mysqli_fetch_assoc($sq12);
-            // $_SESSION['unique_id'] = $row['unique_id'];
-            echo "success";
+            $row = mysqli_fetch_assoc($sq12);
+            echo $row['unique_id'];
          }
       }else{
          echo "Что-то пошло не так";

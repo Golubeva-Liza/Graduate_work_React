@@ -5,7 +5,7 @@
    $email = mysqli_real_escape_string($conn, $_POST['email']);
    $phone = mysqli_real_escape_string($conn, $_POST['phone']);
    $gender = mysqli_real_escape_string($conn, $_POST['gender']);
-   $birthdayDate = mysqli_real_escape_string($conn, $_POST['birthday-date']);
+   // $birthdayDate = mysqli_real_escape_string($conn, $_POST['birthday-date']);
    $age = mysqli_real_escape_string($conn, $_POST['age']);
    $education = mysqli_real_escape_string($conn, $_POST['education']);
    $city = mysqli_real_escape_string($conn, $_POST['sity']);
@@ -15,7 +15,12 @@
    
    // echo $username . ' ' . $email . ' ' . $phone . ' ' . $gender . ' ' . $birthdayDate . ' ' . $age . ' ' . $education . ' ' . $city . ' ' . $familyStatus . ' ' . $tags;
    $phoneNum = preg_replace("/[^0-9]/", '', $phone);
-   //возраст по дате пересчитать
+   if (!$city){
+      $city = '-';
+   }
+   if (!$tags){
+      $tags = '-';
+   }
 
    // $sql = mysqli_query($conn, "SELECT * FROM users WHERE unique_id = '{$uniqueid}'");
    $record = mysqli_query($conn, "UPDATE respondents SET user_name='{$username}', user_email='{$email}', user_phone='{$phoneNum}', user_gender='{$gender}', user_age={$age}, education='{$education}', homecity='{$city}', family_status='{$familyStatus}', tags='{$tags}' WHERE unique_id={$uniqueid}");

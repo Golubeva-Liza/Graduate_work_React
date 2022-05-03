@@ -11,7 +11,7 @@ import ModalAddEditRespond from '../components/modals/ModalAddEditRespond';
 
 const RespondDBPage = () => {
    let navigate = useNavigate();
-   const {loading, setLoading, getAllRespondents} = useBookmeService();
+   const {loading, setLoading, getAllRespondents, universalRequest} = useBookmeService();
 
    useEffect(() => {
       if (!localStorage.getItem('authorized')){
@@ -32,7 +32,7 @@ const RespondDBPage = () => {
    }, []);
 
    const loadRespondents = async () => {
-      getAllRespondents().then((res) => {
+      universalRequest('getAllRespondents').then((res) => {
          setRespondents(res);
          setLoading(false);
       });

@@ -10,14 +10,18 @@ import Input from '../../input/Input';
 import ProgressBtns from '../../progressBtns/ProgressBtns';
 import Button from '../../button/Button';
 import CalendarProj from '../../calendar/CalendarProj';
+import ErrorMessage from '../../errorMessage/ErrorMessage';
 
 
 const NewProjData = ({
       setModalActive,
       step, setStep, 
-      nameInput, descrInput, 
-      projSurveyLink, projLink,
+      nameInput, 
+      descrInput, 
+      projFormLink, 
+      projLink,
       durationRadio, setDurationRadio,
+      durationField,
       firstDate, setFirstDate, 
       lastDate, setLastDate,
       setSelectedDays
@@ -25,12 +29,13 @@ const NewProjData = ({
 
    const [calendarActive, setCalendarActive] = useState(false);
    const [activeDate, setActiveDate] = useState(null);
-   const [errorMessage, setErrorMessage] = useState('');
+   const [errorMessage, setErrorMessage] = useState({});
    const [projAddress, setProjAddress] = useState();
 
    const {projectDataValidation} = useValidation();
+   const {fieldsValid} = useValidation();
    const modal = useRef();
-   const defaultTimeInterval = useMemo(() => '15:00-19:00', []);
+   const defaultTimeInterval = useMemo(() => '11:00-19:00', []);
 
 
    const choosePrevDate = () => {
@@ -57,20 +62,25 @@ const NewProjData = ({
       return arr;
    };
 
-   const toSchedule = () => {
-      // const successValid = projectDataValidation(modal.current, nameInput.value, descrInput.value, projAddress, durationRadio, firstDate, lastDate);
-      
-      // if (successValid === true){
-      //    setErrorMessage('');
-      //    console.log('всё норм');
-      //    setStep(step + 1);
-      // } else {
-      //    setErrorMessage(successValid);
-      // }
+   const validation = (e) => {
+      const validRes = fieldsValid(e.target.name, e.target.value);
+      let error = {};
+      if (validRes === true){
+         Object.assign(error, errorMessage);
+         delete error[e.target.name];
+         setErrorMessage({...error});
+      } else {
+         error[e.target.name] = validRes;
+         setErrorMessage(errorMessage => ({...errorMessage, ...error}));
+      }
+   }
 
-      // if (firstDate && lastDate){
-      //    setStep(step + 1);
-      // }
+   const toSchedule = () => {
+      //если есть ошибки в полях ввода
+      if (Object.keys(errorMessage).length !== 0){
+         return;
+      }
+
       const first = firstDate.split('.').reverse().join('-');
       const last = lastDate.split('.').reverse().join('-');
       const daysList = getDaysArray(first, last);
@@ -84,11 +94,12 @@ const NewProjData = ({
          }
          datesArray.push(obj);
       })
+      // console.log(datesArray)
       setSelectedDays(datesArray);
       setStep(step + 1);
    }
 
-   const errorDiv = errorMessage ? <div className="error-message form__error-message">{errorMessage}</div> : null;
+   // const errorDiv = errorMessage ? <div className="error-message form__error-message">{errorMessage}</div> : null;
    return (
       <div className={`modal__content modal-new-project__data`} ref={modal}>
          <div className="modal__back">
@@ -98,22 +109,37 @@ const NewProjData = ({
             <h3 className="modal__title">Создание проекта</h3>
          </div>
 
-         {errorDiv}
-
          <InputWithLabel labelClass="modal__label" labelTitle="Название проекта *">
-            <Input inputType="text" inputName="name" inputText="Введите название" value={nameInput.value} onChange={nameInput.onChange}/>
+            <Input 
+               inputType="text" 
+               inputName="projName" 
+               inputText="Введите название" 
+               value={nameInput.value} 
+               onChange={nameInput.onChange} 
+               onBlur={e => validation(e)}
+            />
+            {errorMessage.projName ? <ErrorMessage message={errorMessage.projName}/> : null}
          </InputWithLabel>
          <InputWithLabel labelClass="modal__label" labelTitle="Описание *">
-            <textarea className="input modal__textarea" type="text" name="project-descr" autoComplete="off"
-               placeholder="Опишите суть проекта или какие люди нужны для тестирования (требования)" value={descrInput.value} onChange={descrInput.onChange}
+            <textarea 
+               className="input input_textarea" 
+               type="text" 
+               name="descr" 
+               autoComplete="off"
+               placeholder="Опишите суть проекта или какие люди нужны для тестирования (требования)" 
+               value={descrInput.value} 
+               onChange={descrInput.onChange} 
+               onBlur={e => validation(e)}
             ></textarea>
+            {errorMessage.descr ? <ErrorMessage message={errorMessage.descr}/> : null}
          </InputWithLabel>
          <div className="modal__label">
             <span className="modal__input-name">Адрес проведения тестирований *</span>
             <div className="modal__some-inputs modal-new-project__address">
                <AddressSuggestions 
                   token="abbb9f71a457db183a05fe468d78b9657ca2546a" 
-                  value={projAddress} onChange={setProjAddress} 
+                  value={projAddress} 
+                  onChange={setProjAddress} 
                   minChars={6} 
                   inputProps={{name: "projAddress", placeholder: "Добавьте адрес", className: "input"}}
                   count={5} delay={500}
@@ -123,19 +149,35 @@ const NewProjData = ({
             </div>
          </div>
          <InputWithLabel labelClass="modal__label" labelTitle="Ссылка на анкету для респондентов">
-            <Input inputType="text" inputName="projSurveyLink" inputText="Ссылка на Google Form" value={projSurveyLink.value} onChange={projSurveyLink.onChange}/>
+            <Input 
+               inputType="text" 
+               inputName="projFormLink" 
+               inputText="Ссылка на Google Form" 
+               value={projFormLink.value} 
+               onChange={projFormLink.onChange}
+               onBlur={e => validation(e)}
+            />
+            {errorMessage.projFormLink ? <ErrorMessage message={errorMessage.projFormLink}/> : null}
          </InputWithLabel>
-         <InputWithLabel labelClass="modal__label" labelTitle="Ссылка для приглашения" question>
+         {/* <InputWithLabel labelClass="modal__label" labelTitle="Ссылка для приглашения" question>
             <div className="modal__some-inputs modal-new-project__link">
                <span className="modal__input-name">bookme.ru/maria/</span>
                <Input inputType="text" inputName="projLink" inputText={translit(nameInput.value)} value={projLink.value} onChange={projLink.onChange}/>
             </div>
-         </InputWithLabel>
+         </InputWithLabel> */}
          <InputWithLabel labelClass="modal__label" labelTitle="Длительность тестирования *" question>
             <InputBtns 
                values={['30 минут', '45 минут', '60 минут', '90 минут', 'Другое']}
                radioValue={durationRadio} setRadioValue={setDurationRadio}
             />
+            {/* <Input 
+               inputClass="modal-new-project__duration"
+               inputType="text" 
+               inputName="duration" 
+               inputText={'Укажите длительность тестирования'} 
+               value={durationField.value} 
+               onChange={durationField.onChange}
+            /> */}
          </InputWithLabel>
          <div className="modal__label modal-new-project__period">
             <span className="modal__input-name">Период тестирования *</span>
@@ -166,7 +208,21 @@ const NewProjData = ({
 
          <div className="modal__btns modal__steps">
             <ProgressBtns steps={2} activeStep={1}/>
-            <Button buttonClass="modal__btn modal__ready" onClick={toSchedule}>Выбор дат и времени</Button>
+            <Button 
+               buttonClass="modal__btn modal__ready" 
+               onClick={toSchedule}
+               disabled={
+                  nameInput.value !== '' 
+                  && descrInput.value !== '' 
+                  && projAddress !== '' 
+                  && projFormLink.value !== ''
+                  && durationRadio !== null
+                  && firstDate !== null
+                  && lastDate !== null
+                  ? false : true}
+            >
+               Выбор дат и времени
+            </Button>
          </div>
       </div>
    )

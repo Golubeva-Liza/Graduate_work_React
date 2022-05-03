@@ -25,14 +25,14 @@ const RespondDb = ({setModalActive, respondents, setRespondents, setEditRespond,
    const popup = useRef(); 
    const table = useRef(); 
 
-   const {removeRespondent} = useBookmeService();
+   const {universalRequest} = useBookmeService();
 
 
    useEffect(() => {
       if (removedRespond || removedRespond === 0){
          const respondId = respondents[removedRespond][1];
          setRemovedRespond(null);
-         removeRespondent(respondId)
+         universalRequest('removeRespondent', respondId)
             .then(onRespondentRemoved);
       }
    }, [removedRespond])

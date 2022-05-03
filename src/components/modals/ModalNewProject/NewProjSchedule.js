@@ -10,8 +10,8 @@ const NewProjSchedule = ({
       popupCopyActive, setPopupCopyActive, 
       firstDate, lastDate, 
       setModalTimeActive,
-      setDate, setTime,
-      selectedDays, setSelectedDays
+      setDate,
+      selectedDays
    }) => {
 
    return (
@@ -40,9 +40,8 @@ const NewProjSchedule = ({
             <CalendarCreateSchedule classes="modal-new-project__schedule-calendar"
                step={step} firstDate={firstDate} lastDate={lastDate}
                setModalTimeActive={setModalTimeActive}
-               setDate={setDate} setTime={setTime}
+               setDate={setDate}
                selectedDays={selectedDays}
-               setSelectedDays={setSelectedDays}
             />
          : null}
          

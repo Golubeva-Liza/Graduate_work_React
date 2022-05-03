@@ -231,6 +231,13 @@
    &__calendar.active{
       display: block;
    }
+   &__duration{
+      
+   }
+   &__loader{
+      display: flex;
+      justify-content: center;
+   }
 }
 .modal-customer-schedule{
    .modal__content{
@@ -336,6 +343,7 @@
    }
    &__apply-btns{
       display: flex;
+      // justify-content: space-between;
       justify-content: flex-end;
       button{
          padding: 0 16px;
@@ -355,7 +363,7 @@
       }
    }
    &__radio{
-      margin-bottom: 24px;
+      margin-bottom: 32px;
       label:not(:last-child){
          margin-bottom: 8px;
       }

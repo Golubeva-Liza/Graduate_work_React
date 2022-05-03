@@ -35,6 +35,12 @@
       position: absolute;
       top: 0;
       right: 8px;
+      svg{
+         fill: $main-grey;
+      }
+      &:hover svg {
+         fill: rgba($main-color, 0.4);
+     }
    }
    &__popup{
       top: 208px;

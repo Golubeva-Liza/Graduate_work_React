@@ -16,9 +16,9 @@ const ModalSetTime = ({setModalActive, date, setDate, selectedDays, setSelectedD
    const [inputFields, setInputFields] = useState([{firstTime: '', lastTime: ''}]);  
 
    useEffect(() => {
-      console.log(selectedDays);
       if (date){
          const day = selectedDays.find(item => item.date == date);
+         // console.log(selectedDays, date);
          const obj = day.time.map(item => 
             ({firstTime: item.split('-')[0], lastTime: item.split('-')[1]})
          )
@@ -68,13 +68,38 @@ const ModalSetTime = ({setModalActive, date, setDate, selectedDays, setSelectedD
 
 
    const applyTime = () => {
-      const id = selectedDays.findIndex(item => item.date == date);
-      const newSelectedDay = [{date: selectedDays[id].date, time: [...selectedDays[id].time]}];
-      newSelectedDay[0].date = '21212';
-      newSelectedDay[0].time = inputFields;
-      console.log(`изначально`, selectedDays[id]);
-      console.log(`в конце`, newSelectedDay[0]);
-      // setSelectedDays
+      const withoutEmpty = inputFields.filter(item => item.firstTime !== '' && item.lastTime !== '' );
+      const intervals = withoutEmpty.map(item => item.firstTime ? `${item.firstTime}-${item.lastTime}` : null);
+
+      if (radioTime == 'current' || checkWeekdays.length == 0){
+         //обновление интервалов выбранного дня в объекте selectedDays
+
+         const id = selectedDays.findIndex(item => item.date == date);
+         const newSelectedDay = {date: selectedDays[id].date, time: [...selectedDays[id].time]};
+         newSelectedDay.time = intervals;
+
+         const updatedDays = [...selectedDays.slice(0, id), newSelectedDay, ...selectedDays.slice(id + 1)];
+         setSelectedDays(updatedDays);
+
+      } else if (radioTime == 'weekdays'){
+         //применяем интервалы времени ко всем дням, которые попадают под условие checkWeekdays (выбранный день недели)
+
+         const newSelectedDays = [...selectedDays];
+         const weekdays = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+
+         newSelectedDays.forEach(date => {
+            checkWeekdays.forEach(weekday => {
+               if (new Date(date.date).getDay() == weekdays.findIndex(item => item == weekday)){
+                  date.time = intervals;
+               }
+            })
+         });
+
+         setSelectedDays(newSelectedDays);
+      }
+
+      setModalActive(false);
+      closeModal();
    }
 
    return (
@@ -146,14 +171,15 @@ const ModalSetTime = ({setModalActive, date, setDate, selectedDays, setSelectedD
                   firstCheckAll
                   parentClass="modal-set-time__weekdays-list"
                   setCheckValues={setCheckWeekdays}
+                  // checkedValue={}
                />
             </div>
          ) : null}
          
          
          <div className="modal-set-time__apply-btns">
-            {/* <Button onClick={null}>Применить к 24 декабря</Button>
-            <Button onClick={null}>Выбрать дни недели</Button> */}
+            {/* <Button onClick={null}>Применить к 24 декабря</Button>*/}
+            {/* <Button linearRed onClick={null}>Удалить из расписания</Button>  */}
             <Button onClick={applyTime}>Сохранить</Button>
          </div>
          

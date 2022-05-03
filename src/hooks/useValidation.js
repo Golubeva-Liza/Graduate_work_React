@@ -11,6 +11,11 @@ const useValidation = () => {
       return /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
    }, []);
 
+   const regForLink = useMemo(() => {
+      return /(https?:\/\/forms\.gle\/([-a-zA-Z0-9()@:%_\+.~#?&\\=]*)|https?:\/\/docs\.google\.com\/forms\/([-a-zA-Z0-9()@:%_\+.~#?&\\=]*))/;
+      // return /(https:\/\/docs.google.com\forms\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\\=]*)| https?:\/\/forms.gle\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\\=]*))/gi;
+   }, []);
+
 
    const registrationValid = (name, email, password) => {
       if (name.length < 3 || name.length >= 30){
@@ -55,6 +60,16 @@ const useValidation = () => {
 
          case 'age':
             return value > 100 ? 'Укажите корректный возраст' : true;
+
+         case 'projName':
+            return value.length < 3 || value.length >= 60 ? 'Название проекта должно быть длиной от 3 до 60 символов' : true;
+
+         case 'descr':
+            return value.length < 10 || value.length >= 300 ? 'Описание должно быть длиной от 10 до 300 символов' : true;
+            
+         case 'projFormLink':
+            return !regForLink.test(String(value)) ? 'Неккоректная ссылка для Google формы' : true;
+
          default:
             break;
       }

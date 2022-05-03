@@ -10,12 +10,12 @@ const RespondPage = lazy(() => import('../pages/RespondPage'));
 
 
 const App = () => {
-   const {getLoggedUser} = useBookmeService();
+   const {universalRequest} = useBookmeService();
    const [user, setUser] = useState('');
 
    useEffect(() => {
       if (localStorage.getItem('authorized')){
-         getLoggedUser(localStorage.getItem('authorized'))
+         universalRequest('getLoggedUser', localStorage.getItem('authorized'))
             .then(res => {
                setUser(res[0]);
             })

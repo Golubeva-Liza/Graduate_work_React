@@ -36,7 +36,7 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
    const [educationValue, setEducationValue] = useState(null);
    const [respondId, setRespondId] = useState('');
 
-   const {addRespondent, editRespondent} = useBookmeService();
+   const {universalRequest} = useBookmeService();
    const {respondDbValidation, fieldsValid} = useValidation();
    const {educationValues, familyStatusValues} = selectValues();
 
@@ -102,10 +102,10 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
 
       if (editRespond == null){
          //отправка формы добавления
-         addRespondent(formData).then(onRespondentLoaded);
+         universalRequest('addRespondent', formData).then(onRespondentLoaded);
       } else {
          //отправка формы редактирования
-         editRespondent(formData).then(onRespondentLoaded);
+         universalRequest('editRespondent', formData).then(onRespondentLoaded);
       }
    }
 

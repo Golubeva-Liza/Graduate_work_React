@@ -17,7 +17,7 @@ const LogForm = ({toggleForm}) => {
    const form = useRef();
    const [errorMessage, setErrorMessage] = useState('');
 
-   const {login} = useBookmeService();
+   const {universalRequest} = useBookmeService();
    const navigate = useNavigate();
    const {loginValid} = useValidation();
    
@@ -28,7 +28,7 @@ const LogForm = ({toggleForm}) => {
       if (successValid === true){
          setErrorMessage('');
          const formData = new FormData(form.current);
-         login(formData).then(onUserLogin);
+         universalRequest('login', formData).then(onUserLogin);
 
       } else {
          setErrorMessage(successValid);

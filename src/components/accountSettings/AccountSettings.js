@@ -13,7 +13,7 @@ import './accountSettings.scss';
 
 const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setUser}) => {
    let navigate = useNavigate();
-   const { updateUserData } = useBookmeService();
+   const { universalRequest } = useBookmeService();
    
    const userName = useInput('');//значение
    const nameInput = useRef();//ссылка
@@ -61,7 +61,7 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
       const form = new FormData(nameForm.current);
 
       form.append("id", user[1]);
-      updateUserData(form).then(res => {
+      universalRequest('updateUserData', form).then(res => {
          if (res === "success"){
             const updatedUser = [...user.slice(0, 2), userName.value, ...user.slice(3)];
             setUser(updatedUser);
@@ -83,7 +83,7 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
       const form = new FormData(emailForm.current);
 
       form.append("id", user[1]);
-      updateUserData(form).then(res => {
+      universalRequest('updateUserData', form).then(res => {
          if (res === "success"){
             const updatedUser = [...user.slice(0, 3), userEmail.value, ...user.slice(4)];
             setUser(updatedUser);
@@ -111,7 +111,7 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
          formData.append("id", user[1]);
          formData.append("removePhoto", true);
 
-         updateUserData(formData).then(res => {
+         universalRequest('updateUserData', formData).then(res => {
             if (res == 'success'){
                console.log('success');
                const updatedUser = [...user.slice(0, 4), ''];

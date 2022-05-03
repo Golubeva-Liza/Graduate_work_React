@@ -18,7 +18,7 @@ const RegForm = ({toggleForm}) => {
    const form = useRef(null);
    const [errorMessage, setErrorMessage] = useState('');
 
-   const {registration} = useBookmeService();
+   const {universalRequest} = useBookmeService();
    const {registrationValid} = useValidation();
    const navigate = useNavigate();
 
@@ -29,7 +29,7 @@ const RegForm = ({toggleForm}) => {
       if (successValid === true){
          setErrorMessage('');
          const formData = new FormData(form.current);
-         registration(formData).then(onUserRegistered);
+         universalRequest('registration', formData).then(onUserRegistered);
 
       } else {
          setErrorMessage(successValid);

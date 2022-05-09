@@ -1,12 +1,10 @@
 import './otherModals.scss';
 import { useState, useMemo, useEffect } from 'react';
-import useBookmeService from '../../services/BookmeService';
 
 import { CalendarArrowSmall } from '../../resources';
 import InputMask from 'react-input-mask/lib/react-input-mask.development';
 import Input from '../input/Input';
 import Button from '../button/Button';
-import Select from '../select/Select';
 import { Delete } from '../../resources';
 import CheckboxList from '../checkboxList/CheckboxList';
 
@@ -19,7 +17,7 @@ const ModalSetTime = ({setModalActive, date, setDate, selectedDays, setSelectedD
       if (date){
          const day = selectedDays.find(item => item.date == date);
          // console.log(selectedDays, date);
-         const obj = day.time.map(item => 
+         const obj = day.intervals.map(item => 
             ({firstTime: item.split('-')[0], lastTime: item.split('-')[1]})
          )
          setInputFields(obj);
@@ -75,8 +73,8 @@ const ModalSetTime = ({setModalActive, date, setDate, selectedDays, setSelectedD
          //обновление интервалов выбранного дня в объекте selectedDays
 
          const id = selectedDays.findIndex(item => item.date == date);
-         const newSelectedDay = {date: selectedDays[id].date, time: [...selectedDays[id].time]};
-         newSelectedDay.time = intervals;
+         const newSelectedDay = {date: selectedDays[id].date, intervals: [...selectedDays[id].intervals]};
+         newSelectedDay.intervals = intervals;
 
          const updatedDays = [...selectedDays.slice(0, id), newSelectedDay, ...selectedDays.slice(id + 1)];
          setSelectedDays(updatedDays);
@@ -90,7 +88,7 @@ const ModalSetTime = ({setModalActive, date, setDate, selectedDays, setSelectedD
          newSelectedDays.forEach(date => {
             checkWeekdays.forEach(weekday => {
                if (new Date(date.date).getDay() == weekdays.findIndex(item => item == weekday)){
-                  date.time = intervals;
+                  date.intervals = intervals;
                }
             })
          });
@@ -116,11 +114,19 @@ const ModalSetTime = ({setModalActive, date, setDate, selectedDays, setSelectedD
             {inputFields.map((field, index) => (
                <div className="modal-set-time__interval" key={index}>
                   <span>С</span>
-                  <InputMask mask="99:99" value={field.firstTime} onChange={e => changeInput(e, index)}>
+                  <InputMask 
+                     mask={[/[0-2]/, field.firstTime[0]==='2' ? /[0-3]/ : /[0-9]/, ":", /[0-5]/, /[0-9]/]} 
+                     value={field.firstTime} 
+                     onChange={e => changeInput(e, index)}
+                  >
                      <Input inputType="num" inputName="firstTime"/>
                   </InputMask>
                   <span>До</span>
-                  <InputMask mask="99:99" value={field.lastTime} onChange={e => changeInput(e, index)}>
+                  <InputMask 
+                     mask={[/[0-2]/, field.lastTime[0]==='2' ? /[0-3]/ : /[0-9]/, ":", /[0-5]/, /[0-9]/]} 
+                     value={field.lastTime} 
+                     onChange={e => changeInput(e, index)}
+                  >
                      <Input inputType="num" inputName="lastTime"/>
                   </InputMask>
 
@@ -178,8 +184,6 @@ const ModalSetTime = ({setModalActive, date, setDate, selectedDays, setSelectedD
          
          
          <div className="modal-set-time__apply-btns">
-            {/* <Button onClick={null}>Применить к 24 декабря</Button>*/}
-            {/* <Button linearRed onClick={null}>Удалить из расписания</Button>  */}
             <Button onClick={applyTime}>Сохранить</Button>
          </div>
          

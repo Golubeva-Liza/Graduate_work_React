@@ -54,6 +54,11 @@ const useBookmeService = () => {
             url += 'get-project.php';
             break;
 
+         case 'getProjectName':
+            url += 'get-project-name.php';
+            answerType = 'text';
+            break;
+
          default: break;
       }
       

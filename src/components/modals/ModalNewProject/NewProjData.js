@@ -1,7 +1,8 @@
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import {translit} from '../../../hooks/translit';
 import useValidation from '../../../hooks/useValidation';
 import { AddressSuggestions } from 'react-dadata';
+import useBookmeService from '../../../services/BookmeService';
 
 import { CalendarArrowSmall } from '../../../resources';
 import InputWithLabel from '../../inputWithLabel/InputWithLabel';
@@ -9,50 +10,66 @@ import InputBtns from '../../inputBtns/InputBtns';
 import Input from '../../input/Input';
 import ProgressBtns from '../../progressBtns/ProgressBtns';
 import Button from '../../button/Button';
-import CalendarProj from '../../calendar/CalendarProj';
 import ErrorMessage from '../../errorMessage/ErrorMessage';
 
+import Calendar from 'react-calendar';
 
 const NewProjData = ({
+      durationValues,
       setModalActive,
       step, setStep, 
       nameInput, 
-      descrInput, 
+      descrInput,
+      addressInput, setAddressInput,
       projFormLink, 
       projLink,
       durationRadio, setDurationRadio,
       durationField,
-      firstDate, setFirstDate, 
-      lastDate, setLastDate,
-      setSelectedDays
+      calendarValues, setCalendarValues,
+      selectedDays, setSelectedDays,
+      clearFields,
+      isProjectEdit,
+      errorMessage, setErrorMessage
    }) => {
 
-   const [calendarActive, setCalendarActive] = useState(false);
-   const [activeDate, setActiveDate] = useState(null);
-   const [errorMessage, setErrorMessage] = useState({});
-   const [projAddress, setProjAddress] = useState();
 
-   const {projectDataValidation} = useValidation();
    const {fieldsValid} = useValidation();
    const modal = useRef();
    const defaultTimeInterval = useMemo(() => '11:00-19:00', []);
 
+   const {universalRequest} = useBookmeService();
+   
+   const [calendarActive, setCalendarActive] = useState(false);
 
-   const choosePrevDate = () => {
-      if(!calendarActive){
-         setActiveDate('prev');
-      }else{
-         setActiveDate(null);
+
+   useEffect(() => {
+      if (durationRadio !== 'Другое'){
+         durationField.removeValue();
+         let error = {};
+         Object.assign(error, errorMessage);
+         delete error['duration'];
+         setErrorMessage({...error});
       }
+   }, [durationRadio])
+
+
+   useEffect(() => {
+      if (calendarValues && calendarValues.length == 2){
+         // console.log(calendarValues);
+         setCalendarActive(false);
+      }
+   }, [calendarValues])
+
+
+   const chooseDate = () => {
       setCalendarActive(!calendarActive);
    }
-   const chooseNextDate = () => {
-      if(!calendarActive){
-         setActiveDate('next');
-      }else{
-         setActiveDate(null);
-      }
-      setCalendarActive(!calendarActive);
+
+   const transformDate = (date) => {
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
+      const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+      return `${day}.${month}.${year}`;
    }
 
    const getDaysArray = function(start, end) {
@@ -80,33 +97,70 @@ const NewProjData = ({
       if (Object.keys(errorMessage).length !== 0){
          return;
       }
+      if (isProjectEdit === false){
+         universalRequest('getProjectName', nameInput.value).then(res => {
+            if (res == 'success'){
+               onCheckedProject();
+            } else{
+               setErrorMessage(errorMessage => ({...errorMessage, ...{projName: res}}));
+            }
+         });
+      } else {
+         onCheckedProject();
+      }
+   }
 
-      const first = firstDate.split('.').reverse().join('-');
-      const last = lastDate.split('.').reverse().join('-');
+   const onCheckedProject = () => {
+      const first = transformDate(calendarValues[0]).split('.').reverse().join('-');
+      const last = transformDate(calendarValues[1]).split('.').reverse().join('-');
       const daysList = getDaysArray(first, last);
       const newd = daysList.map((date) => date.toISOString().slice(0,10));
 
       let datesArray = [];
-      newd.forEach(el => {
-         let obj = {
-            date: el,
-            time: [defaultTimeInterval]
-         }
-         datesArray.push(obj);
-      })
-      // console.log(datesArray)
+
+      //формирование дат и интервалов исходя из выбранного периода. если уже есть selectedDays, то оставляем те даты, которые подходят в новый выбранный период
+      if (selectedDays == null){
+         newd.forEach(el => {
+            let obj = {
+               date: el,
+               intervals: [defaultTimeInterval]
+            }
+            datesArray.push(obj);
+         })
+         
+      } else {
+         newd.forEach(el => {
+            const isElSelected = selectedDays.find(date => date.date === el);
+
+            if (isElSelected){
+               datesArray.push(isElSelected);
+            } else {
+               datesArray.push({
+                  date: el,
+                  intervals: [defaultTimeInterval]
+               });
+            }
+         })
+      }
+
       setSelectedDays(datesArray);
       setStep(step + 1);
    }
 
-   // const errorDiv = errorMessage ? <div className="error-message form__error-message">{errorMessage}</div> : null;
+   const closeModal = () => {
+      setModalActive(false);
+      clearFields();
+      setCalendarActive(false);
+   }
+
+
    return (
       <div className={`modal__content modal-new-project__data`} ref={modal}>
          <div className="modal__back">
-            <button className="button-reset modal__back-button" type="button" onClick={() => setModalActive(false)}>
+            <button className="button-reset modal__back-button" type="button" onClick={closeModal}>
                <CalendarArrowSmall/>
             </button>
-            <h3 className="modal__title">Создание проекта</h3>
+            <h3 className="modal__title">{isProjectEdit == true ? 'Редактирование проекта' : 'Создание проекта'}</h3>
          </div>
 
          <InputWithLabel labelClass="modal__label" labelTitle="Название проекта *">
@@ -136,17 +190,25 @@ const NewProjData = ({
          <div className="modal__label">
             <span className="modal__input-name">Адрес проведения тестирований *</span>
             <div className="modal__some-inputs modal-new-project__address">
-               <AddressSuggestions 
+               {/* <AddressSuggestions 
                   token="abbb9f71a457db183a05fe468d78b9657ca2546a" 
-                  value={projAddress} 
-                  onChange={setProjAddress} 
+                  value={addressInput} 
+                  onChange={setAddressInput} 
                   minChars={6} 
-                  inputProps={{name: "projAddress", placeholder: "Добавьте адрес", className: "input"}}
+                  inputProps={{name: "projAddress", placeholder: "Добавьте адрес", className: "input", onBlur: changeAddress}}
                   count={5} delay={500}
+               /> */}
+               <Input 
+                  inputType="text" 
+                  inputName="projAddress" 
+                  inputText="Добавьте адрес" 
+                  value={addressInput} 
+                  onChange={e => setAddressInput(e.target.value)}
+                  onBlur={e => validation(e)}
                />
-               {/* <Input inputType="text" inputName="projAddress" inputText="Добавьте адрес" value={addressInput.value} onChange={addressInput.onChange}/> */}
                <Button linear>Выбрать сохраненный</Button>
             </div>
+            {errorMessage.projAddress ? <ErrorMessage message={errorMessage.projAddress}/> : null}
          </div>
          <InputWithLabel labelClass="modal__label" labelTitle="Ссылка на анкету для респондентов">
             <Input 
@@ -165,46 +227,59 @@ const NewProjData = ({
                <Input inputType="text" inputName="projLink" inputText={translit(nameInput.value)} value={projLink.value} onChange={projLink.onChange}/>
             </div>
          </InputWithLabel> */}
-         <InputWithLabel labelClass="modal__label" labelTitle="Длительность тестирования *" question>
+
+         <div className="modal__label">
+            <span className="modal__input-name">Длительность тестирования *</span>
             <InputBtns 
-               values={['30 минут', '45 минут', '60 минут', '90 минут', 'Другое']}
+               values={durationValues}
                radioValue={durationRadio} setRadioValue={setDurationRadio}
             />
-            {/* <Input 
-               inputClass="modal-new-project__duration"
-               inputType="text" 
-               inputName="duration" 
-               inputText={'Укажите длительность тестирования'} 
-               value={durationField.value} 
-               onChange={durationField.onChange}
-            /> */}
-         </InputWithLabel>
+            {durationRadio == 'Другое' ? (
+               <Input 
+                  inputClass="modal-new-project__duration"
+                  inputType="text" 
+                  inputName="duration" 
+                  inputText={'Укажите длительность тестирования'} 
+                  value={durationField.value} 
+                  onChange={durationField.onChange}
+                  onBlur={e => validation(e)}
+               />
+            ) : null}
+            {errorMessage.duration ? <ErrorMessage message={errorMessage.duration}/> : null}
+         </div>
+         
+
          <div className="modal__label modal-new-project__period">
             <span className="modal__input-name">Период тестирования *</span>
 
             <div className="modal-new-project__period-content">
                <div className="modal-new-project__period-time">
                   С 
-                  <button className="button-reset" type="button" onClick={choosePrevDate}>{firstDate ? firstDate : 'выбрать дату'}</button>
+                  <button className="button-reset" type="button" onClick={chooseDate}>
+                     {calendarValues && calendarValues.length == 2 
+                     ? transformDate(calendarValues[0])
+                     : 'выбрать дату'}
+                  </button>
                   по 
-                  <button className="button-reset" type="button" onClick={chooseNextDate} disabled={firstDate ? false : true}>{lastDate ? lastDate : 'выбрать дату'}</button>
-                  <CalendarProj classes={`modal-new-project__calendar ${calendarActive ? 'active' : ''}`} small
-                     firstDate={firstDate}
-                     setFirstDate={setFirstDate} setCalendarActive={setCalendarActive}
-                     lastDate={lastDate} setLastDate={setLastDate} 
-                     activeDate={activeDate} setActiveDate={setActiveDate}
-                  /> 
+                  <button className="button-reset" type="button" onClick={chooseDate}>
+                     {calendarValues && calendarValues.length == 2 
+                     ? transformDate(calendarValues[1])
+                     : 'выбрать дату'}
+                  </button>
+                  
                </div>
-
-               {/* <div className="modal-new-project__choose-time">
-                  <button className="button-reset" type="button">Выбрать даты</button>
-                  <CalendarProj classes="modal-new-project__calendar" small
-                     setFirstDate={setFirstDate}
-                     setLastDate={setLastDate}
-                  />
-               </div> */}
             </div>
+            <Calendar 
+               value={calendarValues} 
+               onChange={setCalendarValues}
+               selectRange={true}
+               className={`react-calendar__duration ${calendarActive ? 'active' : ''}`}
+               minDate={new Date()}
+               prev2Label={null} next2Label={null}
+               prevLabel={<CalendarArrowSmall/>} nextLabel={<CalendarArrowSmall/>}
+            />
          </div>
+
 
          <div className="modal__btns modal__steps">
             <ProgressBtns steps={2} activeStep={1}/>
@@ -214,11 +289,9 @@ const NewProjData = ({
                disabled={
                   nameInput.value !== '' 
                   && descrInput.value !== '' 
-                  && projAddress !== '' 
-                  && projFormLink.value !== ''
-                  && durationRadio !== null
-                  && firstDate !== null
-                  && lastDate !== null
+                  && addressInput !== '' 
+                  && (durationRadio !== null && (durationRadio !== 'Другое' || durationField.value.length > 4))
+                  && calendarValues && calendarValues.length == 2
                   ? false : true}
             >
                Выбор дат и времени

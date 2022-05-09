@@ -1,5 +1,6 @@
 .moder-calendar{
    padding: 70px 40px;
+   min-width: 630px;
    width: 730px;
    border-right: 1px solid #979797;
    position: relative;
@@ -8,5 +9,10 @@
       position: absolute;
       bottom: 60px;
       right: 40px;
+   }
+   .calendar{
+      &__date:not(.calendar__prev-date):not(.calendar__next-date){
+         padding-top: 1px;
+      }
    }
 }

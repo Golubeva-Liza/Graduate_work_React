@@ -8,48 +8,95 @@ import ProgressBtns from '../../progressBtns/ProgressBtns';
 import Button from '../../button/Button';
 import Loader from '../../loader/Loader';
 
-const NewProjReady = ({step, setStep, name, descr, address, formLink, linkForRespond, duration, selectedDays, form}) => {
+const NewProjReady = ({
+      setModalActive, 
+      step, setStep, 
+      name, 
+      descr, 
+      address, 
+      formLink, 
+      duration, 
+      durationField, 
+      selectedDays, 
+      setProjects,
+      clearFields,
+      isProjectEdit,
+      activeProjectId,
+      projects
+   }) => {
    
    const {universalRequest, loading, setLoading} = useBookmeService();
    const [error, setError] = useState(null);
 
    useEffect(() => {
+      setLoading(true);
+
       const obj = {
-         projName: name, 
+         projectName: name, 
          descr,
          address,
-         formLink,
-         duration,
-         selectedDays
+         linkToForm: formLink,
+         linkForRespond: 'projects/',
+         linkForCustomer: '',
+         duration: duration == 'Другое' ? durationField : duration,
+         dates: selectedDays,
+         isProjectEdit,
+         uniqueId: activeProjectId
       };
-      
-      universalRequest('addProject', JSON.stringify(obj)).then(onProjectLoaded);
-      // console.log(name, descr, address, formLink, linkForRespond, duration, selectedDays);
-      //ссылка для респондентов, ссылка для заказчиков
+
+      universalRequest('addProject', JSON.stringify(obj)).then((res) => onProjectLoaded(res, obj));
    }, [])
 
-   const onProjectLoaded = (res) => {
-      console.log(res);
-      setLoading(false);
+   const onProjectLoaded = (res, newProject) => {
+      if (res !== 'error'){
+         delete newProject[isProjectEdit];
+         newProject['linkForRespond'] += res;
+
+         if (isProjectEdit){
+            console.log(newProject);
+            const projectIndex = projects.findIndex(el => el.uniqueId == newProject.uniqueId);
+            const updatedProjects = [...projects.slice(0, projectIndex), newProject, ...projects.slice(projectIndex + 1)];
+            setProjects(updatedProjects);
+         } else {
+            newProject['uniqueId'] = res;
+            setProjects(projects => [...projects, newProject]);
+         }
+        
+         setLoading(false);
+      }
+   }
+
+   const closeModal = () => {
+      setModalActive(false);
+      setStep(1);
+      clearFields();
    }
 
    return (
       <div className={`modal__content modal-new-project__ready}`}>
-         <div className="modal__back">
-            <button className="button-reset modal__back-button" type="button" onClick={() => setStep(step - 1)}>
-               <CalendarArrowSmall/>
-            </button>
-            <h3 className="modal__title">Создание проекта</h3>
-         </div>
-
-         {loading ? <Loader classes="modal-new-project__loader"/> : null}
+         {error ? (
+            <div className="modal__back">
+               <button className="button-reset modal__back-button" type="button" onClick={() => setStep(step - 1)}>
+                  <CalendarArrowSmall/>
+               </button>
+               <h3 className="modal__title">{isProjectEdit == true ? 'Редактирование проекта' : 'Создание проекта'}</h3>
+            </div>
+         ) : null}
          
-         {/* <span className="modal__input-name modal-new-project__project-name">Проект <span>Расписание1</span> успешно создан!</span>
-         <button href="#" className="button-reset modal-new-project__project-link">https://book.me/maria/raspisanie1</button> */}
+         {loading ? <Loader classes="modal-new-project__loader"/> : (
+            <>
+               <span className="modal__input-name modal-new-project__project-name">
+                  Проект <span>{name}</span> успешно {isProjectEdit == true ? 'перезаписан' : 'создан'}!
+               </span>
+               <button className="button-reset modal-new-project__project-link">
+                  {projects.find(el => el.projectName == name).linkForRespond}
+               </button>
+            </>
+         )}
 
          <div className="modal__btns modal__steps">
             <ProgressBtns steps={2} activeStep={3}/>
-            <Button buttonClass="modal__btn modal__ready">Готово</Button>
+            <Button buttonClass="modal__btn modal__ready" onClick={closeModal}>Готово</Button>
          </div>
       </div>
    )

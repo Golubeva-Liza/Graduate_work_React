@@ -8,13 +8,17 @@ const useValidation = () => {
    }
 
    const regForEmail = useMemo(() => {
-      return /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+      return /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
    }, []);
 
    const regForLink = useMemo(() => {
       return /(https?:\/\/forms\.gle\/([-a-zA-Z0-9()@:%_\+.~#?&\\=]*)|https?:\/\/docs\.google\.com\/forms\/([-a-zA-Z0-9()@:%_\+.~#?&\\=]*))/;
       // return /(https:\/\/docs.google.com\forms\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\\=]*)| https?:\/\/forms.gle\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\\=]*))/gi;
    }, []);
+
+   const sqlInjection = useMemo(() => {
+      return /((\%3D)|(=))|((\%27)|(\'))|(\-\-)|(\%3B)|(;)|(\*)/i;
+   })
 
 
    const registrationValid = (name, email, password) => {
@@ -43,8 +47,10 @@ const useValidation = () => {
    const fieldsValid = (field, value) => {
       switch(field) {
          case 'name':
-            return value.length < 3 || value.length >= 30 ? 'Имя пользователя должно быть длиной от 3 до 30 символов' : true;
-
+            if (value.length < 3 || value.length >= 30){
+               return 'Имя пользователя должно быть длиной от 3 до 30 символов';
+            } else {return true}
+            
          case 'email':
             return !regForEmail.test(String(value).toLocaleLowerCase()) ? 'Введите корректный почтовый адрес' : true;
 
@@ -62,17 +68,32 @@ const useValidation = () => {
             return value > 100 ? 'Укажите корректный возраст' : true;
 
          case 'projName':
-            return value.length < 3 || value.length >= 60 ? 'Название проекта должно быть длиной от 3 до 60 символов' : true;
+            if (value.length < 3 || value.length >= 60){
+               return 'Название проекта должно быть длиной от 3 до 60 символов';
+            } else if (sqlInjection.test(String(value))){
+               return 'Поле ввода содержит недопустимые символы';
+            } else {return true}
 
          case 'descr':
-            return value.length < 10 || value.length >= 300 ? 'Описание должно быть длиной от 10 до 300 символов' : true;
-            
+            if (value.length < 10 || value.length >= 400){
+               return 'Описание должно быть длиной от 10 до 400 символов';
+            } else if (sqlInjection.test(String(value))){
+               return 'Поле ввода содержит недопустимые символы';
+            } else {return true}
+         
+         case 'projAddress':
+            return sqlInjection.test(String(value)) ? 'Поле ввода содержит недопустимые символы' : true;
+         
+         case 'duration':
+            return sqlInjection.test(String(value)) ? 'Поле ввода содержит недопустимые символы' : true;
+         
          case 'projFormLink':
-            return !regForLink.test(String(value)) ? 'Неккоректная ссылка для Google формы' : true;
+            return !regForLink.test(String(value)) && value.length > 0 ? 'Неккоректная ссылка для Google формы' : true;
 
          default:
             break;
       }
+      // && regForLink.length > 0
    }
 
    // const respondDbValidation = (modal, name, email, phone, date, age) => {

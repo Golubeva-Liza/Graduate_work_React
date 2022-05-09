@@ -11,7 +11,8 @@ const NewProjSchedule = ({
       firstDate, lastDate, 
       setModalTimeActive,
       setDate,
-      selectedDays
+      selectedDays,
+      isProjectEdit
    }) => {
 
    return (
@@ -21,7 +22,7 @@ const NewProjSchedule = ({
                <button className="button-reset modal__back-button" type="button" onClick={() => setStep(step - 1)}>
                   <CalendarArrowSmall/>
                </button>
-               <h3 className="modal__title">Создание проекта</h3>
+               <h3 className="modal__title">{isProjectEdit == true ? 'Редактирование проекта' : 'Создание проекта'}</h3>
             </div>
             <Button linear onClick={() => setPopupCopyActive(!popupCopyActive)}>Скопировать время из</Button>
 

@@ -1,12 +1,17 @@
 import './moderCalendar.scss';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import Calendar from '../calendar/Calendar';
+import CalendarShowSchedule from '../calendar/CalendarShowSchedule';
 
-const ModerCalendar = () => {
+const ModerCalendar = ({projects, projectActive}) => {
 
    return (
       <section className="moder-calendar">
-         <Calendar classes="moder-calendar__calendar"/>
+         <CalendarShowSchedule 
+            className="" 
+            projects={projects}
+            projectActive={projectActive} 
+         />
          
          <div className="moder-calendar__hint"></div>
          <div className="moder-calendar__hint"></div>

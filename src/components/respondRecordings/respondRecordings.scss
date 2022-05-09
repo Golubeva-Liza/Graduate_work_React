@@ -1,6 +1,7 @@
 @import '../../styles/variables';
 .respond-recordings{
    padding: 70px 35px;
+   min-width: 380px;
    height: 100vh;
    flex: 1;
    &__title{

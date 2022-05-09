@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
 import ModerCalendar from '../components/moderCalendar/ModerCalendar';
@@ -24,14 +24,15 @@ const ProjectsPage = () => {
    const [modalProjectActive, setModalProjectActive] = useState(false);
    const [modalTimeActive, setModalTimeActive] = useState(false);
 
-   const [selectedDays, setSelectedDays] = useState();//список всех выбранных дат с интервалами времени
+   const [selectedDays, setSelectedDays] = useState(null);//список всех выбранных дат с интервалами времени
    const [selectedDate, setSelectedDate] = useState(null);//выбранная дата для редактирования времени в модальном окне
 
-
-   const [projectActive, setProjectActive] = useState();
+   const [isProjectEdit, setIsProjectEdit] = useState(false);
+   const [projectActive, setProjectActive] = useState(null);
    const [projects, setProjects] = useState([]);
    const {universalRequest} = useBookmeService();
 
+   
    useEffect(() => {
       universalRequest('getProjects').then(onProjectsLoaded);
    }, [])
@@ -41,7 +42,7 @@ const ProjectsPage = () => {
       // --> {date: 12.05.2022, intervals: ['12:00-13:00', '14:00-15:00']}
       const projects = res.map(proj => {
          let arr = [];
-         proj[8].forEach(interval => {
+         proj.dates.forEach(interval => {
             let find = arr.find(el => el.date == interval[1]);
             if (find){
                find.intervals.push(interval[0])
@@ -49,15 +50,16 @@ const ProjectsPage = () => {
                arr.push({date: interval[1], intervals: [interval[0]]})
             }
          })
-         proj[8] = arr;
+         proj.dates = arr;
          return proj;
       });
-
+      console.log(projects);
       setProjects(projects);
-      setProjectActive(projects[0][1]);//первый полученный проект открывается
+      setProjectActive(projects[0].projectName);//первый полученный проект открывается
    }
 
-   // [{date: date, intervals: ['15:00-19:00']}]
+
+   // const [currentDate, setCurrentDate] = useState(null);
 
    return (
       <>
@@ -65,16 +67,27 @@ const ProjectsPage = () => {
             setModalActive={setModalProjectActive}
             accordActive={projectActive} setAccordActive={setProjectActive}
             projects={projects} setProjects={setProjects}
+            setIsProjectEdit={setIsProjectEdit}
          />
-         <ModerCalendar/>
-         <RespondRecordings/>
+         <ModerCalendar
+            projects={projects}
+            projectActive={projectActive} 
+         />
+         <RespondRecordings
+            
+         />
          <Modal modalClass={'modal-new-project'} active={modalProjectActive} setActive={setModalProjectActive}>
             <ModalNewProject 
+               projects={projects}
+               projectActive={projectActive} 
+               setProjects={setProjects}
+               modalActive={modalProjectActive}
                setModalActive={setModalProjectActive} 
                setModalTimeActive={setModalTimeActive} 
                setSelectedDate={setSelectedDate}
                setSelectedDays={setSelectedDays}
                selectedDays={selectedDays}
+               isProjectEdit={isProjectEdit} setIsProjectEdit={setIsProjectEdit}
             />
          </Modal>
          <Modal modalClass={'modal-set-time'} active={modalTimeActive} setActive={setModalTimeActive}>

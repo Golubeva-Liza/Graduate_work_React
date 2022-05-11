@@ -5,17 +5,32 @@ import { CalendarArrow, CalendarArrowSmall } from '../../resources';
 import getDate from '../../hooks/getDate';
 
 
-const CalendarCreateSchedule = ({classes, small, setModalTimeActive, setDate, selectedDays}) => {
+const CalendarScheduleToRespondent = ({className, small, projectDates, selectedDay, setSelectedDay}) => {
+
+   useEffect(() => {
+      if (selectedDay){
+         const day = selectedDay.split('-').reverse()[0];
+         calendarDaysRef.current.forEach(el => el ? el.classList.remove('active') : null);
+         calendarDaysRef.current.find(el => el.textContent == day).classList.add('active');
+   
+         // console.log(selectedDay, day);
+      }
+      
+   }, [selectedDay])
 
    const monthsNames = useMemo(() => [
       "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август",
       "Сетрябрь", "Октрябрь", "Ноябрь", "Декабрь"
    ], []);
 
-   const [currentDate, setCurrentDate] = useState(new Date(new Date(selectedDays[0].date).setDate(1)));
+   const [currentDate, setCurrentDate] = useState(new Date(new Date().setDate(1)));
+
+   const calendarDaysRef = useRef([]);
+
+   //поменять зависимость на useeffect currentDate в зависимости от первого числа проекта
 
    function renderCalendar() {
-      // console.log(selectedDays);
+
       let days = [];
 
       let firstDayIndex = currentDate.getDay() - 1;//день недели первого дня месяца, где 0 - воскресенье, поэтому вычитаем единицу, чтобы 0 был понедельником
@@ -34,7 +49,7 @@ const CalendarCreateSchedule = ({classes, small, setModalTimeActive, setDate, se
 
       //формируем последние числа предыдущего месяца
       for (let x = firstDayIndex; x > 0; x--){
-         days.push(<div className="calendar__date calendar__prev-date" key={`${x}prev`}></div>);
+         days.push(<div className="calendar__date calendar__prev-date" key={`${x}prev`}>{prevLastDay - x + 1}</div>);
       }
 
       const newDate = new Date(currentDate);//копируем дату
@@ -43,34 +58,29 @@ const CalendarCreateSchedule = ({classes, small, setModalTimeActive, setDate, se
       for (let i = 1; i <= lastDayOfCurrentMonth; i++){
          
          const currentDay = new Date(newDate.setDate(i)).toISOString().slice(0,10);
-         
-         if (i < new Date().getDate() && currentDate.getMonth() === new Date().getMonth()){
-            days.push(<div className="calendar__date calendar__prev" key={i}>{i}</div>);
+         const thisDate = projectDates ? projectDates.find(item => item.date == currentDay) : null;
+
+         if (thisDate) {
+            days.push(
+               <div key={i} className="calendar__date calendar__selected" ref={el => calendarDaysRef.current.push(el)}>
+                  <span>{i}</span>
+               </div>
+            );
+         } else {
+            days.push(<div className="calendar__date" key={i}><span>{i}</span></div>);
          }
 
-         else if (selectedDays.find(item => item.date == currentDay)) {
-            const date = selectedDays.find(item => item.date == currentDay);
-            days.push(<div key={i} className="calendar__date calendar__selected">
-               <span>{i}</span>
-               {date.intervals.map((item, index) => index < 2 ? <div key={index}>{item}</div> : '')}
-               {date.intervals.length > 2 ? <div style={{lineHeight: '2px'}}>...</div> : ''}
-            </div>);
-         }
-
-         else {
-            days.push(<div key={i} className="calendar__date calendar__unavailable">{i}</div>);
-         }
       }
 
-      //формируем первые числа следующего месяца
-      // for (let j = 1; j <= nextDays; j++){
-      //    days.push(<div className="calendar__date calendar__next-date" key={`${j}next`}>{j}</div>);
-      // }
+      // формируем первые числа следующего месяца
+      for (let j = 1; j <= nextDays; j++){
+         days.push(<div className="calendar__date calendar__next-date" key={`${j}next`}>{j}</div>);
+      }
 
       return days;
    }
 
-   const calendarDays = useMemo(() => renderCalendar(), [currentDate, selectedDays]);
+   const calendarDays = useMemo(() => projectDates ? renderCalendar() : null, [currentDate]);
 
    const onLeftArrow = () => {
       if (currentDate.getMonth() != new Date().getMonth()){
@@ -85,24 +95,13 @@ const CalendarCreateSchedule = ({classes, small, setModalTimeActive, setDate, se
 
    const onClickDay = (e) => {
       if(e.target.closest('.calendar__selected')){
-         const el = e.target.closest('.calendar__selected');
-
-         const date = getDate(el.childNodes[0].innerHTML, currentDate.getMonth(), currentDate.getFullYear());
-
-         setDate(date);
-         setModalTimeActive(true);
+         const date = getDate(e.target.textContent, currentDate.getMonth(), currentDate.getFullYear());
+         setSelectedDay(date);
       }
    }
-
-   const getDaysArray = function(start, end) {
-      for (var arr=[], date=new Date(start); date<=new Date(end); date.setDate(date.getDate()+1)){
-         arr.push(new Date(date));
-      }
-      return arr;
-   };
    
    return (
-      <div className={`calendar calendar_create-schedule ${small ? 'calendar_small' : ''} ${classes}`}>
+      <div className={`calendar calendar_create-schedule ${small ? 'calendar_small' : ''} ${className}`}>
          <div className="calendar__month">
             <button className="button-reset calendar__arrow" type="button" onClick={onLeftArrow}>
                {small ? <CalendarArrowSmall/>: <CalendarArrow/>}
@@ -131,4 +130,4 @@ const CalendarCreateSchedule = ({classes, small, setModalTimeActive, setDate, se
       </div>
    )
 }
-export default CalendarCreateSchedule;
+export default CalendarScheduleToRespondent;

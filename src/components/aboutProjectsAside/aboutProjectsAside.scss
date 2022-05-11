@@ -11,9 +11,15 @@
       margin-bottom: 40px;
    }
    &__descr{
-      font-size: 14px;
-      line-height: 17px;
       margin-bottom: 40px;
+      p {
+         font-size: 14px;
+         line-height: 17px;
+         &:not(:last-child){
+            margin-bottom: 16px;
+         }
+      }
+      
    }
    &__info{
       font-weight: 600;

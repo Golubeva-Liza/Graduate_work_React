@@ -1,38 +1,56 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
 import useBookmeService from '../services/BookmeService';
+import changeDatesOfProj from '../hooks/changeDatesOfProj';
 
 import HeaderTop from '../components/headerTop/HeaderTop';
 import AboutProjectsAside from '../components/aboutProjectsAside/AboutProjectsAside';
 import RespondendCalendar from '../components/respondentCalendar/RespondentCalendar';
 import RespondendSettings from '../components/respondendSettings/RespondendSettings';
-
 import Modal from '../components/modals/Modal';
 
 
 const RespondPage = () => {
-   let navigate = useNavigate();
-   const {getLoggedUser} = useBookmeService();
+   const {projectId} = useParams();
+   const [project, setProject] = useState(null);
+   const [selectedDay, setSelectedDay] = useState(null);
 
-   // useEffect(() => {
-   //    if (!localStorage.getItem('authorized')){
-   //       navigate('/');
-   //    }else{
-   //       navigate('/');
-   //    }
-   // }, []);
+   const {universalRequest} = useBookmeService();
 
+   useEffect(() => {
+      updateProject();
+   }, [projectId])
+
+   const updateProject = () => {
+      universalRequest('getOneProject', projectId).then(onProjectLoaded);
+   }
+
+   const onProjectLoaded = (res) => {
+      const project = changeDatesOfProj(res);
+      setProject(project);
+      console.log(project);
+   }
 
    return (
       <> 
-         <HeaderTop/>
+         {/* <HeaderTop/> */}
 
          <main className="respondent-main">
-            <div className="my-container">
-               <AboutProjectsAside/>
-               <RespondendCalendar/>
-               <RespondendSettings/>
-            </div>
+            {project ? (
+               <div className="my-container">
+                  <AboutProjectsAside project={project}/>
+                  <RespondendCalendar 
+                     projectDates={project.dates}
+                     selectedDay={selectedDay}
+                     setSelectedDay={setSelectedDay}
+                  />
+                  <RespondendSettings 
+                     time={selectedDay ? project.dates.find(el => el.date == selectedDay).intervals : null} 
+                     selectedDay={selectedDay}
+                  />
+               </div>
+            ) : null}
          </main>
          {/* <Modal modalClass={'modal-new-project'} active={modalProjectActive} setActive={setModalProjectActive}>
             <ModalNewProject setModalActive={setModalProjectActive}/>

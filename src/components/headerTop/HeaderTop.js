@@ -6,9 +6,9 @@ const HeaderTop = () => {
       <header className="header-top">
          <div className="container">
             <p className="header-top__name">BookMe</p>
-            <NavLink end to="/">
+            {/* <NavLink end to="/">
                <button className="button-reset header-top__sign-up">Зарегистрироваться</button>
-            </NavLink>
+            </NavLink> */}
          </div>
       </header>
    )

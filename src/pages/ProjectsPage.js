@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
+import changeDatesOfProj from '../hooks/changeDatesOfProj';
+
 import ModerCalendar from '../components/moderCalendar/ModerCalendar';
 import ProjectsAside from '../components/projectsAside/ProjectsAside';
 import RespondRecordings from '../components/respondRecordings/RespondRecordings';
@@ -9,6 +11,7 @@ import Modal from '../components/modals/Modal';
 import ModalNewProject from '../components/modals/ModalNewProject';
 import ModalSetTime from '../components/modals/ModalSetTime';
 import useBookmeService from '../services/BookmeService';
+
 
 
 const ProjectsPage = () => {
@@ -40,19 +43,7 @@ const ProjectsPage = () => {
    const onProjectsLoaded = (res) => {
       //преобразование интервалов времени и дат к виду: {date: date, intervals: [time1, time2]} 
       // --> {date: 12.05.2022, intervals: ['12:00-13:00', '14:00-15:00']}
-      const projects = res.map(proj => {
-         let arr = [];
-         proj.dates.forEach(interval => {
-            let find = arr.find(el => el.date == interval[1]);
-            if (find){
-               find.intervals.push(interval[0])
-            } else {
-               arr.push({date: interval[1], intervals: [interval[0]]})
-            }
-         })
-         proj.dates = arr;
-         return proj;
-      });
+      const projects = res.map(changeDatesOfProj);
       console.log(projects);
       setProjects(projects);
       setProjectActive(projects[0].projectName);//первый полученный проект открывается

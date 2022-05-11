@@ -5,14 +5,21 @@ const Select = ({values, selectName, clearSelect, setClearSelect, selectValue, s
 
    const defaultValue = useMemo(() => {
       return values[0];
-   }, []);
+   }, [values]);
 
    const [currentValue, setCurrentValue] = useState(defaultValue);
    const [selectOpened, setSelectOpened] = useState(false);
    const listItems = useRef([]); //ссылки на все элементы в dropdown
    const select = useRef([]); 
 
-   
+   useEffect(() => {
+      if (values){
+         console.log('поменять значения', values);
+         setCurrentValue(values[0]);
+         listItems.current.forEach(item => item ? item.classList.remove('selected') : null);
+      }
+   }, [values]);
+
    useEffect(() => {
       if (clearSelect){
          setCurrentValue(defaultValue);
@@ -23,10 +30,10 @@ const Select = ({values, selectName, clearSelect, setClearSelect, selectValue, s
 
    useEffect(() => {
       if (selectValue){
-         listItems.current.forEach(item => item.classList.remove('selected'));
+         listItems.current.forEach(item => item ? item.classList.remove('selected') : null);
          setCurrentValue(selectValue);
          listItems.current.forEach(item => {
-            if (item.innerHTML == selectValue){
+            if (item && item.innerHTML == selectValue){
                item.classList.add('selected');
             }
          });
@@ -50,7 +57,8 @@ const Select = ({values, selectName, clearSelect, setClearSelect, selectValue, s
    }
    
    const selectingItem = (e) => {
-      listItems.current.forEach(item => item.classList.remove('selected'));
+      console.log(listItems.current);
+      listItems.current.forEach(item => item ? item.classList.remove('selected') : null);
       setCurrentValue(e.target.innerHTML);
       setSelectOpened(false);
       e.target.classList.add('selected');

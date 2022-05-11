@@ -11,5 +11,12 @@
          font-size: 11px;
          color: rgba($dark-grey, 0.7);
       }
+      span{
+         pointer-events: none;
+      }
+   }
+   .calendar__selected.active{
+      background-color: $main-blue;
+      color: #FFFFFF;
    }
 }

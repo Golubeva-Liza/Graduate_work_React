@@ -4,7 +4,7 @@ import InputMask from 'react-input-mask';
 import useBookmeService from '../../services/BookmeService';
 import useValidation from '../../hooks/useValidation';
 import dateToAge from '../../hooks/dateToAge';
-import selectValues from '../../hooks/selectValues';
+import useSelectValues from '../../hooks/useSelectValues';
 
 import InputWithLabel from '../inputWithLabel/InputWithLabel';
 import Input from '../input/Input';
@@ -38,7 +38,7 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
 
    const {universalRequest} = useBookmeService();
    const {respondDbValidation, fieldsValid} = useValidation();
-   const {educationValues, familyStatusValues} = selectValues();
+   const {educationValues, familyStatusValues} = useSelectValues();
 
 
    useEffect(() => {

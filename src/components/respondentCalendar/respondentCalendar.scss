@@ -52,4 +52,10 @@
          }
       }
    }
+   .calendar__date:not(.calendar__prev-date):not(.calendar__next-date) {
+      padding-top: 1px;
+   }
+   // .calendar__selected.recordings {
+   //    padding-top: 1px;
+   // }
 }

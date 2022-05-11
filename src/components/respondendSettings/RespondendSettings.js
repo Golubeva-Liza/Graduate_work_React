@@ -9,7 +9,7 @@ import Input from "../input/Input";
 import InputBtns from "../inputBtns/InputBtns";
 
 
-const RespondendSettings = () => {
+const RespondendSettings = ({selectedDay, time}) => {
    const nameInput = useInput('');
    const emailInput = useInput('');
    const phoneInput = useInput('');
@@ -17,6 +17,7 @@ const RespondendSettings = () => {
 
    const [callActive, setCallActive] = useState(false);
    const [callRadio, setCallRadio] = useState(null);
+   const [timeSelect, setTimeSelect] = useState(null);
 
    const [errorNameMessage, setErrorNameMessage] = useState("Ошибка");
    const [errorEmailMessage, setErrorEmailMessage] = useState("Ошибка");
@@ -38,6 +39,12 @@ const RespondendSettings = () => {
             <h2 className="respondent-settings__title">Выберите время</h2>
             <p className="respondent-settings__date">25 декабря</p>
 
+            {time ? 
+               <Select selectValue={timeSelect} setSelectValue={setTimeSelect} selectName="timeOfRecording"
+                  values={time}
+               />
+               : null
+            }
             {/* <Select clearSelect={clearSelect} setClearSelect={setClearSelect} selectName="familyStatus"
                values={['Не важно', 'Разведен(а)', 'Состоит в браке', 'В отношениях', 'Не в отношениях']}
             /> */}

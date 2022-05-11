@@ -1,25 +1,27 @@
 import './aboutProjectsAside.scss';
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
-const AboutProjectsAside = () => {
+const AboutProjectsAside = ({project}) => {
 
    return (
       <section className="about-project">
-         <h2 className="about-project__title">Проект 1</h2>
-         <p className="about-project__descr">
-            Добрый день.
-            <br/><br/>
-            На тестирование приглашаются респонденты, у которых есть своя машина и которые не менее 5 раз уже обслуживались в автомастерской или проходили ТО.
-            <br/><br/>
-            Будем рады каждому отклику!
-            <br/><br/>
-            Вознаграждения: нет
-         </p>
-         <div className="about-project__info">
-            Модератор: <span>Мария</span> 
+         <h2 className="about-project__title">{project.projectName}</h2>
+
+         <div className="about-project__descr">
+            {project.descr.split('\n\n').map((item, id) => (
+               <p key={id}>
+                  {item}
+               </p>
+            ))}
          </div>
+         
+
+         {/* <div className="about-project__info">
+            Модератор: <span>Мария</span> 
+         </div> */}
+
          <div className="about-project__info">
-            Адрес: <span>Биржевая линия, 14, лит.А, Санкт-Петербург, ауд. 436</span> 
+            Адрес: <span>{project.address}</span> 
          </div>
       </section>
    )

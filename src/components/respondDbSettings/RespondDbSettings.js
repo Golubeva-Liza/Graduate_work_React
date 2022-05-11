@@ -2,7 +2,7 @@ import './respondDbSettings.scss';
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useInput } from '../../hooks/useInput';
-import selectValues from '../../hooks/selectValues';
+import useSelectValues from '../../hooks/useSelectValues';
 
 import Input from '../input/Input';
 import Select from '../select/Select';
@@ -11,7 +11,6 @@ import Loader from '../loader/Loader';
 import Button from '../button/Button';
 
 const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, setResultsFound, citiesValues, tagsValues, loading}) => {
-
    const searchInput = useInput('');
    const [genderSelect, setGenderSelect] = useState(null);
    const [educationSelect, setEducationSelect] = useState(null);
@@ -25,7 +24,11 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
    const [clearSelect, setClearSelect] = useState(false);
    const tagsList = useRef([]);
 
-   const {educationValues, familyStatusValues} = selectValues();
+   const {educationValues, familyStatusValues, genderValues} = useSelectValues();
+
+   const citiesSelectValues = useMemo(() => (
+      citiesValues.length ? citiesValues : ['Не важно']
+   ), [citiesValues])
 
    const applyFilters = () => {
       let updatedList = respondents;
@@ -168,7 +171,7 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
             <label className="label respond-db-settings__label">
                <span>Пол</span>
                <Select selectName="gender" setSelectValue={setGenderSelect} clearSelect={clearSelect} setClearSelect={setClearSelect}
-                  values={['Не важно', 'Мужской', 'Женский']}
+                  values={genderValues}
                />
             </label>
             <div className="label respond-db-settings__label">
@@ -184,7 +187,7 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
             <label className="label respond-db-settings__label">
                <span>Место жительства:</span>
                <Select selectName="city" setSelectValue={setCitySelect} clearSelect={clearSelect} setClearSelect={setClearSelect}
-                  values={citiesValues.length ? citiesValues : ['Не важно']}
+                  values={citiesSelectValues}
                />
             </label>
             <label className="label respond-db-settings__label">

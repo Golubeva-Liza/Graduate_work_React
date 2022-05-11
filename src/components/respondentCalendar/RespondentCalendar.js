@@ -2,15 +2,21 @@ import "./respondentCalendar.scss";
 import { useState, useEffect, useMemo } from 'react';
 
 import Calendar from "../calendar/Calendar";
+import CalendarScheduleToRespondent from "../calendar/CalendarScheduleToRespondent";
 
 
-const RespondendCalendar = () => {
+const RespondendCalendar = ({projectDates, selectedDay, setSelectedDay}) => {
 
    return (
       <section className="respondent-calendar">
          <h2 className="respondent-calendar__title">Выберите дату</h2>
 
-         <Calendar classes="respondent-calendar__calendar"/>
+         <CalendarScheduleToRespondent 
+            className="respondent-calendar__calendar" 
+            projectDates={projectDates}
+            selectedDay={selectedDay}
+            setSelectedDay={setSelectedDay}
+         />
          
          <div className="respondent-calendar__hints">
             <div className="respondent-calendar__hint">

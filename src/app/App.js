@@ -2,6 +2,7 @@ import { lazy, Suspense, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import useBookmeService from '../services/BookmeService';
 
+
 import './App.scss';
 
 const LoginPage = lazy(() => import('../pages/LoginPage'));
@@ -31,7 +32,8 @@ const App = () => {
 
                   <Route path='/moderator/*' element={<ModeratorPage user={user} setUser={setUser}/>}/>
 
-                  <Route path='/respondent' element={<RespondPage/>}/>
+                  {/* <Route path='/respondent' element={<RespondPage/>}/> */}
+                  <Route path='/projects/:projectId' element={<RespondPage/>}/>
 
                   {/* вручную прописываем этот id */}
                   {/* <Route path='/comics/:comicId' element={<SingleComicPage/>}/>

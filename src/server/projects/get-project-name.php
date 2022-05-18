@@ -1,5 +1,5 @@
 <?php
-   include_once "index.php";
+   include_once "../index.php";
 
    $name = file_get_contents('php://input');
    $project = mysqli_query($conn, "SELECT * FROM projects WHERE projectName = '{$name}'");

@@ -7,17 +7,6 @@ import getDate from '../../hooks/getDate';
 
 const CalendarScheduleToRespondent = ({className, small, projectDates, selectedDay, setSelectedDay}) => {
 
-   useEffect(() => {
-      if (selectedDay){
-         const day = selectedDay.split('-').reverse()[0];
-         calendarDaysRef.current.forEach(el => el ? el.classList.remove('active') : null);
-         calendarDaysRef.current.find(el => el.textContent == day).classList.add('active');
-   
-         // console.log(selectedDay, day);
-      }
-      
-   }, [selectedDay])
-
    const monthsNames = useMemo(() => [
       "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август",
       "Сетрябрь", "Октрябрь", "Ноябрь", "Декабрь"
@@ -26,6 +15,16 @@ const CalendarScheduleToRespondent = ({className, small, projectDates, selectedD
    const [currentDate, setCurrentDate] = useState(new Date(new Date().setDate(1)));
 
    const calendarDaysRef = useRef([]);
+
+
+   useEffect(() => {
+      if (selectedDay){
+         const day = selectedDay.split('-').reverse()[0];
+         calendarDaysRef.current.forEach(el => el ? el.classList.remove('active') : null);
+         calendarDaysRef.current.find(el => el.textContent == day).classList.add('active');
+      }
+      
+   }, [selectedDay, currentDate])
 
    //поменять зависимость на useeffect currentDate в зависимости от первого числа проекта
 
@@ -60,7 +59,7 @@ const CalendarScheduleToRespondent = ({className, small, projectDates, selectedD
          const currentDay = new Date(newDate.setDate(i)).toISOString().slice(0,10);
          const thisDate = projectDates ? projectDates.find(item => item.date == currentDay) : null;
 
-         if (thisDate) {
+         if (thisDate && new Date(currentDay) >= new Date(new Date().setHours(3, 0, 0, 0))) {
             days.push(
                <div key={i} className="calendar__date calendar__selected" ref={el => calendarDaysRef.current.push(el)}>
                   <span>{i}</span>

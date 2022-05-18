@@ -2,7 +2,27 @@
 
 .respondent-settings{
    flex: 1;
+   min-width: 450px;
    padding: 40px;
+   padding-bottom: 60px;
+   
+   &__container{
+      height: 100%;
+      overflow-y: auto;
+      &::-webkit-scrollbar {
+         width: 12px;//ширина scrollbar
+      }
+      &::-webkit-scrollbar-track {
+         background: $main-grey;//дорожка
+      }
+      &::-webkit-scrollbar-thumb {
+         background-color: $main-blue;//цвет плашка
+         border-radius: 4px;
+      }
+   }
+   form{
+      padding-right: 16px;
+   }
    &__title{
       font-weight: 600;
       font-size: 25px;
@@ -16,11 +36,14 @@
       margin-bottom: 16px;
    }
    &__select{
-      width: 230px;
+      // width: 230px;
       margin-bottom: 32px;
+      &>span{
+         color: $main-red;
+      }
    }
    &__label{
-      margin-bottom: 16px;
+      margin-bottom: 22px;
       width: 100%;
       span{
          display: block;
@@ -34,7 +57,7 @@
       margin-bottom: 10px;
    }
    &__call{
-      margin-bottom: 16px;
+      margin-bottom: 22px;
    }
    .input_textarea{
       height: 90px;
@@ -64,7 +87,14 @@
       margin-top: 4px;
       color: $main-red;
    }
-   &__another-time{
-      
+   &__another-info{
+      border: 1px solid rgba($main-blue, .5);
+      border-radius: 4px;
+      padding: 16px;
+      .form-label span{
+         font-weight: 500;
+         font-size: 16px;
+         line-height: 22px;
+      }
    }
 }

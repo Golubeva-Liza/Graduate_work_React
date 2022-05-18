@@ -2,6 +2,7 @@ import './otherModals.scss';
 import 'react-dadata/dist/react-dadata.css';
 
 import { useState, useMemo, useEffect } from 'react';
+import useValidation from '../../hooks/useValidation';
 
 import NewProjData from './ModalNewProject/NewProjData';
 import NewProjSchedule from './ModalNewProject/NewProjSchedule';
@@ -33,10 +34,12 @@ const ModalNewProject = ({
    const [step, setStep] = useState(1);
    const [popupCopyActive, setPopupCopyActive] = useState(false);
    const [calendarValues, setCalendarValues] = useState(null);
-   const [errorMessage, setErrorMessage] = useState({});
+
+   const {errorMessage, setErrorMessage, validation} = useValidation();
 
 
    const clearFields = () => {
+      // console.log(errorMessage);
       nameInput.removeValue();
       descrInput.removeValue();
       projFormLink.removeValue();
@@ -58,8 +61,9 @@ const ModalNewProject = ({
          setCalendarValues([new Date(currentProj.dates[0].date), new Date(currentProj.dates[currentProj.dates.length-1].date)]);
          setSelectedDays(currentProj.dates);
 
-         if (durationValues.find(el => el === currentProj.duration)){
-            setDurationRadio(currentProj.duration);
+         
+         if (durationValues.find(el => el.replace(/[^0-9]/g,"") === currentProj.duration)){
+            setDurationRadio(`${currentProj.duration} минут`);
          } else {
             setDurationRadio('Другое');
             durationField.setValue(currentProj.duration);
@@ -88,6 +92,7 @@ const ModalNewProject = ({
                calendarValues={calendarValues} setCalendarValues={setCalendarValues}
                isProjectEdit={isProjectEdit}
                errorMessage={errorMessage} setErrorMessage={setErrorMessage}
+               validation={validation}
             />
          ) : false}
          

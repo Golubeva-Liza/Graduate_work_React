@@ -11,7 +11,7 @@ import ModalAddEditRespond from '../components/modals/ModalAddEditRespond';
 
 const RespondDBPage = () => {
    let navigate = useNavigate();
-   const {loading, setLoading, getAllRespondents, universalRequest} = useBookmeService();
+   const {loading, setLoading, universalRequest} = useBookmeService();
 
    useEffect(() => {
       if (!localStorage.getItem('authorized')){
@@ -33,6 +33,7 @@ const RespondDBPage = () => {
 
    const loadRespondents = async () => {
       universalRequest('getAllRespondents').then((res) => {
+         console.log(res);
          setRespondents(res);
          setLoading(false);
       });
@@ -41,13 +42,13 @@ const RespondDBPage = () => {
    useEffect(() => {
       if (respondents.length){
          //обновляем список городов
-         let citiesElements = [...new Set(respondents.map(item => item[8]))]; //убираем повторяющиеся элементы
+         let citiesElements = [...new Set(respondents.map(item => item.homecity))]; //убираем повторяющиеся элементы
          citiesElements = citiesElements.filter(item => item !== '-'); //убираем '-'
          citiesElements.unshift('Не важно');
          setCitiesValues(citiesElements);
 
          //обновляем список тэгов
-         let tagsElements = respondents.map(item => item[10]).join(', ').split(', '); //преобразуем все тэги в массив
+         let tagsElements = respondents.map(item => item.tags).join(', ').split(', '); //преобразуем все тэги в массив
          tagsElements = [...new Set(tagsElements.filter(item => item !== '-'))]; //избавляемся от дубликатов и '-'
          setTagsValues(tagsElements);
       }

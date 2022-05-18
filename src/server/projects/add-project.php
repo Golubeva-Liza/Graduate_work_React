@@ -1,5 +1,5 @@
 <?php
-   include_once "index.php";
+   include_once "../index.php";
    
    $json = file_get_contents('php://input');
    $data = json_decode($json);
@@ -45,8 +45,9 @@
 
          foreach ($days as $value) {
             foreach ($value->intervals as $interval) {
+               $times = explode("-", $interval);
                // echo $interval . ' ' . $value->date . ' ' . $projectId;
-               $time_record = mysqli_query($conn, "INSERT INTO test_dates (time, date, project) VALUES ('{$interval}', '{$value->date}', {$projectId})");
+               $time_record = mysqli_query($conn, "INSERT INTO timeintervals (firstTime, lastTime, date, project) VALUES ('{$times[0]}', '{$times[1]}', '{$value->date}', {$projectId})");
             }
          }
 

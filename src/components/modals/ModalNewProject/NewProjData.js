@@ -29,16 +29,14 @@ const NewProjData = ({
       selectedDays, setSelectedDays,
       clearFields,
       isProjectEdit,
-      errorMessage, setErrorMessage
+      errorMessage, setErrorMessage,
+      validation
    }) => {
 
+   const {universalRequest} = useBookmeService();
 
-   const {fieldsValid} = useValidation();
    const modal = useRef();
    const defaultTimeInterval = useMemo(() => '11:00-19:00', []);
-
-   const {universalRequest} = useBookmeService();
-   
    const [calendarActive, setCalendarActive] = useState(false);
 
 
@@ -51,7 +49,6 @@ const NewProjData = ({
          setErrorMessage({...error});
       }
    }, [durationRadio])
-
 
    useEffect(() => {
       if (calendarValues && calendarValues.length == 2){
@@ -78,19 +75,6 @@ const NewProjData = ({
       }
       return arr;
    };
-
-   const validation = (e) => {
-      const validRes = fieldsValid(e.target.name, e.target.value);
-      let error = {};
-      if (validRes === true){
-         Object.assign(error, errorMessage);
-         delete error[e.target.name];
-         setErrorMessage({...error});
-      } else {
-         error[e.target.name] = validRes;
-         setErrorMessage(errorMessage => ({...errorMessage, ...error}));
-      }
-   }
 
    const toSchedule = () => {
       //если есть ошибки в полях ввода
@@ -237,9 +221,9 @@ const NewProjData = ({
             {durationRadio == 'Другое' ? (
                <Input 
                   inputClass="modal-new-project__duration"
-                  inputType="text" 
+                  inputType="number" 
                   inputName="duration" 
-                  inputText={'Укажите длительность тестирования'} 
+                  inputText={'Укажите число минут'} 
                   value={durationField.value} 
                   onChange={durationField.onChange}
                   onBlur={e => validation(e)}
@@ -290,7 +274,7 @@ const NewProjData = ({
                   nameInput.value !== '' 
                   && descrInput.value !== '' 
                   && addressInput !== '' 
-                  && (durationRadio !== null && (durationRadio !== 'Другое' || durationField.value.length > 4))
+                  && (durationRadio !== null && (durationRadio !== 'Другое' || durationField.value.length > 0))
                   && calendarValues && calendarValues.length == 2
                   ? false : true}
             >

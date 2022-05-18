@@ -8,7 +8,7 @@ import { UploadIcon, DefaultUser } from '../../resources';
 const ModalAddFile = ({modalActive, setModalActive, user, setUser}) => {
    const uploadBtn = useRef();
    const form = useRef();
-   const {updateUserData} = useBookmeService();
+   const {universalRequest} = useBookmeService();
 
    const [image, setImage] = useState('');
 
@@ -33,7 +33,7 @@ const ModalAddFile = ({modalActive, setModalActive, user, setUser}) => {
       const formData = new FormData(form.current);
       formData.append("id", user[1]);
 
-      updateUserData(formData).then(res => {
+      universalRequest('updateUserData', formData).then(res => {
          if (res !== 'error'){
             const updatedUser = [...user.slice(0, 4), res];
             setUser(updatedUser);

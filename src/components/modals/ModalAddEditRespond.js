@@ -16,6 +16,10 @@ import { PlusAdd } from '../../resources';
 
 const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editRespond, setEditRespond}) => {
 
+   const {universalRequest} = useBookmeService();
+   const {errorMessage, setErrorMessage, validation, scrollIntoTop} = useValidation();
+   const {educationValues, familyStatusValues} = useSelectValues();
+
    const nameInput = useInput('');
    const emailInput = useInput('');
    const phoneInput = useInput('');
@@ -27,7 +31,7 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
    const modal = useRef();
    const form = useRef();
    
-   const [errorMessage, setErrorMessage] = useState({});
+   // const [errorMessage, setErrorMessage] = useState({});
    const [genderInput, setGenderInput] = useState('М');
    const [clearSelect, setClearSelect] = useState(false);
    const [tagsList, setTagsList] = useState([]);
@@ -36,50 +40,39 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
    const [educationValue, setEducationValue] = useState(null);
    const [respondId, setRespondId] = useState('');
 
-   const {universalRequest} = useBookmeService();
-   const {respondDbValidation, fieldsValid} = useValidation();
-   const {educationValues, familyStatusValues} = useSelectValues();
-
 
    useEffect(() => {
+      // console.log(new Date('2022-09-01'));
       if (editRespond || editRespond === 0){
          const currentRespond = respondents[editRespond];
          //заполняем поля формы имеющимися данными
-         nameInput.setValue(currentRespond[2]);
-         emailInput.setValue(currentRespond[3]);
-         phoneInput.setValue(currentRespond[4]);
-         dateInput.setValue('');//!
-         ageInput.setValue(currentRespond[6]);
-         setGenderInput(currentRespond[5]);
+         nameInput.setValue(currentRespond.name);
+         emailInput.setValue(currentRespond.email);
+         phoneInput.setValue(currentRespond.phone);
+         dateInput.setValue(currentRespond.birthday.split('-').reverse().join('.'));
+         ageInput.setValue(currentRespond.age);
+         setGenderInput(currentRespond.gender);
 
-         sityInput.setValue(currentRespond[8] === '-' ? '' : currentRespond[8]);
-         setTagsList(currentRespond[10] === '-' ? [] : currentRespond[10].split(', '));
-         setEducationValue(currentRespond[7] === '-' ? 'Не важно' : currentRespond[7]);
-         setFamilyStatusValue(currentRespond[9] === '-' ? 'Не важно' : currentRespond[9]);
+         console.log(currentRespond.familyStatus, currentRespond.education);
+         sityInput.setValue(currentRespond.homecity === '-' ? '' : currentRespond.homecity);
+         setTagsList(currentRespond.tags === '-' ? [] : currentRespond.tags.split(', '));
+         setEducationValue(currentRespond.education === '-' ? 'Не важно' : currentRespond.education);
+         setFamilyStatusValue(currentRespond.familyStatus === '-' ? 'Не важно' : currentRespond.familyStatus);
 
-         setRespondId(currentRespond[1]);
+         setRespondId(currentRespond.id);
       }
    }, [editRespond])
 
-   const scrollIntoTop = (modal) => {
-      modal.scrollIntoView({
-         behavior: "smooth"
-      });
-   }
 
    const submitForm = async () => {
-
-      //если есть ошибки в полях ввода
-      if (Object.keys(errorMessage).length !== 0){
-         scrollIntoTop(modal.current);
-         return;
-      }
 
       const formData = new FormData(form.current);
 
       if (respondId){
-         formData.set("uniqueid", respondId);
+         formData.set("id", respondId);
       }
+
+      formData.set('birthdayDate', dateInput.value.split('.').reverse().join('-'));
 
       // перезапись возраста с учетом даты рождения
       if (dateInput.value.replace(/[^0-9]/g,"")){
@@ -113,13 +106,14 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
       setModalActive(false);
       if (editRespond == null){
          //при форме добавления
-         setRespondents(respondents => [...respondents, ...newRespond]);
+         setRespondents(respondents => [...respondents, newRespond]);
       } else {
          //при форме редактирования
-         const updatedResponds = [...respondents.slice(0, editRespond), ...newRespond, ...respondents.slice(editRespond + 1)];
+         const updatedResponds = [...respondents.slice(0, editRespond), newRespond, ...respondents.slice(editRespond + 1)];
          setRespondents(updatedResponds);
       }
       clearInputs();
+      setEditRespond(null);
    }
 
    const clearInputs = () => {
@@ -134,6 +128,8 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
       tagsInput.removeValue();
       setGenderInput('М');
       setClearSelect(true);
+      setFamilyStatusValue(null);
+      setEducationValue(null);
       setTagsList([]);
       setErrorMessage({});
       setRespondId('');
@@ -153,19 +149,6 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
       const removedTag = tagsList.findIndex(el => el === e.target.innerHTML);
       const updatedTags = [...tagsList.slice(0, removedTag), ...tagsList.slice(removedTag + 1)];
       setTagsList(updatedTags);
-   }
-
-   const validation = (e) => {
-      const validRes = fieldsValid(e.target.name, e.target.value);
-      let error = {};
-      if (validRes === true){
-         Object.assign(error, errorMessage);
-         delete error[e.target.name];
-         setErrorMessage({...error});
-      } else {
-         error[e.target.name] = validRes;
-         setErrorMessage(errorMessage => ({...errorMessage, ...error}));
-      }
    }
 
    return (
@@ -265,6 +248,7 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
                      && emailInput.value !== '' 
                      && phoneInput.value !== '' 
                      && (dateInput.value !== '' || ageInput.value !== '')
+                     && Object.keys(errorMessage).length == 0
                      ? false : true}
                   >
                      Готово
@@ -275,5 +259,3 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
    )
 }
 export default ModalAddEditRespond;
-
-//&& (dateInput.value !== '' || ageInput.value !== '') 

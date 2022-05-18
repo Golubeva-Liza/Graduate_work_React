@@ -7,6 +7,7 @@ import Input from '../input/Input';
 import Button from '../button/Button';
 import { Delete } from '../../resources';
 import CheckboxList from '../checkboxList/CheckboxList';
+import ErrorMessage from '../errorMessage/ErrorMessage';
 
 
 const ModalSetTime = ({setModalActive, date, setDate, selectedDays, setSelectedDays}) => {
@@ -113,27 +114,31 @@ const ModalSetTime = ({setModalActive, date, setDate, selectedDays, setSelectedD
          <div className="modal-set-time__intervals">
             {inputFields.map((field, index) => (
                <div className="modal-set-time__interval" key={index}>
-                  <span>С</span>
-                  <InputMask 
-                     mask={[/[0-2]/, field.firstTime[0]==='2' ? /[0-3]/ : /[0-9]/, ":", /[0-5]/, /[0-9]/]} 
-                     value={field.firstTime} 
-                     onChange={e => changeInput(e, index)}
-                  >
-                     <Input inputType="num" inputName="firstTime"/>
-                  </InputMask>
-                  <span>До</span>
-                  <InputMask 
-                     mask={[/[0-2]/, field.lastTime[0]==='2' ? /[0-3]/ : /[0-9]/, ":", /[0-5]/, /[0-9]/]} 
-                     value={field.lastTime} 
-                     onChange={e => changeInput(e, index)}
-                  >
-                     <Input inputType="num" inputName="lastTime"/>
-                  </InputMask>
+                  <div>
+                     <span>С</span>
+                     <InputMask 
+                        mask={[/[0-2]/, field.firstTime[0]==='2' ? /[0-3]/ : /[0-9]/, ":", /[0-5]/, /[0-9]/]} 
+                        value={field.firstTime} 
+                        onChange={e => changeInput(e, index)}
+                     >
+                        <Input inputType="num" inputName="firstTime"/>
+                     </InputMask>
+                     <span>До</span>
+                     <InputMask 
+                        mask={[/[0-2]/, field.lastTime[0]==='2' ? /[0-3]/ : /[0-9]/, ":", /[0-5]/, /[0-9]/]} 
+                        value={field.lastTime} 
+                        onChange={e => changeInput(e, index)}
+                     >
+                        <Input inputType="num" inputName="lastTime"/>
+                     </InputMask>
 
-                  {index !== 0 ? 
-                     <button className="button-reset modal-set-time__delete" onClick={() => deleteFields(index)}><Delete/></button> 
-                     : null}
+                     {index !== 0 ? 
+                        <button className="button-reset modal-set-time__delete" onClick={() => deleteFields(index)}><Delete/></button> 
+                        : null}
+                  </div>
+                  {/* <ErrorMessage message={field.firstTime}/> */}
                </div>
+               //{errorMessage.phone ? <ErrorMessage message={errorMessage.phone}/> : null}
             ))}
          </div>
          <div className="modal-set-time__add-btns">

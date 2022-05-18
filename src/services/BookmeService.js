@@ -10,57 +10,61 @@ const useBookmeService = () => {
 
       switch(req) {
          case 'getAllRespondents':
-            url += 'respondents.php';
+            url += 'respondents/respondents.php';
             break;
 
          case 'addRespondent':
-            url += 'add-responds.php';
+            url += 'respondents/add-respond.php';
             break;
 
          case 'removeRespondent':
-            url += 'remove-respond.php';
+            url += 'respondents/remove-respond.php';
             answerType = 'text';
             break;
          
          case 'editRespondent':
-            url += 'edit-respond.php';
+            url += 'respondents/edit-respond.php';
             break;
 
          case 'login':
-            url += 'login.php';
+            url += 'authorization/login.php';
             answerType = 'text';
             break;
 
          case 'registration':
-            url += 'signup.php';
+            url += 'authorization/signup.php';
             answerType = 'text';
             break;
 
          case 'getLoggedUser':
-            url += 'get-user.php';
+            url += 'users/get-user.php';
             break;
          
          case 'updateUserData':
-            url += 'update-user.php';
+            url += 'users/update-user.php';
             answerType = 'text';
             break;
 
          case 'addProject':
-            url += 'add-project.php';
+            url += 'projects/add-project.php';
             answerType = 'text';
             break;
 
          case 'getProjects':
-            url += 'get-projects.php';
+            url += 'projects/get-projects.php';
             break;
 
          case 'getProjectName':
-            url += 'get-project-name.php';
+            url += 'projects/get-project-name.php';
             answerType = 'text';
             break;
 
          case 'getOneProject':
-            url += 'get-one-project.php';
+            url += 'projects/get-one-project.php';
+            break;
+
+         case 'addEntry':
+            url += 'entries/add-entry.php';
             break;
 
          default: break;

@@ -7,6 +7,7 @@ import { CalendarArrowSmall } from '../../../resources';
 import ProgressBtns from '../../progressBtns/ProgressBtns';
 import Button from '../../button/Button';
 import Loader from '../../loader/Loader';
+import getIntervals from '../../../hooks/getIntervals';
 
 const NewProjReady = ({
       setModalActive, 
@@ -31,6 +32,9 @@ const NewProjReady = ({
    useEffect(() => {
       setLoading(true);
 
+      // const durationMin = +(duration == 'Другое' ? durationField : duration.replace(/[^0-9]/g,""));
+      // const res = getIntervals(selectedDays, durationMin);
+
       const obj = {
          projectName: name, 
          descr,
@@ -38,22 +42,21 @@ const NewProjReady = ({
          linkToForm: formLink,
          linkForRespond: 'projects/',
          linkForCustomer: '',
-         duration: duration == 'Другое' ? durationField : duration,
+         duration: duration == 'Другое' ? durationField : duration.replace(/[^0-9]/g,""),
          dates: selectedDays,
          isProjectEdit,
          uniqueId: activeProjectId
       };
-
       universalRequest('addProject', JSON.stringify(obj)).then((res) => onProjectLoaded(res, obj));
    }, [])
 
    const onProjectLoaded = (res, newProject) => {
+      console.log(res);
       if (res !== 'error'){
          delete newProject[isProjectEdit];
          newProject['linkForRespond'] += res;
 
          if (isProjectEdit){
-            console.log(newProject);
             const projectIndex = projects.findIndex(el => el.uniqueId == newProject.uniqueId);
             const updatedProjects = [...projects.slice(0, projectIndex), newProject, ...projects.slice(projectIndex + 1)];
             setProjects(updatedProjects);
@@ -82,6 +85,13 @@ const NewProjReady = ({
                <h3 className="modal__title">{isProjectEdit == true ? 'Редактирование проекта' : 'Создание проекта'}</h3>
             </div>
          ) : null}
+
+            <div className="modal__back">
+               <button className="button-reset modal__back-button" type="button" onClick={() => setStep(step - 1)}>
+                  <CalendarArrowSmall/>
+               </button>
+               <h3 className="modal__title">{isProjectEdit == true ? 'Редактирование проекта' : 'Создание проекта'}</h3>
+            </div>
          
          {loading ? <Loader classes="modal-new-project__loader"/> : (
             <>
@@ -89,7 +99,7 @@ const NewProjReady = ({
                   Проект <span>{name}</span> успешно {isProjectEdit == true ? 'перезаписан' : 'создан'}!
                </span>
                <button className="button-reset modal-new-project__project-link">
-                  {projects.find(el => el.projectName == name).linkForRespond}
+                  {projects.find(el => el.projectName == name) ? projects.find(el => el.projectName == name).linkForRespond : null}
                </button>
             </>
          )}

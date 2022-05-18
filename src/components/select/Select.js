@@ -14,7 +14,7 @@ const Select = ({values, selectName, clearSelect, setClearSelect, selectValue, s
 
    useEffect(() => {
       if (values){
-         console.log('поменять значения', values);
+         // console.log('поменять значения', values);
          setCurrentValue(values[0]);
          listItems.current.forEach(item => item ? item.classList.remove('selected') : null);
       }
@@ -57,7 +57,7 @@ const Select = ({values, selectName, clearSelect, setClearSelect, selectValue, s
    }
    
    const selectingItem = (e) => {
-      console.log(listItems.current);
+      // console.log(listItems.current);
       listItems.current.forEach(item => item ? item.classList.remove('selected') : null);
       setCurrentValue(e.target.innerHTML);
       setSelectOpened(false);

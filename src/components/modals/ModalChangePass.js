@@ -18,7 +18,7 @@ const ModalChangePass = ({setModalActive, user}) => {
    
    const [errorMessage, setErrorMessage] = useState('');
 
-   const {updateUserData} = useBookmeService();
+   const {universalRequest} = useBookmeService();
 
 
    const submitForm = async () => {
@@ -39,7 +39,7 @@ const ModalChangePass = ({setModalActive, user}) => {
       const formData = new FormData(form.current);
       formData.append("id", user[1]);
 
-      updateUserData(formData).then(res => {
+      universalRequest('updateUserData', formData).then(res => {
          if (res === 'error'){
             setErrorMessage('Старый пароль введен некорректно');
          } else if (res === 'success'){

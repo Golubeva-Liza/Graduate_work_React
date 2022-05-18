@@ -44,7 +44,6 @@ const ProjectsPage = () => {
       //преобразование интервалов времени и дат к виду: {date: date, intervals: [time1, time2]} 
       // --> {date: 12.05.2022, intervals: ['12:00-13:00', '14:00-15:00']}
       const projects = res.map(changeDatesOfProj);
-      console.log(projects);
       setProjects(projects);
       setProjectActive(projects[0].projectName);//первый полученный проект открывается
    }

@@ -1,0 +1,43 @@
+@import '../../styles/variables';
+.entry-ready{
+   margin: 0 auto;
+   width: 600px;
+   background: #FFFFFF;
+   border: 1px solid #E0E0E0;
+   box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.12);
+   padding: 60px 40px;
+   margin-top: 48px;
+   &__title{
+      font-weight: 600;
+      font-size: 25px;
+      line-height: 30px;
+      text-align: center;
+      color: $main-blue;
+      margin-bottom: 30px;
+   }
+   &__proj{
+      font-weight: 600;
+      font-size: 25px;
+      line-height: 30px;
+      color: $main-color;
+      margin-bottom: 16px;
+   }
+   &__info, &__name{
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 22px;
+      color: $main-color;
+   }
+   &__name{
+      margin-bottom: 8px;
+   }
+   &__info{
+      margin-bottom: 24px;
+   }
+   &__comment{
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 17px;
+      color: $main-color;
+   }
+}

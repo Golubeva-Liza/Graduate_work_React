@@ -15,6 +15,10 @@
          pointer-events: none;
       }
    }
+   .calendar__selected-prev{
+      background-color: rgba($main-grey, 0.3);
+      border-color: rgba($main-grey, 0.3);
+   }
    .calendar__selected.active{
       background-color: $main-blue;
       color: #FFFFFF;

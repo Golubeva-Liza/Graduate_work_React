@@ -1,5 +1,5 @@
 <?php
-   include_once "index.php";
+   include_once "../index.php";
    
    $projects = mysqli_query($conn, "SELECT uniqueId, projectName, descr, address, linkToForm, linkForRespond, linkForCustomer, duration FROM projects");
 
@@ -11,7 +11,7 @@
 
          $proj_id = $row['uniqueId'];
          
-         $test_dates = mysqli_query($conn, "SELECT time, date FROM test_dates WHERE project = {$proj_id}");
+         $test_dates = mysqli_query($conn, "SELECT firstTime, lastTime, date FROM timeintervals WHERE project = {$proj_id}");
          $dates = mysqli_fetch_all($test_dates);
 
          $projectNew = $row;
@@ -19,21 +19,6 @@
 
          array_push($res, $projectNew);
       }
-
-      // $data = mysqli_fetch_assoc($projects);
-
-      // $array = array();
-
-      // foreach ($data as $project) {
-      //    $proj_id = $project[0];
-         
-      //    $test_dates = mysqli_query($conn, "SELECT time, date FROM test_dates WHERE project = {$proj_id}");
-      //    $dates = mysqli_fetch_all($test_dates);
-
-      //    $projectNew = $project;
-      //    array_push($projectNew, $dates);
-      //    array_push($array, $projectNew);
-      // }
       
       $json = json_encode($res, JSON_UNESCAPED_UNICODE);
       echo $json;

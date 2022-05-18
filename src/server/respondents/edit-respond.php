@@ -1,20 +1,21 @@
 <?php
-   include_once "index.php";
+   include_once "../index.php";
    
    $username = mysqli_real_escape_string($conn, $_POST['name']);
    $email = mysqli_real_escape_string($conn, $_POST['email']);
    $phone = mysqli_real_escape_string($conn, $_POST['phone']);
    $gender = mysqli_real_escape_string($conn, $_POST['gender']);
-   // $birthdayDate = mysqli_real_escape_string($conn, $_POST['birthday-date']);
+   $birthday = mysqli_real_escape_string($conn, $_POST['birthdayDate']);
    $age = mysqli_real_escape_string($conn, $_POST['age']);
    $education = mysqli_real_escape_string($conn, $_POST['education']);
    $city = mysqli_real_escape_string($conn, $_POST['sity']);
    $familyStatus = mysqli_real_escape_string($conn, $_POST['familyStatus']);
    $tags = mysqli_real_escape_string($conn, $_POST['tags']);
-   $uniqueid = mysqli_real_escape_string($conn, $_POST['uniqueid']);
+   $id = mysqli_real_escape_string($conn, $_POST['id']);
    
-   // echo $username . ' ' . $email . ' ' . $phone . ' ' . $gender . ' ' . $birthdayDate . ' ' . $age . ' ' . $education . ' ' . $city . ' ' . $familyStatus . ' ' . $tags;
    $phoneNum = preg_replace("/[^0-9]/", '', $phone);
+   $editDate = date("Y-m-d");
+
    if (!$city){
       $city = '-';
    }
@@ -23,15 +24,14 @@
    }
 
    // $sql = mysqli_query($conn, "SELECT * FROM users WHERE unique_id = '{$uniqueid}'");
-   $record = mysqli_query($conn, "UPDATE respondents SET user_name='{$username}', user_email='{$email}', user_phone='{$phoneNum}', user_gender='{$gender}', user_age={$age}, education='{$education}', homecity='{$city}', family_status='{$familyStatus}', tags='{$tags}' WHERE unique_id={$uniqueid}");
+   $record = mysqli_query($conn, "UPDATE respondents SET name='{$username}', email='{$email}', phone='{$phoneNum}', gender='{$gender}', age={$age}, birthday='{$birthday}', education='{$education}', homecity='{$city}', familyStatus='{$familyStatus}', tags='{$tags}', editDate='{$editDate}' WHERE id={$id}");
 
    if($record){
-      $currentRespond= mysqli_query($conn, "SELECT * FROM respondents WHERE unique_id = '{$uniqueid}'");
+      $currentRespond= mysqli_query($conn, "SELECT * FROM respondents WHERE id = '{$id}'");
       if(mysqli_num_rows($currentRespond) > 0){
-         $data = mysqli_fetch_all($currentRespond);
+         $data = mysqli_fetch_assoc($currentRespond);
          $json = json_encode($data);
          echo $json;
-         // echo "success";
       }else{
          echo "Что-то пошло не так";
       }

@@ -1,5 +1,5 @@
 <?php
-   include_once "index.php";
+   include_once "../index.php";
    
    $username = mysqli_real_escape_string($conn, $_POST['username']);
    $useremail = mysqli_real_escape_string($conn, $_POST['useremail']);

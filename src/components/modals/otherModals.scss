@@ -232,7 +232,7 @@
       display: block;
    }
    &__duration{
-      width: 60% !important;
+      width: 40% !important;
       margin-top: 8px;
    }
    &__loader{
@@ -318,8 +318,10 @@
       margin-bottom: 16px;
    }
    &__interval{
-      display: flex;
-      align-items: center;
+      div{
+         display: flex;
+         align-items: center;
+      }
       &:not(:last-child){
          margin-bottom: 8px;
       }

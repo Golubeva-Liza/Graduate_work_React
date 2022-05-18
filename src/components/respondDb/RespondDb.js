@@ -30,7 +30,7 @@ const RespondDb = ({setModalActive, respondents, setRespondents, setEditRespond,
 
    useEffect(() => {
       if (removedRespond || removedRespond === 0){
-         const respondId = respondents[removedRespond][1];
+         const respondId = respondents[removedRespond].id;
          setRemovedRespond(null);
          universalRequest('removeRespondent', respondId)
             .then(onRespondentRemoved);
@@ -65,7 +65,7 @@ const RespondDb = ({setModalActive, respondents, setRespondents, setEditRespond,
 
       const name = currentItem.childNodes[1].innerHTML;
       const phone = currentItem.childNodes[7].innerHTML.replace(/[^0-9]/g,"");
-      const respondNum = respondents.findIndex(el => el[2] == name && el[4] == phone);
+      const respondNum = respondents.findIndex(el => el.name == name && el.phone == phone);
       setActiveRespond(respondNum);
    }
 
@@ -87,24 +87,24 @@ const RespondDb = ({setModalActive, respondents, setRespondents, setEditRespond,
       console.log('рендер респондентов');
       if (arr.length > 0){
          const elements = arr.map((value, index) => {
-            const userPhone = value[4].replace(/^(\d)(\d{3})(\d{3})(\d{2})(\d{2})$/, '+$1 $2 $3 $4 $5');
+            const userPhone = value.phone.replace(/^(\d)(\d{3})(\d{3})(\d{2})(\d{2})$/, '+$1 $2 $3 $4 $5');
    
             return (
-               <div className="table__row" key={value[1]} ref={el => respondList.current[index] = el}>
+               <div className="table__row" key={value.id} ref={el => respondList.current[index] = el}>
                   <div>
                      <label className="checkbox">
                         <input className="checkbox__input" name="respondent" type="checkbox"/>
                         <div className="checkbox__check"></div>
                      </label>
                   </div>
-                  <div>{value[2]}</div>
-                  <div>{value[5]}</div>
-                  <div>{value[6]}</div>
-                  <div>{value[7]}</div>
-                  <div>{value[8]}</div>
-                  <div>{value[9]}</div>
+                  <div>{value.name}</div>
+                  <div>{value.gender}</div>
+                  <div>{value.age}</div>
+                  <div>{value.education}</div>
+                  <div>{value.homecity}</div>
+                  <div>{value.familyStatus}</div>
                   <div>{userPhone}</div>
-                  <div>{value[10]}</div>
+                  <div>{value.tags}</div>
                   <div>
                      <button className="button-reset more-functions" onClick={toggleSettings} ref={el => dotBtns.current[index] = el}>
                         <Dots/>

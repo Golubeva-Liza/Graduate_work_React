@@ -35,51 +35,50 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
 
       //Search Filter
       if (searchInput.value) {
-         updatedList = updatedList.filter(
-            (item) =>
-            item[2].toLowerCase().search(searchInput.value.toLowerCase().trim()) !== -1
+         updatedList = updatedList.filter((item) =>
+            item.name.toLowerCase().search(searchInput.value.toLowerCase().trim()) !== -1
          );
       }
    
       //Gender Filter
       if (genderSelect && genderSelect !== "Не важно") {
          updatedList = updatedList.filter(
-            (item) => item[5] === genderSelect[0]
+            (item) => item.gender === genderSelect[0]
          );
       }
 
       //Age Filter
       if (ageNow.length && (ageNow[0] !== 0 || ageNow[1] !== 100)) {
          updatedList = updatedList.filter(
-            (item) => +item[6] >= ageNow[0] && +item[6] <= ageNow[1]
+            (item) => +item.age >= ageNow[0] && +item.age <= ageNow[1]
          );
       }
 
       //Education Filter
       if (educationSelect && educationSelect !== "Не важно") {
          updatedList = updatedList.filter(
-            (item) => item[7] === educationSelect
+            (item) => item.education === educationSelect
          );
       }
 
       //City Filter
       if (citySelect && citySelect !== "Не важно") {
          updatedList = updatedList.filter(
-            (item) => item[8] === citySelect
+            (item) => item.homecity === citySelect
          );
       }
 
       //Family status Filter
       if (familySelect && familySelect !== "Не важно") {
          updatedList = updatedList.filter(
-            (item) => item[9] === familySelect
+            (item) => item.familyStatus === familySelect
          );
       }
 
       //Tags Filter
       if (tagsSelect.length) {
          updatedList = updatedList.filter((item) => (
-            item[10].split(', ').find(value =>
+            item.tags.split(', ').find(value =>
                tagsSelect.some(element => value === element)
             )
          ));

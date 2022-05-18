@@ -1,6 +1,5 @@
 <?php
-   // session_start();
-   include_once "index.php";
+   include_once "../index.php";
    
    $email = mysqli_real_escape_string($conn, $_POST['email']);
    $password = mysqli_real_escape_string($conn, $_POST['password']);

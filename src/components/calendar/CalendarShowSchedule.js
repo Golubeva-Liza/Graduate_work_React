@@ -48,7 +48,13 @@ const CalendarShowSchedule = ({className, small, projects, projectActive}) => {
          const currentDay = new Date(newDate.setDate(i)).toISOString().slice(0,10);
          const thisDate = currentProjectDates ? currentProjectDates.find(item => item.date == currentDay) : null;
 
-         if (thisDate) {
+         if (thisDate && new Date(currentDay) < new Date(new Date().setHours(3, 0, 0, 0))) {
+            days.push(
+               <div key={i} className="calendar__date calendar__selected-prev">
+                  <span>{i}</span>
+               </div>
+            );
+         } else if (thisDate && new Date(currentDay) >= new Date(new Date().setHours(3, 0, 0, 0))) {
             days.push(
                <div key={i} className="calendar__date calendar__selected">
                   <span>{i}</span>

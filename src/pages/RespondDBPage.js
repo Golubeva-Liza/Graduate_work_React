@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
 import useBookmeService from '../services/BookmeService';
+import useFetchError from '../hooks/useFetchError';
 
 import RespondDbSettings from '../components/respondDbSettings/RespondDbSettings';
 import RespondDb from '../components/respondDb/RespondDb';
@@ -10,14 +10,8 @@ import ModalAddEditRespond from '../components/modals/ModalAddEditRespond';
 
 
 const RespondDBPage = () => {
-   let navigate = useNavigate();
    const {loading, setLoading, universalRequest} = useBookmeService();
-
-   useEffect(() => {
-      if (!localStorage.getItem('authorized')){
-         navigate('/');
-      }
-   }, []);
+   const {isFetchError} = useFetchError();
 
    const [modalRespondActive, setModalRespondActive] = useState(false);
    const [respondents, setRespondents] = useState([]);
@@ -32,10 +26,19 @@ const RespondDBPage = () => {
    }, []);
 
    const loadRespondents = async () => {
-      universalRequest('getAllRespondents').then((res) => {
-         console.log(res);
-         setRespondents(res);
-         setLoading(false);
+      const obj = {
+         "user": sessionStorage.getItem('userKey'),
+         "key": sessionStorage.getItem('authKey')
+      };
+
+      universalRequest('getAllRespondents', JSON.stringify(obj)).then((res) => {
+         const isError = isFetchError(res);
+         if (!isError){
+            setRespondents(res);
+            setLoading(false);
+         }else{
+            console.log(res);
+         }
       });
    }
 

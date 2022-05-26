@@ -95,6 +95,9 @@ const useValidation = () => {
          case 'projFormLink':
             return !regForLink.test(String(value)) && value.length > 0 ? 'Неккоректная ссылка для Google формы' : true;
 
+         case 'newPass':
+            return value.length < 6 || value.length >= 60 ? 'Пароль должен быть длиной от 6 до 30 символов' : true;
+
          default:
             break;
       }

@@ -31,7 +31,7 @@ const RespondPage = () => {
 
    const onProjectLoaded = (res) => {
       const project = changeDatesToEntries(res);
-      
+      // console.log(project);
       setProject(project);
    }
 

@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useState, useRef} from 'react';
+// import { useNavigate } from "react-router-dom";
 
 import useBookmeService from '../../services/BookmeService';
 import { useInput } from '../../hooks/useInput';
@@ -11,14 +11,13 @@ import Button from '../button/Button';
 import FormPassword from '../formPassword/FormPassword';
 
 
-const LogForm = ({toggleForm}) => {
+const LogForm = ({toggleForm, onLogin}) => {
    const emailInput = useInput('');
    const passwordInput = useInput('');
    const form = useRef();
    const [errorMessage, setErrorMessage] = useState('');
 
    const {universalRequest} = useBookmeService();
-   const navigate = useNavigate();
    const {loginValid} = useValidation();
    
 
@@ -28,21 +27,10 @@ const LogForm = ({toggleForm}) => {
       if (successValid === true){
          setErrorMessage('');
          const formData = new FormData(form.current);
-         universalRequest('login', formData).then(onUserLogin);
+         universalRequest('login', formData).then((res) => onLogin(res));
 
       } else {
          setErrorMessage(successValid);
-      }
-   }
-
-   const onUserLogin = (res) => {
-      //проверка на число, тк с сервера должен прийти id пользователя
-      if (/^(0|[1-9]\d*)$/.test(res)){
-         setErrorMessage('');
-         navigate('/moderator');
-         localStorage.setItem('authorized', res);
-      } else {
-         setErrorMessage(res);
       }
    }
 

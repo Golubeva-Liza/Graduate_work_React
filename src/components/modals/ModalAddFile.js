@@ -1,14 +1,17 @@
 import { useState, useRef, useEffect } from 'react';
 import useBookmeService from '../../services/BookmeService';
+import useFetchError from '../../hooks/useFetchError';
 
 import './otherModals.scss';
 import { UploadIcon, DefaultUser } from '../../resources'; 
+import Button from '../button/Button';
 
 
 const ModalAddFile = ({modalActive, setModalActive, user, setUser}) => {
    const uploadBtn = useRef();
    const form = useRef();
    const {universalRequest} = useBookmeService();
+   const {isFetchError} = useFetchError();
 
    const [image, setImage] = useState('');
 
@@ -31,14 +34,22 @@ const ModalAddFile = ({modalActive, setModalActive, user, setUser}) => {
 
    const formSubmit = () => {
       const formData = new FormData(form.current);
-      formData.append("id", user[1]);
+
+      formData.set('userKey', sessionStorage.getItem('userKey'));
+      formData.set('authKey', sessionStorage.getItem('authKey'));
 
       universalRequest('updateUserData', formData).then(res => {
-         if (res !== 'error'){
-            const updatedUser = [...user.slice(0, 4), res];
+
+         const isError = isFetchError(res);
+         if (!isError){
+            const updatedUser = {...user};
+            updatedUser.img = res.imgName;
             setUser(updatedUser);
             setImage('');
             setModalActive(false);
+
+         } else{
+            console.log(res);
          }
       });
    }
@@ -55,13 +66,12 @@ const ModalAddFile = ({modalActive, setModalActive, user, setUser}) => {
 
          <div className={`modal-add-file__photo ${image ? '' : 'disabled'}`}>
             <img src={image ? image : DefaultUser} alt="Загруженный файл"/>
-            {/* <button className="button-reset" onClick={removePhoto}>Удалить</button> */}
          </div>
          
          <form className="modal__form" method="POST" ref={form} onSubmit={e => e.preventDefault()} encType="multipart/form-data">
             <input ref={uploadBtn} className="visually-hidden" type="file" name="photo" onChange={onUpload} accept=".png,.jpg,.jpeg"/>
-            <button className="button-reset button button_linear modal__btn modal-add-file__btn" type="button" onClick={() => uploadBtn.current.click()}>Выбрать файл</button>
-            <button className={`button-reset button modal__btn modal-add-file__save ${image ? '' : 'disabled'}`} type="submit" onClick={formSubmit}>Сохранить</button>
+            <Button buttonClass="modal__btn modal-add-file__btn" linear onClick={() => uploadBtn.current.click()}>Выбрать файл</Button>
+            <Button buttonClass={`modal__btn modal-add-file__save ${image ? '' : 'disabled'}`} onClick={formSubmit}>Сохранить</Button>
          </form>
       </div>
    )

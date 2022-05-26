@@ -1,23 +1,17 @@
 import './headerSide.scss';
 import { HeaderArrow, Calendar, Respond, Settings, ProfilePhoto, DefaultUser } from '../../resources';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import AuthContext from '../../hooks/context';
 
 import { NavLink } from 'react-router-dom';
 
-const HeaderSide = ({user}) => {
+const HeaderSide = () => {
+   const user = useContext(AuthContext);
    const [headerClosed, setHeaderClosed] = useState(localStorage.getItem('headerClosed') == 'true' ? true : false);
-
-   const [userName, setUserName] = useState('');
 
    const toggleMenu = () => {
       setHeaderClosed(!headerClosed);
    }
-
-   useEffect(() => {
-      if (user){
-         setUserName(user[2]);
-      }
-   }, [user])
 
    useEffect(() => {
       localStorage.setItem('headerClosed', headerClosed);
@@ -29,11 +23,12 @@ const HeaderSide = ({user}) => {
          <button className="button-reset header__arrow" onClick={toggleMenu}>
             <HeaderArrow/>
          </button>
-         <div className={`header__profile-photo${user[4] ? "" : " default"}`}>
-            <img src={user[4] ? `http://localhost/bookme-server/images/${user[4]}` : DefaultUser} alt="avatar"/>
+         <div className={`header__profile-photo${user.img ? "" : " default"}`}>
+            <img src={user.img ? `https://bookme.lavro.ru/server/images/${user.img}` : DefaultUser} alt="avatar"/>
+            {/* http://localhost/bookme-server/images/ */}
          </div>
          <div className="main-title header__profile-name">
-            {userName}
+            {user.name}
          </div>
          <nav className="header__nav">
             <ul className="header__list">

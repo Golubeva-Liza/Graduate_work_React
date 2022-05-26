@@ -37,13 +37,14 @@ const RegForm = ({toggleForm}) => {
    }
 
    const onUserRegistered = (res) => {
-      if (/^(0|[1-9]\d*)$/.test(res)){
-         setErrorMessage('');
-         navigate('/moderator');
-         localStorage.setItem('authorized', res);
-      } else {
-         setErrorMessage(res);
-      }
+      console.log(res);
+      // if (/^(0|[1-9]\d*)$/.test(res)){
+      //    setErrorMessage('');
+      //    navigate('/moderator');
+      //    localStorage.setItem('authorized', res);
+      // } else {
+      //    setErrorMessage(res);
+      // }
    }
 
    return (

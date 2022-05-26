@@ -1,10 +1,11 @@
 import './otherModals.scss';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect} from 'react';
 import InputMask from 'react-input-mask';
 import useBookmeService from '../../services/BookmeService';
 import useValidation from '../../hooks/useValidation';
 import dateToAge from '../../hooks/dateToAge';
 import useSelectValues from '../../hooks/useSelectValues';
+import useFetchError from '../../hooks/useFetchError';
 
 import InputWithLabel from '../inputWithLabel/InputWithLabel';
 import Input from '../input/Input';
@@ -19,6 +20,7 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
    const {universalRequest} = useBookmeService();
    const {errorMessage, setErrorMessage, validation, scrollIntoTop} = useValidation();
    const {educationValues, familyStatusValues} = useSelectValues();
+   const {isFetchError} = useFetchError();
 
    const nameInput = useInput('');
    const emailInput = useInput('');
@@ -53,7 +55,6 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
          ageInput.setValue(currentRespond.age);
          setGenderInput(currentRespond.gender);
 
-         console.log(currentRespond.familyStatus, currentRespond.education);
          sityInput.setValue(currentRespond.homecity === '-' ? '' : currentRespond.homecity);
          setTagsList(currentRespond.tags === '-' ? [] : currentRespond.tags.split(', '));
          setEducationValue(currentRespond.education === '-' ? 'Не важно' : currentRespond.education);
@@ -71,6 +72,9 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
       if (respondId){
          formData.set("id", respondId);
       }
+
+      formData.set('userKey', sessionStorage.getItem('userKey'));
+      formData.set('authKey', sessionStorage.getItem('authKey'));
 
       formData.set('birthdayDate', dateInput.value.split('.').reverse().join('-'));
 
@@ -102,18 +106,24 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
       }
    }
 
-   const onRespondentLoaded = (newRespond) => {
-      setModalActive(false);
-      if (editRespond == null){
-         //при форме добавления
-         setRespondents(respondents => [...respondents, newRespond]);
-      } else {
-         //при форме редактирования
-         const updatedResponds = [...respondents.slice(0, editRespond), newRespond, ...respondents.slice(editRespond + 1)];
-         setRespondents(updatedResponds);
+   const onRespondentLoaded = (res) => {
+      const isError = isFetchError(res);
+
+      if (!isError){
+         setModalActive(false);
+         if (editRespond == null){
+            //при форме добавления
+            setRespondents(respondents => [...respondents, res]);
+         } else {
+            //при форме редактирования
+            const updatedResponds = [...respondents.slice(0, editRespond), res, ...respondents.slice(editRespond + 1)];
+            setRespondents(updatedResponds);
+         }
+         clearInputs();
+         setEditRespond(null);
+      }else{
+         console.log(res);
       }
-      clearInputs();
-      setEditRespond(null);
    }
 
    const clearInputs = () => {

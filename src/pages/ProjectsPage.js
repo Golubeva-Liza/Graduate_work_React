@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
 
 import changeDatesOfProj from '../hooks/changeDatesOfProj';
 
@@ -14,15 +13,7 @@ import useBookmeService from '../services/BookmeService';
 
 
 
-const ProjectsPage = () => {
-   let navigate = useNavigate();
-
-   useEffect(() => {
-      if (!localStorage.getItem('authorized')){
-         navigate('/');
-      }
-   }, []);
-
+const ProjectsPage = ({user}) => {
 
    const [modalProjectActive, setModalProjectActive] = useState(false);
    const [modalTimeActive, setModalTimeActive] = useState(false);
@@ -37,10 +28,15 @@ const ProjectsPage = () => {
 
    
    useEffect(() => {
-      universalRequest('getProjects').then(onProjectsLoaded);
+      const obj = {
+         'user': sessionStorage.getItem('userKey'),
+         'key': sessionStorage.getItem('authKey')
+      };
+      universalRequest('getProjects', JSON.stringify(obj)).then(onProjectsLoaded);
    }, [])
 
    const onProjectsLoaded = (res) => {
+
       //преобразование интервалов времени и дат к виду: {date: date, intervals: [time1, time2]} 
       // --> {date: 12.05.2022, intervals: ['12:00-13:00', '14:00-15:00']}
       const projects = res.map(changeDatesOfProj);

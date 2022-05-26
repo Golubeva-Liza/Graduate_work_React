@@ -25,11 +25,11 @@ const RespondRecordings = () => {
                </ul>
             </div> */}
             <div className="respond-recordings__per-day">
-               <h3 className="respond-recordings__date">12 февраля</h3>
+               <h3 className="respond-recordings__date">26 мая</h3>
                <Record time="13:00-14:00" name="Ольга" email="olgavolga@gmail.com" comment="Очень интересно" />
             </div>
             <div className="respond-recordings__per-day">
-               <h3 className="respond-recordings__date">16 февраля</h3>
+               <h3 className="respond-recordings__date">28 мая</h3>
 
                <Record time="9:00-10:00" name="Тимур Николаевич" email="timnik@gmail.com"/>
                <Record time="11:00-12:00" name="Константин" email="kostyahover@yandex.ru"/>
@@ -38,7 +38,7 @@ const RespondRecordings = () => {
                />
             </div>
             <div className="respond-recordings__per-day">
-               <h3 className="respond-recordings__date">25 февраля</h3>
+               <h3 className="respond-recordings__date">30 мая</h3>
 
                <Record time="10:00-11:00" name="Анна" email="annakovalenko@gmail.com"
                   comment="Добрый вечер. Если случится форс-мажор и запись перенесётся, прошу позвонить мне по номеру +7 808 487 44 25"

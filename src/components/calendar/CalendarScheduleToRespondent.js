@@ -12,16 +12,20 @@ const CalendarScheduleToRespondent = ({className, small, projectDates, selectedD
       "Сетрябрь", "Октрябрь", "Ноябрь", "Декабрь"
    ], []);
 
-   const [currentDate, setCurrentDate] = useState(new Date(new Date().setDate(1)));
+   const [currentDate, setCurrentDate] = useState(new Date(new Date(projectDates[0].date).setDate(1)));
 
    const calendarDaysRef = useRef([]);
 
 
    useEffect(() => {
       if (selectedDay){
-         const day = selectedDay.split('-').reverse()[0];
+         const day = +selectedDay.split('-').reverse()[0];
          calendarDaysRef.current.forEach(el => el ? el.classList.remove('active') : null);
-         calendarDaysRef.current.find(el => el.textContent == day).classList.add('active');
+         // console.log(day);
+         const date = calendarDaysRef.current.find(el => el.textContent == day);
+         if (date){
+            date.classList.add('active');
+         }
       }
       
    }, [selectedDay, currentDate])

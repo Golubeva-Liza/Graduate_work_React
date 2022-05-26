@@ -1,22 +1,15 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useState, useContext } from 'react';
 
 import { SettingsBg } from '../resources';
 import AccountSettings from '../components/accountSettings/AccountSettings';
 import Modal from '../components/modals/Modal';
 import ModalChangePass from '../components/modals/ModalChangePass';
 import ModalAddFile from '../components/modals/ModalAddFile';
+import AuthContext from '../hooks/context';
 
 
-const SettingsPage = ({user, setUser}) => {
-   let navigate = useNavigate();
-
-   useEffect(() => {
-      if (!localStorage.getItem('authorized')){
-         navigate('/');
-      }
-   }, []);
-
+const SettingsPage = ({setUser}) => {
+   const user = useContext(AuthContext);
 
    const [modalPasswordActive, setModalPasswordActive] = useState(false);
    const [modalFileActive, setModalFileActive] = useState(false);

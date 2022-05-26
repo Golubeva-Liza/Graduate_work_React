@@ -2,47 +2,43 @@ import {useHttp} from '../hooks/http.hook';
 
 const useBookmeService = () => {
    const {loading, setLoading, request} = useHttp();
-   const link = "http://localhost/bookme-server/";
+   const link = "https://bookme.lavro.ru/server/"; //http://localhost/bookme-server/
 
-   const universalRequest = async (req, data) => {
+   const universalRequest = async (req, data, header) => {
       let url = link;
       let answerType = 'json';
 
       switch(req) {
-         case 'getAllRespondents':
+         case 'getAllRespondents': //+
             url += 'respondents/respondents.php';
             break;
 
-         case 'addRespondent':
+         case 'addRespondent': //+
             url += 'respondents/add-respond.php';
             break;
 
-         case 'removeRespondent':
+         case 'removeRespondent': //+
             url += 'respondents/remove-respond.php';
-            answerType = 'text';
             break;
          
-         case 'editRespondent':
+         case 'editRespondent': //+
             url += 'respondents/edit-respond.php';
             break;
 
-         case 'login':
-            url += 'authorization/login.php';
-            answerType = 'text';
+         case 'login': //+
+            url += 'api/login.php';
             break;
 
-         case 'registration':
-            url += 'authorization/signup.php';
-            answerType = 'text';
+         case 'registration': //+
+            url += 'api/register.php';
             break;
 
-         case 'getLoggedUser':
-            url += 'users/get-user.php';
+         case 'getLoggedUser': //+
+            url += 'api/get-user.php';
             break;
          
-         case 'updateUserData':
+         case 'updateUserData': //+
             url += 'users/update-user.php';
-            answerType = 'text';
             break;
 
          case 'addProject':
@@ -67,6 +63,10 @@ const useBookmeService = () => {
             url += 'entries/add-entry.php';
             break;
 
+         case 'test':
+            url += 'api/test.php';
+            break;
+
          default: break;
       }
       
@@ -75,7 +75,7 @@ const useBookmeService = () => {
       }
 
       let answer;
-      data ? answer = await request(url, 'POST', data) : answer = await request(url);
+      data ? answer = await request(url, 'POST', data, header) : answer = await request(url);
       
       let res;
       answerType === 'json' ? res = await answer.json() : res = await answer.text();

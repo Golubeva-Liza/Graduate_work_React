@@ -2,6 +2,7 @@ import './respondDb.scss';
 
 import { useState, useRef, useEffect, useMemo } from 'react';
 import useBookmeService from '../../services/BookmeService';
+import useFetchError from '../../hooks/useFetchError';
 
 import RespondDbPopup from '../popup/RespondDbPopup';
 import Popup from '../popup/Popup';
@@ -11,7 +12,8 @@ import Loader from '../loader/Loader';
 
 
 const RespondDb = ({setModalActive, respondents, setRespondents, setEditRespond, filteredResponds, resultsFound, loading}) => {
-   
+
+   const {isFetchError} = useFetchError();
    const [popupActive, setPopupActive] = useState(false);
 
    const [activeRespond, setActiveRespond] = useState(null);
@@ -30,17 +32,27 @@ const RespondDb = ({setModalActive, respondents, setRespondents, setEditRespond,
 
    useEffect(() => {
       if (removedRespond || removedRespond === 0){
-         const respondId = respondents[removedRespond].id;
+         const obj = {
+            "user": sessionStorage.getItem('userKey'),
+            "key": sessionStorage.getItem('authKey'),
+            "respondId": respondents[removedRespond].id
+         };
          setRemovedRespond(null);
-         universalRequest('removeRespondent', respondId)
+         universalRequest('removeRespondent', obj)
             .then(onRespondentRemoved);
       }
    }, [removedRespond])
 
    const onRespondentRemoved = (res) => {
-      const updateResponds = [...respondents.slice(0, removedRespond), ...respondents.slice(removedRespond + 1)];
-      setRespondents(updateResponds);
-      setPopupActive(false);
+      const isError = isFetchError(res);
+
+      if (!isError){
+         const updateResponds = [...respondents.slice(0, removedRespond), ...respondents.slice(removedRespond + 1)];
+         setRespondents(updateResponds);
+         setPopupActive(false);
+      } else {
+         console.log(res);
+      }
    }
 
    const toggleSettings = (e) => {

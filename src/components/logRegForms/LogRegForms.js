@@ -5,7 +5,7 @@ import RegForm from './RegForm';
 import LogForm from './LogForm';
 
 
-const LogRegForms = () => {
+const LogRegForms = ({onLogin}) => {
    const [activeForm, setActiveForm] = useState('login');
 
    const toggleForm = () => {
@@ -22,7 +22,7 @@ const LogRegForms = () => {
             <div className="log-reg-forms__container">
                <div className="log-reg-forms__forms">
                   {activeForm === 'login' ? 
-                     <LogForm toggleForm={toggleForm}/>
+                     <LogForm toggleForm={toggleForm} onLogin={onLogin}/>
                      :
                      <RegForm toggleForm={toggleForm}/>
                   }

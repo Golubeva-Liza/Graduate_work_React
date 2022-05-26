@@ -2,31 +2,34 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useInput } from '../../hooks/useInput';
 import useBookmeService from '../../services/BookmeService';
+import useValidation from '../../hooks/useValidation';
+import useFetchError from '../../hooks/useFetchError';
 
 import Input from '../input/Input';
 import InputWithLabel from '../inputWithLabel/InputWithLabel';
 import Button from '../button/Button';
 import Popup from '../popup/Popup';
 import { DefaultUser } from '../../resources';
-
+import ErrorMessage from '../errorMessage/ErrorMessage';
 import './accountSettings.scss';
+
 
 const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setUser}) => {
    let navigate = useNavigate();
    const { universalRequest } = useBookmeService();
+   const {errorMessage, setErrorMessage, validation} = useValidation();
+   const {isFetchError} = useFetchError();
    
    const userName = useInput('');//значение
    const nameInput = useRef();//ссылка
    const nameForm = useRef();//форма
    const [nameEdit, setNameEdit] = useState(false);//статус: редактируется или нет
-   const [errorNameMessage, setErrorNameMessage] = useState('');
    const [removePhoto, setRemovePhoto] = useState(false);
 
    const userEmail = useInput('');//значение
    const emailInput = useRef();//ссылка
    const emailForm = useRef();//форма
    const [emailEdit, setEmailEdit] = useState(false);//статус: редактируется или нет
-   const [errorEmailMessage, setErrorEmailMessage] = useState('');
    
    const [popupActive, setPopupActive] = useState(false);
 
@@ -34,7 +37,9 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
    const toggleNameInput = () => {
       if (nameEdit){//перед закрытием
          userName.removeValue();
-         setErrorNameMessage('');
+         const error = {...errorMessage};
+         delete error["name"]; 
+         setErrorMessage(error);
       } else{
          nameInput.current.focus();
       }
@@ -43,8 +48,9 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
 
    const toggleEmailInput = () => {
       if (emailEdit){//перед закрытием
-         userEmail.removeValue();
-         setErrorEmailMessage('');
+         const error = {...errorMessage};
+         delete error["email"]; 
+         setErrorMessage(error);
       } else{
          emailInput.current.focus();
       }
@@ -52,43 +58,42 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
    }
 
    const updateName = () => {
-      if (userName.value.length < 3 || userName.value.length >= 30){
-         setErrorNameMessage('Имя пользователя должно быть длиной от 3 до 30 символов');
-         return;
-      } 
-      setErrorNameMessage('');
       
       const form = new FormData(nameForm.current);
 
-      form.append("id", user[1]);
+      form.set('userKey', sessionStorage.getItem('userKey'));
+      form.set('authKey', sessionStorage.getItem('authKey'));
+
       universalRequest('updateUserData', form).then(res => {
-         if (res === "success"){
-            const updatedUser = [...user.slice(0, 2), userName.value, ...user.slice(3)];
+         const isError = isFetchError(res);
+         if (!isError){
+            const updatedUser = {...user};
+            updatedUser.name = userName.value;
             setUser(updatedUser);
             setNameEdit(false);
             userName.removeValue();
+         }else{
+            console.log(res);
          }
       });
    }
 
    const updateEmail = () => {
-      const emailReg = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
-      if (!emailReg.test(String(userEmail.value).toLocaleLowerCase())){
-         setErrorEmailMessage('Введите корректный почтовый адрес');
-         return;
-      }
-      setErrorEmailMessage('');
-
       const form = new FormData(emailForm.current);
 
-      form.append("id", user[1]);
+      form.set('userKey', sessionStorage.getItem('userKey'));
+      form.set('authKey', sessionStorage.getItem('authKey'));
+
       universalRequest('updateUserData', form).then(res => {
-         if (res === "success"){
-            const updatedUser = [...user.slice(0, 3), userEmail.value, ...user.slice(4)];
+         const isError = isFetchError(res);
+         if (!isError){
+            const updatedUser = {...user};
+            updatedUser.email = userEmail.value;
             setUser(updatedUser);
             setEmailEdit(false);
             userEmail.removeValue();
+         }else{
+            console.log(res);
          }
       });
    }
@@ -130,14 +135,11 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
       setRemovePhoto(true);
    }
 
-   const errorName = errorNameMessage ? <div className="account-settings__error-message">{errorNameMessage}</div> : null;
-   const errorEmail = errorEmailMessage ? <div className="account-settings__error-message">{errorEmailMessage}</div> : null;
-
    return (
       <aside className="account-settings">
          <div className="account-settings__photo">
-            <button className={`button-reset account-settings__photo-btn${user[4] ? "" : " default"}`} onClick={() => setPopupActive(!popupActive)}>
-               <img src={user[4] ? `http://localhost/bookme-server/images/${user[4]}` : DefaultUser} alt="avatar"/>
+            <button className={`button-reset account-settings__photo-btn${user.img ? "" : " default"}`} onClick={() => setPopupActive(!popupActive)}>
+               <img src={user.img ? `http://localhost/bookme-server/images/${user.img }` : DefaultUser} alt="avatar"/>
             </button>
             <Popup 
                items={['Загрузить новую', 'Удалить']}
@@ -147,49 +149,63 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
                onClick={[onUploadPhoto, onRemovePhoto]}
             />
          </div>
-         <span className="account-settings__name">{user[2]}</span>
+         <span className="account-settings__name">{user.name}</span>
 
          <form className={`account-settings__setting ${nameEdit ? 'changing' : ''}`} onSubmit={(e) => e.preventDefault()} ref={nameForm}>
             <div className="account-settings__label">
                <span className="account-settings__setting-title">Логин</span>
                <div className="account-settings__setting-wrapper">
-                  <span className="account-settings__setting-value">{user[2]}</span>
+                  <span className="account-settings__setting-value">{user.name}</span>
                   <button className={'button-reset account-settings__edit'} onClick={toggleNameInput}>{nameEdit ? 'Отменить' : 'Изменить'}</button>
                </div>
                {/* из-за рефа */}
                <input 
                   className={`input ${nameEdit ? '' : 'visually-hidden'}`}
                   type="text"
-                  name="username"
+                  name="name"
                   autoComplete="off"
                   value={userName.value}
                   onChange={userName.onChange}
                   ref={nameInput}
+                  onBlur={e => validation(e)}
                />
-               {errorName}
+               {errorMessage.name ? <ErrorMessage message={errorMessage.name}/> : null}
             </div>
-            <button className={`button-reset button ${nameEdit ? '' : 'visually-hidden'}`} type='submit' onClick={updateName} disabled={userName.value == '' ? true : false}>Сохранить изменения</button>
+            <Button 
+               buttonClass={`${nameEdit ? '' : 'visually-hidden'}`}
+               onClick={updateName} 
+               disabled={userName.value.length > 3 && userName.value.length < 30 && !errorMessage.name ? false : true}
+            >
+               Сохранить изменения
+            </Button>
          </form>
 
          <form className={`account-settings__setting ${emailEdit ? 'changing' : ''}`} onSubmit={(e) => e.preventDefault()} ref={emailForm}>
             <div className="account-settings__label">
                <span className="account-settings__setting-title">Почтовый адрес</span>
                <div className="account-settings__setting-wrapper">
-                  <span className="account-settings__setting-value">{user[3]}</span>
+                  <span className="account-settings__setting-value">{user.email}</span>
                   <button className={'button-reset account-settings__edit'} onClick={toggleEmailInput}>{emailEdit ? 'Отменить' : 'Изменить'}</button>
                </div>
                <input 
                   className={`input ${emailEdit ? '' : 'visually-hidden'}`}
                   type="text"
-                  name="useremail"
+                  name="email"
                   autoComplete="off"
                   value={userEmail.value}
                   onChange={userEmail.onChange}
                   ref={emailInput}
+                  onBlur={e => validation(e)}
                />
-               {errorEmail}
+               {errorMessage.email ? <ErrorMessage message={errorMessage.email}/> : null}
             </div>
-            <button className={`button-reset button ${emailEdit ? '' : 'visually-hidden'}`} type='submit' onClick={updateEmail} disabled={userEmail.value == '' ? true : false}>Сохранить изменения</button>
+            <Button 
+               buttonClass={`${emailEdit ? '' : 'visually-hidden'}`}
+               onClick={updateEmail} 
+               disabled={userEmail.value !== '' && !errorMessage.email ? false : true}
+            >
+               Сохранить изменения
+            </Button>
          </form>
 
          <button className="button-reset account-settings__password" onClick={() => setModalPasswordActive(true)}>Изменить пароль</button>

@@ -73,8 +73,8 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
          formData.set("id", respondId);
       }
 
-      formData.set('userKey', sessionStorage.getItem('userKey'));
-      formData.set('authKey', sessionStorage.getItem('authKey'));
+      formData.set('userKey', localStorage.getItem('userKey'));
+      formData.set('authKey', localStorage.getItem('authKey'));
 
       formData.set('birthdayDate', dateInput.value.split('.').reverse().join('-'));
 

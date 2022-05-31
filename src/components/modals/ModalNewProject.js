@@ -122,7 +122,7 @@ const ModalNewProject = ({
                setProjects={setProjects}
                clearFields={clearFields}
                isProjectEdit={isProjectEdit} setIsProjectEdit={setIsProjectEdit}
-               activeProjectId={isProjectEdit ? projects.find(el => el.projectName == projectActive).uniqueId : null}
+               activeProjectId={isProjectEdit ? projects.find(el => el.projectName == projectActive).projId : null}
                projects={projects}
             />
          ) : false}

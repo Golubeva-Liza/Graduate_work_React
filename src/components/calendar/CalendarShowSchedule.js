@@ -2,9 +2,10 @@ import './calendar.scss';
 import './calendarCreateProj.scss';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { CalendarArrow, CalendarArrowSmall } from '../../resources';
+import getDate from '../../hooks/getDate';
 
 
-const CalendarShowSchedule = ({className, small, projects, projectActive}) => {
+const CalendarShowSchedule = ({className, small, projects, projectActive, setActiveDate}) => {
 
    const monthsNames = useMemo(() => [
       "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август",
@@ -13,7 +14,15 @@ const CalendarShowSchedule = ({className, small, projects, projectActive}) => {
 
    const [currentDate, setCurrentDate] = useState(new Date(new Date().setDate(1)));
 
-   //поменять зависимость на useeffect currentDate в зависимости от первого числа проекта
+   //меняем первую дату календаря в зависимости от месяца первой даты расписания проекта (для удобного отображения)
+   useEffect(() => {
+      if (projectActive){
+         const firstDate = projects.find(el => el.projectName == projectActive).dates[0].date;
+         const firstDay = new Date(new Date(firstDate).setDate(1));
+         setCurrentDate(firstDay);
+      }
+   }, [projectActive])
+
 
    function renderCalendar() {
       
@@ -89,7 +98,9 @@ const CalendarShowSchedule = ({className, small, projects, projectActive}) => {
 
    const onClickDay = (e) => {
       if(e.target.closest('.calendar__selected')){
-         console.log('click');
+         const date = getDate(e.target.textContent, currentDate.getMonth(), currentDate.getFullYear());
+         // console.log(date);
+         setActiveDate(date);
       }
    }
    

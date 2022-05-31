@@ -35,25 +35,27 @@ const App = () => {
             'img': res.img
          });
 
-         sessionStorage.setItem('userKey', res.userId);
-         sessionStorage.setItem('authKey', res.key);
+         localStorage.setItem('userKey', res.userId);
+         localStorage.setItem('authKey', res.key);
 
          navigate('/moderator');
       }
    };
 
    useEffect(() => {
-      //авторизация, если содержатся ключи в sessionStorage
+      //авторизация, если содержатся ключи в localStorage
+      if(window.location.pathname.includes('/moderator') || window.location.pathname == '/'){
 
-      if (sessionStorage.getItem('userKey') && sessionStorage.getItem('authKey')){
-         const obj = {
-            "user": sessionStorage.getItem('userKey'),
-            "key": sessionStorage.getItem('authKey')
-         };
-         universalRequest('getLoggedUser', JSON.stringify(obj)).then(onUserLoad);
-         
-      }else{
-         navigate('/');
+         if (localStorage.getItem('userKey') && localStorage.getItem('authKey')){
+            const obj = {
+               "user": localStorage.getItem('userKey'),
+               "key": localStorage.getItem('authKey')
+            };
+            universalRequest('getLoggedUser', JSON.stringify(obj)).then(onUserLoad);
+            
+         }else{
+            navigate('/');
+         }
       }
    }, []);
 
@@ -65,6 +67,11 @@ const App = () => {
             'email': res.email,
             'img': res.img
          });
+
+         if (window.location.pathname == '/'){
+            navigate('/moderator');
+         }
+         
       }else{
          console.log(res);
       }

@@ -1,8 +1,45 @@
 import './respondRecordings.scss';
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Record from './Record';
 
-const RespondRecordings = () => {
+const RespondRecordings = ({activeDate, entries}) => {
+
+   const [activeEntries, setActiveEntries] = useState(null);
+
+   useEffect(() => {
+      if (entries && activeDate){
+         const arr = [...entries];
+         const newArr = arr.filter(
+            (item) => item.date === activeDate
+         );
+         setActiveEntries(newArr);
+
+      } else if (entries && !activeDate) {
+         setActiveEntries(entries);
+      }
+
+   }, [entries, activeDate])
+
+
+   useEffect(() => {
+      console.log(activeEntries);
+
+   }, [activeEntries])
+
+
+   // function renderEntries(arr) {
+   //    if (arr){
+   //       let elements = arr.map((value, index) => (
+   //          <div className="respond-recordings__per-day">
+   //             <h3 className="respond-recordings__date">26 мая</h3>
+   //             <Record time="13:00-14:00" name="Ольга" email="olgavolga@gmail.com" comment="Очень интересно" />
+   //          </div>
+   //       ));
+   //       return elements;
+   //    }
+   // }
+
+   // const respondItems = useMemo(() => renderEntries(activeEntries), [activeEntries]);
 
    return (
       <section className="respond-recordings">
@@ -24,7 +61,9 @@ const RespondRecordings = () => {
                   </li>
                </ul>
             </div> */}
-            <div className="respond-recordings__per-day">
+
+            {/* {respondItems} */}
+            {/* <div className="respond-recordings__per-day">
                <h3 className="respond-recordings__date">26 мая</h3>
                <Record time="13:00-14:00" name="Ольга" email="olgavolga@gmail.com" comment="Очень интересно" />
             </div>
@@ -49,7 +88,7 @@ const RespondRecordings = () => {
                <Record time="14:00-15:00" name="Виктор Иннокентьевич" email="bestvictor@mail.ru"
                   comment="Я на самом деле не автослесарь, но 10 лет владел автомастерской, поэтому считаю, что подойду для тестирования"
                />
-            </div>
+            </div> */}
          </div>
       </section>
    )

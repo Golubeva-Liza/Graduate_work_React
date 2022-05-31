@@ -33,12 +33,12 @@ const RespondDb = ({setModalActive, respondents, setRespondents, setEditRespond,
    useEffect(() => {
       if (removedRespond || removedRespond === 0){
          const obj = {
-            "user": sessionStorage.getItem('userKey'),
-            "key": sessionStorage.getItem('authKey'),
+            "user": localStorage.getItem('userKey'),
+            "key": localStorage.getItem('authKey'),
             "respondId": respondents[removedRespond].id
          };
          setRemovedRespond(null);
-         universalRequest('removeRespondent', obj)
+         universalRequest('removeRespondent', JSON.stringify(obj))
             .then(onRespondentRemoved);
       }
    }, [removedRespond])

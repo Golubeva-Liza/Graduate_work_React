@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react';
-
-import changeDatesOfProj from '../hooks/changeDatesOfProj';
+import { useState, useEffect, useMemo } from 'react';
 
 import ModerCalendar from '../components/moderCalendar/ModerCalendar';
 import ProjectsAside from '../components/projectsAside/ProjectsAside';
@@ -13,7 +11,7 @@ import useBookmeService from '../services/BookmeService';
 
 
 
-const ProjectsPage = ({user}) => {
+const ProjectsPage = () => {
 
    const [modalProjectActive, setModalProjectActive] = useState(false);
    const [modalTimeActive, setModalTimeActive] = useState(false);
@@ -26,26 +24,31 @@ const ProjectsPage = ({user}) => {
    const [projects, setProjects] = useState([]);
    const {universalRequest} = useBookmeService();
 
+   const [activeDate, setActiveDate] = useState(null);
+   const [entries, setEntries] = useState(null);
+
    
    useEffect(() => {
       const obj = {
-         'user': sessionStorage.getItem('userKey'),
-         'key': sessionStorage.getItem('authKey')
+         'user': localStorage.getItem('userKey'),
+         'key': localStorage.getItem('authKey')
       };
       universalRequest('getProjects', JSON.stringify(obj)).then(onProjectsLoaded);
    }, [])
 
-   const onProjectsLoaded = (res) => {
 
-      //преобразование интервалов времени и дат к виду: {date: date, intervals: [time1, time2]} 
-      // --> {date: 12.05.2022, intervals: ['12:00-13:00', '14:00-15:00']}
-      const projects = res.map(changeDatesOfProj);
-      setProjects(projects);
-      setProjectActive(projects[0].projectName);//первый полученный проект открывается
+   const onProjectsLoaded = (res) => {
+      //проекты
+      setProjects(res);
+      setProjectActive(res[0].projectName);//первый полученный проект открывается
+      console.log(res);
+
+      //записи
+      let arr = [];
+      res.forEach(proj => arr = [...arr, ...proj.entries]);
+      setEntries(arr);
    }
 
-
-   // const [currentDate, setCurrentDate] = useState(null);
 
    return (
       <>
@@ -58,9 +61,11 @@ const ProjectsPage = ({user}) => {
          <ModerCalendar
             projects={projects}
             projectActive={projectActive} 
+            setActiveDate={setActiveDate}
          />
          <RespondRecordings
-            
+            activeDate={activeDate}
+            entries={entries}
          />
          <Modal modalClass={'modal-new-project'} active={modalProjectActive} setActive={setModalProjectActive}>
             <ModalNewProject 

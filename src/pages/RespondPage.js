@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from 'react';
 import { useParams } from "react-router-dom";
 
 import useBookmeService from '../services/BookmeService';
-import changeDatesToEntries from '../hooks/changeDatesToEntries';
 import changeDatesOfProj from '../hooks/changeDatesOfProj';
 
 import HeaderTop from '../components/headerTop/HeaderTop';
@@ -22,17 +21,15 @@ const RespondPage = () => {
    const {universalRequest} = useBookmeService();
 
    useEffect(() => {
-      getProject();
+      universalRequest('getOneProject', projectId).then(onProjectLoaded);
    }, [projectId])
 
-   const getProject = () => {
-      universalRequest('getOneProject', projectId).then(onProjectLoaded);
-   }
 
    const onProjectLoaded = (res) => {
-      const project = changeDatesToEntries(res);
-      // console.log(project);
-      setProject(project);
+      if (!res.error){
+         setProject(res);
+      }
+      // console.log(res);
    }
 
    return (

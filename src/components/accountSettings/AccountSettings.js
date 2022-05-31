@@ -4,6 +4,7 @@ import { useInput } from '../../hooks/useInput';
 import useBookmeService from '../../services/BookmeService';
 import useValidation from '../../hooks/useValidation';
 import useFetchError from '../../hooks/useFetchError';
+import useAddressValues from '../../hooks/useAddressValues';
 
 import Input from '../input/Input';
 import InputWithLabel from '../inputWithLabel/InputWithLabel';
@@ -19,6 +20,7 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
    const { universalRequest } = useBookmeService();
    const {errorMessage, setErrorMessage, validation} = useValidation();
    const {isFetchError} = useFetchError();
+   const {imagesUrl} = useAddressValues();
    
    const userName = useInput('');//значение
    const nameInput = useRef();//ссылка
@@ -61,8 +63,8 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
       
       const form = new FormData(nameForm.current);
 
-      form.set('userKey', sessionStorage.getItem('userKey'));
-      form.set('authKey', sessionStorage.getItem('authKey'));
+      form.set('userKey', localStorage.getItem('userKey'));
+      form.set('authKey', localStorage.getItem('authKey'));
 
       universalRequest('updateUserData', form).then(res => {
          const isError = isFetchError(res);
@@ -81,8 +83,8 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
    const updateEmail = () => {
       const form = new FormData(emailForm.current);
 
-      form.set('userKey', sessionStorage.getItem('userKey'));
-      form.set('authKey', sessionStorage.getItem('authKey'));
+      form.set('userKey', localStorage.getItem('userKey'));
+      form.set('authKey', localStorage.getItem('authKey'));
 
       universalRequest('updateUserData', form).then(res => {
          const isError = isFetchError(res);
@@ -99,7 +101,8 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
    }
 
    const logout = () => {
-      localStorage.removeItem('authorized');
+      localStorage.removeItem('userKey');
+      localStorage.removeItem('authKey');
       navigate('/');
    }
 
@@ -139,7 +142,7 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
       <aside className="account-settings">
          <div className="account-settings__photo">
             <button className={`button-reset account-settings__photo-btn${user.img ? "" : " default"}`} onClick={() => setPopupActive(!popupActive)}>
-               <img src={user.img ? `http://localhost/bookme-server/images/${user.img }` : DefaultUser} alt="avatar"/>
+               <img src={user.img ? `${imagesUrl}${user.img }` : DefaultUser} alt="avatar"/>
             </button>
             <Popup 
                items={['Загрузить новую', 'Удалить']}

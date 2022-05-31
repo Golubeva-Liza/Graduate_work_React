@@ -24,7 +24,7 @@ const LogRegForms = ({onLogin}) => {
                   {activeForm === 'login' ? 
                      <LogForm toggleForm={toggleForm} onLogin={onLogin}/>
                      :
-                     <RegForm toggleForm={toggleForm}/>
+                     <RegForm toggleForm={toggleForm} onLogin={onLogin}/>
                   }
                </div>
             </div>

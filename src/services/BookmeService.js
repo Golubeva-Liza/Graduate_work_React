@@ -1,11 +1,12 @@
 import {useHttp} from '../hooks/http.hook';
+import useAddressValues from '../hooks/useAddressValues';
 
 const useBookmeService = () => {
    const {loading, setLoading, request} = useHttp();
-   const link = "https://bookme.lavro.ru/server/"; //http://localhost/bookme-server/
+   const {serverUrl} = useAddressValues();
 
    const universalRequest = async (req, data, header) => {
-      let url = link;
+      let url = serverUrl;
       let answerType = 'json';
 
       switch(req) {
@@ -41,12 +42,11 @@ const useBookmeService = () => {
             url += 'users/update-user.php';
             break;
 
-         case 'addProject':
+         case 'addProject': //+
             url += 'projects/add-project.php';
-            answerType = 'text';
             break;
 
-         case 'getProjects':
+         case 'getProjects': //+
             url += 'projects/get-projects.php';
             break;
 
@@ -70,7 +70,7 @@ const useBookmeService = () => {
          default: break;
       }
       
-      if (url === link){
+      if (url === serverUrl){
          return;
       }
 

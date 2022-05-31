@@ -11,7 +11,7 @@
       $row = mysqli_fetch_assoc($sql);
       $id = $row['id'];
       $name = $row['name'];
-      $email = $row['email'];
+      // $email = $row['email'];
       $password2 = $row['password'];
       $img = $row['img'];
       
@@ -21,19 +21,25 @@
 
          $auth = mysqli_query($conn, "SELECT * FROM authorization WHERE userId={$id}");
 
+         // if(mysqli_num_rows($auth) > 0){
+         //    $sql = mysqli_query($conn, "DELETE FROM authorization WHERE userId={$id}");
+         // }
+
+         // $record = mysqli_query($conn, "INSERT INTO authorization (userId, authkey) VALUES ($id, $random_key)");
+
          if(mysqli_num_rows($auth) > 0){
-            $sql = mysqli_query($conn, "DELETE FROM authorization WHERE userId={$id}");
+            $update = mysqli_query($conn, "UPDATE authorization SET authkey={$random_key} WHERE userId={$id}");
+         } else {
+            $record = mysqli_query($conn, "INSERT INTO authorization (userId, authkey) VALUES ($id, $random_key)");
          }
 
-         $record = mysqli_query($conn, "INSERT INTO authorization (userId, authkey) VALUES ($id, $random_key)");
-
-         $record2 = mysqli_query($conn, "SELECT * FROM authorization WHERE authkey={$random_key}");
-         $row2 = mysqli_fetch_assoc($record2);
+         // $record2 = mysqli_query($conn, "SELECT * FROM authorization WHERE authkey={$random_key}");
+         // $row2 = mysqli_fetch_assoc($record2);
 
          // $timestamp = strtotime($row2['time']); //переводится значение из базы данных в секунды 
          // $dateTime = date("Y-m-d H:i:s", $timestamp);
 
-         echo json_encode(array("userId" => $userId, "key" => $row2["authkey"], "name" => $name, "email" => $email, "img" => $img));
+         echo json_encode(array("userId" => $userId, "key" => $random_key, "name" => $name, "email" => $email, "img" => $img));
       }
       else{
          echo json_encode(array("message" => "Введен неправильный пароль", "password" => $password));

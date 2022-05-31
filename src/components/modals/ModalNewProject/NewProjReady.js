@@ -1,13 +1,17 @@
 import '../otherModals.scss';
 
 import { useState, useEffect} from 'react';
+import { Link } from 'react-router-dom';
 import useBookmeService from '../../../services/BookmeService';
+import useAddressValues from '../../../hooks/useAddressValues';
 
 import { CalendarArrowSmall } from '../../../resources';
 import ProgressBtns from '../../progressBtns/ProgressBtns';
 import Button from '../../button/Button';
 import Loader from '../../loader/Loader';
 import getIntervals from '../../../hooks/getIntervals';
+import useFetchError from '../../../hooks/useFetchError';
+
 
 const NewProjReady = ({
       setModalActive, 
@@ -27,45 +31,59 @@ const NewProjReady = ({
    }) => {
    
    const {universalRequest, loading, setLoading} = useBookmeService();
+   const {hostUrl} = useAddressValues();
    const [error, setError] = useState(null);
+   const {isFetchError} = useFetchError();
+
 
    useEffect(() => {
       setLoading(true);
 
-      // const durationMin = +(duration == 'Другое' ? durationField : duration.replace(/[^0-9]/g,""));
-      // const res = getIntervals(selectedDays, durationMin);
-
-      const obj = {
+      const projObj = {
          projectName: name, 
          descr,
          address,
          linkToForm: formLink,
-         linkForRespond: 'projects/',
-         linkForCustomer: '',
          duration: duration == 'Другое' ? durationField : duration.replace(/[^0-9]/g,""),
          dates: selectedDays,
-         isProjectEdit,
-         uniqueId: activeProjectId
+         projId: activeProjectId,
       };
-      universalRequest('addProject', JSON.stringify(obj)).then((res) => onProjectLoaded(res, obj));
+
+      const obj = {
+         ...projObj, 
+         isProjectEdit,
+         user: localStorage.getItem('userKey'),
+         key: localStorage.getItem('authKey')
+      };
+
+      console.log(obj);
+      universalRequest('addProject', JSON.stringify(obj)).then((res) => onProjectLoaded(res, projObj));
    }, [])
 
    const onProjectLoaded = (res, newProject) => {
-      console.log(res);
-      if (res !== 'error'){
-         delete newProject[isProjectEdit];
-         newProject['linkForRespond'] += res;
+      const isError = isFetchError(res);
+
+      if (!isError && res.projId){
 
          if (isProjectEdit){
-            const projectIndex = projects.findIndex(el => el.uniqueId == newProject.uniqueId);
+            const project = projects.find(el => el.projId == newProject.projId);
+            newProject['linkForRespond'] = project.linkForRespond;
+            newProject['linkForCustomer'] = project.linkForCustomer;
+            const projectIndex = projects.findIndex(el => el.projId == newProject.projId);
             const updatedProjects = [...projects.slice(0, projectIndex), newProject, ...projects.slice(projectIndex + 1)];
             setProjects(updatedProjects);
+
          } else {
-            newProject['uniqueId'] = res;
+            newProject['linkForRespond'] = res.linkForRespond;
+            newProject['linkForCustomer'] = res.linkForCustomer;
+            newProject['projId'] = res.projId;
             setProjects(projects => [...projects, newProject]);
          }
         
          setLoading(false);
+
+      }else{
+         console.log(res);
       }
    }
 
@@ -75,6 +93,8 @@ const NewProjReady = ({
       clearFields();
    }
 
+
+   const thisProject = projects.find(el => el.projectName == name);
    return (
       <div className={`modal__content modal-new-project__ready}`}>
          {error ? (
@@ -85,24 +105,28 @@ const NewProjReady = ({
                <h3 className="modal__title">{isProjectEdit == true ? 'Редактирование проекта' : 'Создание проекта'}</h3>
             </div>
          ) : null}
-
-            <div className="modal__back">
-               <button className="button-reset modal__back-button" type="button" onClick={() => setStep(step - 1)}>
-                  <CalendarArrowSmall/>
-               </button>
-               <h3 className="modal__title">{isProjectEdit == true ? 'Редактирование проекта' : 'Создание проекта'}</h3>
-            </div>
          
-         {loading ? <Loader classes="modal-new-project__loader"/> : (
-            <>
-               <span className="modal__input-name modal-new-project__project-name">
-                  Проект <span>{name}</span> успешно {isProjectEdit == true ? 'перезаписан' : 'создан'}!
-               </span>
-               <button className="button-reset modal-new-project__project-link">
-                  {projects.find(el => el.projectName == name) ? projects.find(el => el.projectName == name).linkForRespond : null}
-               </button>
-            </>
-         )}
+         {loading
+            ? <Loader classes="modal-new-project__loader"/> 
+            : projects.find(el => el.projectName == name) ? (
+               <div style={{'marginBottom': '48px'}}>
+                  <span className="modal__input-name modal-new-project__project-name">
+                     Проект <span>{name}</span> успешно {isProjectEdit == true ? 'перезаписан' : 'создан'}!
+                  </span>
+      
+                  <span className="modal-new-project__project-link">
+                     Ссылка для респондентов:
+                     <a href={`${hostUrl}${thisProject.linkForRespond}`}>{hostUrl}{thisProject.linkForRespond}</a>
+                  </span>
+      
+                  <span className="modal-new-project__project-link">
+                     Ссылка для заказчиков:
+                     <a href={`${hostUrl}${thisProject.linkForCustomer}`}>{hostUrl}{thisProject.linkForCustomer}</a>
+                  </span>
+               </div>
+            ) : null
+         }
+
 
          <div className="modal__btns modal__steps">
             <ProgressBtns steps={2} activeStep={3}/>

@@ -35,8 +35,8 @@ const ModalAddFile = ({modalActive, setModalActive, user, setUser}) => {
    const formSubmit = () => {
       const formData = new FormData(form.current);
 
-      formData.set('userKey', sessionStorage.getItem('userKey'));
-      formData.set('authKey', sessionStorage.getItem('authKey'));
+      formData.set('userKey', localStorage.getItem('userKey'));
+      formData.set('authKey', localStorage.getItem('authKey'));
 
       universalRequest('updateUserData', formData).then(res => {
 

@@ -2,11 +2,13 @@ import './headerSide.scss';
 import { HeaderArrow, Calendar, Respond, Settings, ProfilePhoto, DefaultUser } from '../../resources';
 import { useState, useEffect, useContext } from 'react';
 import AuthContext from '../../hooks/context';
+import useAddressValues from '../../hooks/useAddressValues';
 
 import { NavLink } from 'react-router-dom';
 
 const HeaderSide = () => {
    const user = useContext(AuthContext);
+   const {imagesUrl} = useAddressValues();
    const [headerClosed, setHeaderClosed] = useState(localStorage.getItem('headerClosed') == 'true' ? true : false);
 
    const toggleMenu = () => {
@@ -24,8 +26,7 @@ const HeaderSide = () => {
             <HeaderArrow/>
          </button>
          <div className={`header__profile-photo${user.img ? "" : " default"}`}>
-            <img src={user.img ? `https://bookme.lavro.ru/server/images/${user.img}` : DefaultUser} alt="avatar"/>
-            {/* http://localhost/bookme-server/images/ */}
+            <img src={user.img ? `${imagesUrl}${user.img}` : DefaultUser} alt="avatar"/>
          </div>
          <div className="main-title header__profile-name">
             {user.name}

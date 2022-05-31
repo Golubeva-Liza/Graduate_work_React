@@ -29,8 +29,8 @@ const ModalChangePass = ({setModalActive, user}) => {
    const submitForm = async () => {
 
       const formData = new FormData(form.current);
-      formData.set('userKey', sessionStorage.getItem('userKey'));
-      formData.set('authKey', sessionStorage.getItem('authKey'));
+      formData.set('userKey', localStorage.getItem('userKey'));
+      formData.set('authKey', localStorage.getItem('authKey'));
 
       universalRequest('updateUserData', formData).then(res => {
 

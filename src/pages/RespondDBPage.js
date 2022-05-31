@@ -27,8 +27,8 @@ const RespondDBPage = () => {
 
    const loadRespondents = async () => {
       const obj = {
-         "user": sessionStorage.getItem('userKey'),
-         "key": sessionStorage.getItem('authKey')
+         "user": localStorage.getItem('userKey'),
+         "key": localStorage.getItem('authKey')
       };
 
       universalRequest('getAllRespondents', JSON.stringify(obj)).then((res) => {

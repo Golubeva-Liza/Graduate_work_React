@@ -11,7 +11,7 @@ import Button from '../button/Button';
 import FormPassword from '../formPassword/FormPassword';
 
 
-const RegForm = ({toggleForm}) => {
+const RegForm = ({toggleForm, onLogin}) => {
    const nameInput = useInput('');
    const emailInput = useInput('');
    const passwordInput = useInput('');
@@ -29,23 +29,23 @@ const RegForm = ({toggleForm}) => {
       if (successValid === true){
          setErrorMessage('');
          const formData = new FormData(form.current);
-         universalRequest('registration', formData).then(onUserRegistered);
+         universalRequest('registration', formData).then((res) => onLogin(res));
 
       } else {
          setErrorMessage(successValid);
       }
    }
 
-   const onUserRegistered = (res) => {
-      console.log(res);
-      // if (/^(0|[1-9]\d*)$/.test(res)){
-      //    setErrorMessage('');
-      //    navigate('/moderator');
-      //    localStorage.setItem('authorized', res);
-      // } else {
-      //    setErrorMessage(res);
-      // }
-   }
+   // const onUserRegistered = (res) => {
+   //    console.log(res);
+   //    // if (/^(0|[1-9]\d*)$/.test(res)){
+   //    //    setErrorMessage('');
+   //    //    navigate('/moderator');
+   //    //    localStorage.setItem('authorized', res);
+   //    // } else {
+   //    //    setErrorMessage(res);
+   //    // }
+   // }
 
    return (
       <div className={`form active`}>

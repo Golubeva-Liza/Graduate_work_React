@@ -176,12 +176,20 @@
       right: 0;
    }
    &__project-link{
-      display: block;
-      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
       color: $main-color;
-      transition: all .3s;
-      &:hover{
-         color: $main-blue;
+      a{
+         white-space: nowrap;
+         overflow: hidden;
+         text-overflow: ellipsis;
+         max-width: 220px;
+         margin-left: 8px;
+         transition: all .3s;
+         &:hover{
+            color: $main-blue;
+         }
       }
    }
    &__project-name{

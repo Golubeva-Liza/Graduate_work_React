@@ -17,7 +17,6 @@ const ModalSetTime = ({setModalActive, date, setDate, selectedDays, setSelectedD
    useEffect(() => {
       if (date){
          const day = selectedDays.find(item => item.date == date);
-         // console.log(selectedDays, date);
          const obj = day.intervals.map(item => 
             ({firstTime: item.split('-')[0], lastTime: item.split('-')[1]})
          )

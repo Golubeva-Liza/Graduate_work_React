@@ -4,8 +4,10 @@ const RespondDbPopup = (props) => {
    const {popupClass, popupOpened, setPopupActive, rowNum, link, activeRespond, setRemovedRespond, setEditModalActive, setEditRespond, isLow, dotBtns} = props;
 
    const removeRespond = () => {
-      setRemovedRespond(activeRespond);
+      setRemovedRespond(true);//открывается модальное окно для удаления
+      setPopupActive(false);
    }
+   
    const modalEditRespond = () => {
       setEditModalActive(true);
       // console.log(activeRespond);

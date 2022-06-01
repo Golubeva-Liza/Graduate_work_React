@@ -76,11 +76,12 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
       formData.set('userKey', localStorage.getItem('userKey'));
       formData.set('authKey', localStorage.getItem('authKey'));
 
-      formData.set('birthdayDate', dateInput.value.split('.').reverse().join('-'));
+      const strokeDate = dateInput.value.split('.').reverse().join('-');
+      formData.set('birthdayDate', strokeDate);
 
       // перезапись возраста с учетом даты рождения
       if (dateInput.value.replace(/[^0-9]/g,"")){
-         const strokeDate = dateInput.value.split('.').reverse().join('-');
+         
          const age = dateToAge(strokeDate);
          formData.set('age', age);
       } 
@@ -251,7 +252,7 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
             </InputWithLabel>
 
             <div className="modal__bottom-btns">
-               <Button buttonClass="modal__btn modal__close" onClick={closeModal}>Отмена</Button>
+               <Button red buttonClass="modal__btn modal__close" onClick={closeModal}>Отмена</Button>
                <Button buttonClass="modal__btn modal__ready" onClick={submitForm} type="submit" 
                   disabled={
                      nameInput.value !== '' 

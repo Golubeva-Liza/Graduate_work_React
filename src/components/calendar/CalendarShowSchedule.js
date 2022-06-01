@@ -3,30 +3,47 @@ import './calendarCreateProj.scss';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { CalendarArrow, CalendarArrowSmall } from '../../resources';
 import getDate from '../../hooks/getDate';
+import useCalendarValues from '../../hooks/useCalendarValues';
 
 
-const CalendarShowSchedule = ({className, small, projects, projectActive, setActiveDate}) => {
+const CalendarShowSchedule = ({className, small, projects, projectActive, activeDate, setActiveDate}) => {
 
-   const monthsNames = useMemo(() => [
-      "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август",
-      "Сетрябрь", "Октрябрь", "Ноябрь", "Декабрь"
-   ], []);
+   const {monthsNames} = useCalendarValues(); 
 
    const [currentDate, setCurrentDate] = useState(new Date(new Date().setDate(1)));
+   const calendarDaysRef = useRef([]);
 
    //меняем первую дату календаря в зависимости от месяца первой даты расписания проекта (для удобного отображения)
    useEffect(() => {
       if (projectActive){
-         const firstDate = projects.find(el => el.projectName == projectActive).dates[0].date;
+         const firstDate = projectActive.dates[0].date;
          const firstDay = new Date(new Date(firstDate).setDate(1));
          setCurrentDate(firstDay);
       }
    }, [projectActive])
 
 
+   //показываем выбранную дату
+   useEffect(() => {
+      if (activeDate){
+         const day = +activeDate.split('-').reverse()[0];
+         calendarDaysRef.current.forEach(el => el ? el.classList.remove('active') : null);
+         const date = calendarDaysRef.current.find(el => el ? el.textContent == day : null);
+         if (date){
+            date.classList.add('active');
+         }
+      //если выбранная дата отсутствует, убираем класс активности
+      } else{
+         calendarDaysRef.current.forEach(el => el ? el.classList.remove('active') : null);
+      }
+      
+   }, [activeDate, currentDate])
+
+
+
    function renderCalendar() {
       
-      const currentProjectDates = projects.length > 0 ? projects.find(el => el.projectName == projectActive).dates : null;
+      const currentProjectDates = projects.length > 0 ? projectActive.dates : null;
 
       let days = [];
 
@@ -59,13 +76,13 @@ const CalendarShowSchedule = ({className, small, projects, projectActive, setAct
 
          if (thisDate && new Date(currentDay) < new Date(new Date().setHours(3, 0, 0, 0))) {
             days.push(
-               <div key={i} className="calendar__date calendar__selected-prev">
+               <div key={i} className="calendar__date calendar__selected-prev" ref={el => calendarDaysRef.current.push(el)}>
                   <span>{i}</span>
                </div>
             );
          } else if (thisDate && new Date(currentDay) >= new Date(new Date().setHours(3, 0, 0, 0))) {
             days.push(
-               <div key={i} className="calendar__date calendar__selected">
+               <div key={i} className="calendar__date calendar__selected" ref={el => calendarDaysRef.current.push(el)}>
                   <span>{i}</span>
                </div>
             );
@@ -83,21 +100,17 @@ const CalendarShowSchedule = ({className, small, projects, projectActive, setAct
       return days;
    }
 
-   const calendarDays = useMemo(() => projectActive ? renderCalendar() : null, [currentDate, projectActive, projects]);
+   const calendarDays = useMemo(() => projectActive ? renderCalendar() : null, [currentDate, projectActive]);
 
    const onLeftArrow = () => {
-      if (currentDate.getMonth() != new Date().getMonth()){
-         setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)));
-      }
+      setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)));
    }
    const onRightArrow = () => {
-      if (currentDate.getMonth() < new Date().getMonth() + 3){
-         setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)));
-      }
+      setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)));
    }
 
    const onClickDay = (e) => {
-      if(e.target.closest('.calendar__selected')){
+      if(e.target.closest('.calendar__selected') || e.target.closest('.calendar__selected-prev')){
          const date = getDate(e.target.textContent, currentDate.getMonth(), currentDate.getFullYear());
          // console.log(date);
          setActiveDate(date);

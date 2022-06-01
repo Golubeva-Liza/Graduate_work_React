@@ -7,14 +7,15 @@
    border-right: 1px solid #979797;
    position: relative;
 
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+
    &__calendar{
       margin-bottom: 32px;
    }
    &__btn{
       width: 225px;
-      position: absolute;
-      bottom: 60px;
-      left: 40px;
    }
    &__project{
       &:not(:last-child){

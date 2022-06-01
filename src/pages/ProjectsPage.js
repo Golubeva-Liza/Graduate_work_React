@@ -7,27 +7,33 @@ import RespondRecordings from '../components/respondRecordings/RespondRecordings
 import Modal from '../components/modals/Modal';
 import ModalNewProject from '../components/modals/ModalNewProject';
 import ModalSetTime from '../components/modals/ModalSetTime';
+import ModalDelete from '../components/modals/ModalDelete';
 import useBookmeService from '../services/BookmeService';
+import useFetchError from '../hooks/useFetchError';
 
 
 
 const ProjectsPage = () => {
+   const {universalRequest} = useBookmeService();
+   const {isFetchError} = useFetchError();
 
    const [modalProjectActive, setModalProjectActive] = useState(false);
    const [modalTimeActive, setModalTimeActive] = useState(false);
+   const [modalDeleteActive, setModalDeleteActive] = useState(false);
 
    const [selectedDays, setSelectedDays] = useState(null);//список всех выбранных дат с интервалами времени
    const [selectedDate, setSelectedDate] = useState(null);//выбранная дата для редактирования времени в модальном окне
 
    const [isProjectEdit, setIsProjectEdit] = useState(false);
-   const [projectActive, setProjectActive] = useState(null);
+   const [projectActiveName, setProjectActiveName] = useState(null); //имя проекта для аккордиона
+   const [projectActive, setProjectActive] = useState(null); //выбранный проект
    const [projects, setProjects] = useState([]);
-   const {universalRequest} = useBookmeService();
 
    const [activeDate, setActiveDate] = useState(null);
    const [entries, setEntries] = useState(null);
 
-   
+
+   //запрос на получение информации проектов
    useEffect(() => {
       const obj = {
          'user': localStorage.getItem('userKey'),
@@ -36,36 +42,59 @@ const ProjectsPage = () => {
       universalRequest('getProjects', JSON.stringify(obj)).then(onProjectsLoaded);
    }, [])
 
-
    const onProjectsLoaded = (res) => {
-      //проекты
-      setProjects(res);
-      setProjectActive(res[0].projectName);//первый полученный проект открывается
+      const isError = isFetchError(res);
+      if (!isError){
+         setProjects(res);
+      } 
       console.log(res);
-
-      //записи
-      let arr = [];
-      res.forEach(proj => arr = [...arr, ...proj.entries]);
-      setEntries(arr);
    }
+
+   //если открытого проекта больше нет, то открывается первый проект в обновленном списке
+   useEffect(() => {
+      if (projects.length){
+         const activeProject = projects.find(el => el.projId == projectActive ? projectActive.projId : null);
+         if (!activeProject){
+            setProjectActiveName(projects[0].projectName);
+         } else {
+            //название может поменяться, поэтому обновляем активный проект
+            setProjectActiveName(activeProject.projectName);
+         }
+      }
+   }, [projects])
+
+
+   //когда меняется открытый проект, переписывается список записей
+   useEffect(() => {
+      if (projectActiveName){
+         const find = projects.find(el => el.projectName == projectActiveName); //открытый проект
+         // console.log(find);
+         setProjectActive(find);
+         setEntries(find.entriesInfo);
+         setActiveDate(null);
+         //они влияют на отображаемые записи
+      }
+   }, [projectActiveName])
 
 
    return (
       <>
          <ProjectsAside 
             setModalActive={setModalProjectActive}
-            accordActive={projectActive} setAccordActive={setProjectActive}
+            accordActive={projectActiveName} setAccordActive={setProjectActiveName}
             projects={projects} setProjects={setProjects}
             setIsProjectEdit={setIsProjectEdit}
          />
          <ModerCalendar
             projects={projects}
             projectActive={projectActive} 
+            activeDate={activeDate}
             setActiveDate={setActiveDate}
          />
          <RespondRecordings
             activeDate={activeDate}
             entries={entries}
+            setEntries={setEntries}
          />
          <Modal modalClass={'modal-new-project'} active={modalProjectActive} setActive={setModalProjectActive}>
             <ModalNewProject 
@@ -87,6 +116,14 @@ const ProjectsPage = () => {
                date={selectedDate} setDate={setSelectedDate}
                selectedDays={selectedDays}
                setSelectedDays={setSelectedDays}
+            />
+         </Modal>
+         <Modal modalClass={'modal-delete'} active={modalDeleteActive} setActive={setModalDeleteActive}>
+            <ModalDelete 
+               setModalActive={setModalDeleteActive} 
+               removal={'проекта'}
+               whatDelete={projectActiveName}
+               info={'со всеми записями и расписанием тестирования'}
             />
          </Modal>
       </>

@@ -17,30 +17,27 @@ const ProjectsAside = ({setModalActive, accordActive, setAccordActive, projects,
 
    return (
       <aside className="projects-aside">
-         <Calendar classes="projects-aside__calendar" small/>
+         <div>
+            <Calendar classes="projects-aside__calendar" small/>
 
-         {projects.length > 0 ? (
-            projects.map((project, id) => {
-               const firstDate = project.dates[0].date.split('-').reverse().join('.');
-               const lastDate = project.dates[project.dates.length - 1].date.split('-').reverse().join('.');
+            {projects.length > 0 ? (
+               projects.map((project, id) => {
+                  const firstDate = project.dates[0].date.split('-').reverse().join('.');
+                  const lastDate = project.dates[project.dates.length - 1].date.split('-').reverse().join('.');
 
-               return <Accordion accordClass="projects-aside__project" name={project.projectName} key={id}
-                  items={['Редактировать', 'Копировать ссылку', 'Удалить', 'Режим совместной работы']}
-                  accordActive={accordActive} setAccordActive={setAccordActive}
-                  onClick={[editProj, null, null, null]}
-                  time startTime={firstDate} finalTime={lastDate}
-               />
-            })
-         ) : null}
-
-         {/* <Accordion accordClass="projects-aside__project" name="1 семестр 2019"
-            items={['Редактировать', 'Копировать ссылку', 'Удалить', 'Режим совместной работы']}
-            accordActive={accordActive} setAccordActive={setAccordActive}
-            onClick={[null, null, null, null]}
-            time startTime="12.12.19" finalTime="31.12.19"
-         /> */}
-
-         <button className="button-reset button projects-aside__btn" onClick={addProj}>Создать новый проект</button>
+                  return <Accordion accordClass="projects-aside__project" name={project.projectName} key={id}
+                     items={['Редактировать', 'Копировать ссылку', 'Удалить', 'Режим совместной работы']}
+                     accordActive={accordActive} setAccordActive={setAccordActive}
+                     onClick={[editProj, null, null, null]}
+                     time startTime={firstDate} finalTime={lastDate}
+                  />
+               })
+            ) : null}
+         </div>
+         
+         <div style={{'marginTop': '32px'}}>
+            <button className="button-reset button projects-aside__btn" onClick={addProj}>Создать новый проект</button>
+         </div>
       </aside>
    )
 }

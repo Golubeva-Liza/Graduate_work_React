@@ -4,21 +4,26 @@ import Calendar from '../calendar/Calendar';
 import Button from '../button/Button';
 import CalendarShowSchedule from '../calendar/CalendarShowSchedule';
 
-const ModerCalendar = ({projects, projectActive, setActiveDate}) => {
+const ModerCalendar = ({projects, projectActive, activeDate, setActiveDate}) => {
 
    return (
       <section className="moder-calendar">
-         <CalendarShowSchedule 
-            className="" 
-            projects={projects}
-            projectActive={projectActive} 
-            setActiveDate={setActiveDate}
-         />
-         
-         <div className="moder-calendar__hint"></div>
-         <div className="moder-calendar__hint"></div>
 
-         <Button buttonClass="moder-calendar__btn" onClick={() => setActiveDate(null)}>Посмотреть все записи</Button>
+         <div>
+            <CalendarShowSchedule 
+               className="" 
+               projects={projects}
+               projectActive={projectActive} 
+               activeDate={activeDate}
+               setActiveDate={setActiveDate}
+            />
+            <div className="moder-calendar__hint"></div>
+            <div className="moder-calendar__hint"></div>
+         </div>
+
+         <div style={{'marginTop': '32px', 'display': 'flex', 'justifyContent': 'flex-end'}}>
+            <Button buttonClass="moder-calendar__btn" onClick={() => setActiveDate(null)}>Посмотреть все записи</Button>
+         </div>
       </section>
    )
 }

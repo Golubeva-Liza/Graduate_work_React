@@ -76,7 +76,7 @@ const ModalChangePass = ({setModalActive, user}) => {
                {newPassInput.value !== repeatPassInput.value ? <ErrorMessage message={'Пароли не совпадают'}/> : null}
             </InputWithLabel>
             <div className="modal__bottom-btns">
-               <Button buttonClass="modal__btn modal__close" onClick={() => setModalActive(false)}>Отмена</Button>
+               <Button red buttonClass="modal__btn modal__close" onClick={() => setModalActive(false)}>Отмена</Button>
                <Button 
                   buttonClass="modal__btn modal__ready" 
                   onClick={submitForm}

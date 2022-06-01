@@ -140,80 +140,85 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
 
    return (
       <aside className="account-settings">
-         <div className="account-settings__photo">
-            <button className={`button-reset account-settings__photo-btn${user.img ? "" : " default"}`} onClick={() => setPopupActive(!popupActive)}>
-               <img src={user.img ? `${imagesUrl}${user.img }` : DefaultUser} alt="avatar"/>
-            </button>
-            <Popup 
-               items={['Загрузить новую', 'Удалить']}
-               popupClass={'account-settings__add-photo'} 
-               popupOpened={popupActive}
-               setPopupActive={setPopupActive}
-               onClick={[onUploadPhoto, onRemovePhoto]}
-            />
+
+         <div>
+            <div className="account-settings__photo">
+               <button className={`button-reset account-settings__photo-btn${user.img ? "" : " default"}`} onClick={() => setPopupActive(!popupActive)}>
+                  <img src={user.img ? `${imagesUrl}${user.img }` : DefaultUser} alt="avatar"/>
+               </button>
+               <Popup 
+                  items={['Загрузить новую', 'Удалить']}
+                  popupClass={'account-settings__add-photo'} 
+                  popupOpened={popupActive}
+                  setPopupActive={setPopupActive}
+                  onClick={[onUploadPhoto, onRemovePhoto]}
+               />
+            </div>
+            <span className="account-settings__name">{user.name}</span>
+
+            <form className={`account-settings__setting ${nameEdit ? 'changing' : ''}`} onSubmit={(e) => e.preventDefault()} ref={nameForm}>
+               <div className="account-settings__label">
+                  <span className="account-settings__setting-title">Логин</span>
+                  <div className="account-settings__setting-wrapper">
+                     <span className="account-settings__setting-value">{user.name}</span>
+                     <button className={'button-reset account-settings__edit'} onClick={toggleNameInput}>{nameEdit ? 'Отменить' : 'Изменить'}</button>
+                  </div>
+                  {/* из-за рефа */}
+                  <input 
+                     className={`input ${nameEdit ? '' : 'visually-hidden'}`}
+                     type="text"
+                     name="name"
+                     autoComplete="off"
+                     value={userName.value}
+                     onChange={userName.onChange}
+                     ref={nameInput}
+                     onBlur={e => validation(e)}
+                  />
+                  {errorMessage.name ? <ErrorMessage message={errorMessage.name}/> : null}
+               </div>
+               <Button 
+                  buttonClass={`${nameEdit ? '' : 'visually-hidden'}`}
+                  onClick={updateName} 
+                  disabled={userName.value.length > 3 && userName.value.length < 30 && !errorMessage.name ? false : true}
+               >
+                  Сохранить изменения
+               </Button>
+            </form>
+
+            <form className={`account-settings__setting ${emailEdit ? 'changing' : ''}`} onSubmit={(e) => e.preventDefault()} ref={emailForm}>
+               <div className="account-settings__label">
+                  <span className="account-settings__setting-title">Почтовый адрес</span>
+                  <div className="account-settings__setting-wrapper">
+                     <span className="account-settings__setting-value">{user.email}</span>
+                     <button className={'button-reset account-settings__edit'} onClick={toggleEmailInput}>{emailEdit ? 'Отменить' : 'Изменить'}</button>
+                  </div>
+                  <input 
+                     className={`input ${emailEdit ? '' : 'visually-hidden'}`}
+                     type="text"
+                     name="email"
+                     autoComplete="off"
+                     value={userEmail.value}
+                     onChange={userEmail.onChange}
+                     ref={emailInput}
+                     onBlur={e => validation(e)}
+                  />
+                  {errorMessage.email ? <ErrorMessage message={errorMessage.email}/> : null}
+               </div>
+               <Button 
+                  buttonClass={`${emailEdit ? '' : 'visually-hidden'}`}
+                  onClick={updateEmail} 
+                  disabled={userEmail.value !== '' && !errorMessage.email ? false : true}
+               >
+                  Сохранить изменения
+               </Button>
+            </form>
+
+            <button className="button-reset account-settings__password" onClick={() => setModalPasswordActive(true)}>Изменить пароль</button>
          </div>
-         <span className="account-settings__name">{user.name}</span>
-
-         <form className={`account-settings__setting ${nameEdit ? 'changing' : ''}`} onSubmit={(e) => e.preventDefault()} ref={nameForm}>
-            <div className="account-settings__label">
-               <span className="account-settings__setting-title">Логин</span>
-               <div className="account-settings__setting-wrapper">
-                  <span className="account-settings__setting-value">{user.name}</span>
-                  <button className={'button-reset account-settings__edit'} onClick={toggleNameInput}>{nameEdit ? 'Отменить' : 'Изменить'}</button>
-               </div>
-               {/* из-за рефа */}
-               <input 
-                  className={`input ${nameEdit ? '' : 'visually-hidden'}`}
-                  type="text"
-                  name="name"
-                  autoComplete="off"
-                  value={userName.value}
-                  onChange={userName.onChange}
-                  ref={nameInput}
-                  onBlur={e => validation(e)}
-               />
-               {errorMessage.name ? <ErrorMessage message={errorMessage.name}/> : null}
-            </div>
-            <Button 
-               buttonClass={`${nameEdit ? '' : 'visually-hidden'}`}
-               onClick={updateName} 
-               disabled={userName.value.length > 3 && userName.value.length < 30 && !errorMessage.name ? false : true}
-            >
-               Сохранить изменения
-            </Button>
-         </form>
-
-         <form className={`account-settings__setting ${emailEdit ? 'changing' : ''}`} onSubmit={(e) => e.preventDefault()} ref={emailForm}>
-            <div className="account-settings__label">
-               <span className="account-settings__setting-title">Почтовый адрес</span>
-               <div className="account-settings__setting-wrapper">
-                  <span className="account-settings__setting-value">{user.email}</span>
-                  <button className={'button-reset account-settings__edit'} onClick={toggleEmailInput}>{emailEdit ? 'Отменить' : 'Изменить'}</button>
-               </div>
-               <input 
-                  className={`input ${emailEdit ? '' : 'visually-hidden'}`}
-                  type="text"
-                  name="email"
-                  autoComplete="off"
-                  value={userEmail.value}
-                  onChange={userEmail.onChange}
-                  ref={emailInput}
-                  onBlur={e => validation(e)}
-               />
-               {errorMessage.email ? <ErrorMessage message={errorMessage.email}/> : null}
-            </div>
-            <Button 
-               buttonClass={`${emailEdit ? '' : 'visually-hidden'}`}
-               onClick={updateEmail} 
-               disabled={userEmail.value !== '' && !errorMessage.email ? false : true}
-            >
-               Сохранить изменения
-            </Button>
-         </form>
-
-         <button className="button-reset account-settings__password" onClick={() => setModalPasswordActive(true)}>Изменить пароль</button>
-
-         <Button buttonClass="account-settings__logout" onClick={logout}>Выйти из системы</Button>
+         
+         <div style={{'marginTop': '32px'}}>
+            <Button buttonClass="account-settings__logout" onClick={logout}>Выйти из системы</Button>
+         </div>
       </aside>
    )
 }

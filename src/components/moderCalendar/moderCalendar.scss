@@ -4,11 +4,13 @@
    width: 730px;
    border-right: 1px solid #979797;
    position: relative;
+
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+
    &__btn{
       width: 225px;
-      position: absolute;
-      bottom: 60px;
-      right: 40px;
    }
    .calendar{
       &__date:not(.calendar__prev-date):not(.calendar__next-date){

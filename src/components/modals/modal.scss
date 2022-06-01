@@ -94,15 +94,8 @@
       color: #FFFFFF;
       height: 36px;
    }
-   &__ready{
-      background-color: $main-blue;
-   }
    &__close{
-      background-color: $main-red;
       margin-right: 24px;
-      &:hover{
-         background-color: $red-hover !important;
-      }
    }
    &__textarea{
       resize: none;

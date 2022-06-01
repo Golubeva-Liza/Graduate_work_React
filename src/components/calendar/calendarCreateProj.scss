@@ -19,7 +19,7 @@
       background-color: rgba($main-grey, 0.3);
       border-color: rgba($main-grey, 0.3);
    }
-   .calendar__selected.active{
+   .calendar__selected.active, .calendar__selected-prev.active{
       background-color: $main-blue;
       color: #FFFFFF;
    }

@@ -52,7 +52,7 @@ const ModalNewProject = ({
    
    useEffect(() => {
       if (modalActive == true && isProjectEdit == true){
-         const currentProj = projects.find(proj => proj.projectName === projectActive);
+         const currentProj = projectActive;
          
          nameInput.setValue(currentProj.projectName);
          descrInput.setValue(currentProj.descr);
@@ -122,7 +122,7 @@ const ModalNewProject = ({
                setProjects={setProjects}
                clearFields={clearFields}
                isProjectEdit={isProjectEdit} setIsProjectEdit={setIsProjectEdit}
-               activeProjectId={isProjectEdit ? projects.find(el => el.projectName == projectActive).projId : null}
+               projectActive={projectActive}
                projects={projects}
             />
          ) : false}

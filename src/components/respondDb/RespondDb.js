@@ -2,7 +2,6 @@ import './respondDb.scss';
 
 import { useState, useRef, useEffect, useMemo } from 'react';
 import useBookmeService from '../../services/BookmeService';
-import useFetchError from '../../hooks/useFetchError';
 
 import RespondDbPopup from '../popup/RespondDbPopup';
 import Popup from '../popup/Popup';
@@ -11,13 +10,18 @@ import Loader from '../loader/Loader';
 
 
 
-const RespondDb = ({setModalActive, respondents, setRespondents, setEditRespond, filteredResponds, resultsFound, loading}) => {
+const RespondDb = ({
+      activeRespond, setActiveRespond,
+      popupActive, setPopupActive,
+      setModalActive, 
+      setModalDeleteActive,
+      respondents, setRespondents, 
+      setEditRespond, 
+      filteredResponds, 
+      resultsFound, 
+      loading
+   }) => {
 
-   const {isFetchError} = useFetchError();
-   const [popupActive, setPopupActive] = useState(false);
-
-   const [activeRespond, setActiveRespond] = useState(null);
-   const [removedRespond, setRemovedRespond] = useState(null);
    
    const [rowNum, setRowNum] = useState(0);
    const [isLow, setIsLow] = useState(false);
@@ -27,33 +31,6 @@ const RespondDb = ({setModalActive, respondents, setRespondents, setEditRespond,
    const popup = useRef(); 
    const table = useRef(); 
 
-   const {universalRequest} = useBookmeService();
-
-
-   useEffect(() => {
-      if (removedRespond || removedRespond === 0){
-         const obj = {
-            "user": localStorage.getItem('userKey'),
-            "key": localStorage.getItem('authKey'),
-            "respondId": respondents[removedRespond].id
-         };
-         setRemovedRespond(null);
-         universalRequest('removeRespondent', JSON.stringify(obj))
-            .then(onRespondentRemoved);
-      }
-   }, [removedRespond])
-
-   const onRespondentRemoved = (res) => {
-      const isError = isFetchError(res);
-
-      if (!isError){
-         const updateResponds = [...respondents.slice(0, removedRespond), ...respondents.slice(removedRespond + 1)];
-         setRespondents(updateResponds);
-         setPopupActive(false);
-      } else {
-         console.log(res);
-      }
-   }
 
    const toggleSettings = (e) => {
       const currentItem = respondList.current.find(el => el == e.target.closest('.table__row'));
@@ -96,7 +73,7 @@ const RespondDb = ({setModalActive, respondents, setRespondents, setEditRespond,
    
 
    function renderRespondList(arr) {
-      console.log('рендер респондентов');
+      // console.log('рендер респондентов');
       if (arr.length > 0){
          const elements = arr.map((value, index) => {
             const userPhone = value.phone.replace(/^(\d)(\d{3})(\d{3})(\d{2})(\d{2})$/, '+$1 $2 $3 $4 $5');
@@ -137,7 +114,7 @@ const RespondDb = ({setModalActive, respondents, setRespondents, setEditRespond,
          <RespondDbPopup link={popup} popupClass={`respondDb__respondent-options`} 
             popupOpened={popupActive} rowNum={rowNum} 
             activeRespond={activeRespond}
-            setRemovedRespond={setRemovedRespond}
+            setRemovedRespond={setModalDeleteActive}
             setEditModalActive={setModalActive}
             setEditRespond={setEditRespond}
             setPopupActive={setPopupActive}

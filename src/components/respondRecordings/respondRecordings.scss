@@ -16,7 +16,7 @@
    }
    &__content{
       height: calc(100% - 50px);//минус высота заголовка
-      overflow-y: scroll;
+      overflow-y: auto;
       padding-right: 10px;
    }
    &__content::-webkit-scrollbar {
@@ -31,7 +31,7 @@
    }
    &__per-day{
       &:not(:last-child){
-         margin-bottom: 48px;
+         margin-bottom: 36px;
       }
    }
    &__date{

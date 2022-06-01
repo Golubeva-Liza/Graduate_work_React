@@ -6,7 +6,7 @@ import RespondDbSettings from '../components/respondDbSettings/RespondDbSettings
 import RespondDb from '../components/respondDb/RespondDb';
 import Modal from '../components/modals/Modal';
 import ModalAddEditRespond from '../components/modals/ModalAddEditRespond';
-
+import ModalDelete from '../components/modals/ModalDelete';
 
 
 const RespondDBPage = () => {
@@ -14,13 +14,21 @@ const RespondDBPage = () => {
    const {isFetchError} = useFetchError();
 
    const [modalRespondActive, setModalRespondActive] = useState(false);
+   const [modalDeleteActive, setModalDeleteActive] = useState(false);
+
    const [respondents, setRespondents] = useState([]);
+   const [activeRespond, setActiveRespond] = useState(null);// индекс в массиве respondents
+   const [removedRespond, setRemovedRespond] = useState(null); // индекс в массиве respondents
    const [editRespond, setEditRespond] = useState(null);
    const [filteredResponds, setFilteredResponds] = useState([]);
+
+   const [popupActive, setPopupActive] = useState(false); 
    const [resultsFound, setResultsFound] = useState(true);
    const [citiesValues, setCitiesValues] = useState([]);
    const [tagsValues, setTagsValues] = useState([]);
 
+
+   //загрузка респондентов
    useEffect(() => {
       loadRespondents();
    }, []);
@@ -42,22 +50,54 @@ const RespondDBPage = () => {
       });
    }
 
+   //обновляем список городов и тэгов после обновления респондентов
    useEffect(() => {
       if (respondents.length){
-         //обновляем список городов
+         
          let citiesElements = [...new Set(respondents.map(item => item.homecity))]; //убираем повторяющиеся элементы
          citiesElements = citiesElements.filter(item => item !== '-'); //убираем '-'
          citiesElements.unshift('Не важно');
          setCitiesValues(citiesElements);
 
-         //обновляем список тэгов
          let tagsElements = respondents.map(item => item.tags).join(', ').split(', '); //преобразуем все тэги в массив
          tagsElements = [...new Set(tagsElements.filter(item => item !== '-'))]; //избавляемся от дубликатов и '-'
          setTagsValues(tagsElements);
       }
    }, [respondents]);
 
+
+   //удаление респондента
+   useEffect(() => {
+      if (removedRespond || removedRespond === 0){
+         // console.log(respondents[removedRespond].id);
+         const obj = {
+            "user": localStorage.getItem('userKey'),
+            "key": localStorage.getItem('authKey'),
+            "respondId": respondents[removedRespond].id
+         };
+         setRemovedRespond(null);
+         setActiveRespond(null);
+         setModalDeleteActive(false);
+
+         universalRequest('removeRespondent', JSON.stringify(obj))
+            .then(onRespondentRemoved);
+      }
+   }, [removedRespond])
+
+   const onRespondentRemoved = (res) => {
+      const isError = isFetchError(res);
+
+      if (!isError){
+         const updateResponds = [...respondents.slice(0, removedRespond), ...respondents.slice(removedRespond + 1)];
+         setRespondents(updateResponds);
+         setPopupActive(false);
+         setLoading(false);
+      } else {
+         console.log(res);
+      }
+   }
    
+
    return (
       <>
          <RespondDbSettings 
@@ -68,7 +108,10 @@ const RespondDBPage = () => {
             loading={loading}
          />
          <RespondDb 
+            activeRespond={activeRespond} setActiveRespond={setActiveRespond}
+            popupActive={popupActive} setPopupActive={setPopupActive}
             setModalActive={setModalRespondActive} 
+            setModalDeleteActive={setModalDeleteActive}
             respondents={respondents} setRespondents={setRespondents}
             setEditRespond={setEditRespond} 
             filteredResponds={filteredResponds} 
@@ -80,6 +123,15 @@ const RespondDBPage = () => {
                setModalActive={setModalRespondActive} 
                respondents={respondents} setRespondents={setRespondents}
                editRespond={editRespond} setEditRespond={setEditRespond}
+            />
+         </Modal>
+         <Modal modalClass={'modal-delete'} active={modalDeleteActive} setActive={setModalDeleteActive}>
+            <ModalDelete 
+               setModalActive={setModalDeleteActive} 
+               removal={'респондента'}
+               whatDelete={activeRespond ? respondents[activeRespond].name : null}
+               info={'и его/её записи на тестирования'}
+               deleteSubmit={() => setRemovedRespond(activeRespond)}
             />
          </Modal>
       </>

@@ -15,10 +15,11 @@
       echo json_encode($result);
       
    } else{
-      $sql = mysqli_query($conn, "DELETE FROM respondents WHERE id = {$respondentId}");
-      $sql2 = mysqli_query($conn, "SELECT * FROM respondents WHERE id = {$respondentId}");
+      $sql = mysqli_query($conn, "DELETE FROM entries WHERE respondent = {$respondentId}");
+      $sql2 = mysqli_query($conn, "DELETE FROM respondents WHERE id = {$respondentId}");
+      $sql3 = mysqli_query($conn, "SELECT * FROM respondents WHERE id = {$respondentId}");
    
-      if(mysqli_num_rows($sql2) == 0){
+      if(mysqli_num_rows($sql3) == 0){
          echo json_encode(array(
             "deletion" => "success"
          ));

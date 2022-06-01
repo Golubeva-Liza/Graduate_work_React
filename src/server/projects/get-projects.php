@@ -75,7 +75,8 @@
             $projEntriesFilter = array_filter($entries, function($entry) use ($projId) {return $entry['project'] == $projId;});
             //выдает чушь в виде объекта с ключами найденных совпадений
 
-            $projEntries = array();
+
+            $projEntries = array();//entriesInfo
             foreach ($projEntriesFilter as $entry) {
                $find3 = array_search($entry['date'], array_column($projEntries, 'date'));
 
@@ -93,8 +94,14 @@
                   array_push($projEntries[$find3]['entries'], $entryNew);
                }
 
-               // array_push($projEntries, $entry);
             }
+
+            //сортировка по дате, тк по умолчанию они в порядке хранения в бд
+            usort($projEntries, function($a, $b) {
+               $first = new DateTime($a['date'] . '00:00:00');
+               $next = new DateTime($b['date'] . '00:00:00');
+               return $first->getTimestamp() - $next->getTimestamp();
+            });
 
             //подготовка объекта проекта
             $projectNew = $row;

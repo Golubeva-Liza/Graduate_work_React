@@ -1,11 +1,17 @@
 import './respondRecordings.scss';
 import { useState, useEffect, useMemo } from 'react';
 import Record from './Record';
+import useCalendarValues from '../../hooks/useCalendarValues';
 
 const RespondRecordings = ({activeDate, entries}) => {
 
-   const [activeEntries, setActiveEntries] = useState(null);
+   const {monthsForDays} = useCalendarValues(); 
 
+   const [activeEntries, setActiveEntries] = useState(null);
+   const [entriesCount, setEntriesCount] = useState(0);
+
+
+   //отображаемые записи зависят от всего списка записей и выбранной даты
    useEffect(() => {
       if (entries && activeDate){
          const arr = [...entries];
@@ -20,30 +26,46 @@ const RespondRecordings = ({activeDate, entries}) => {
 
    }, [entries, activeDate])
 
-
+   //установка количества записей, тк в данном случае не подходит использование activeEntries.length
    useEffect(() => {
-      console.log(activeEntries);
-
+      if (activeEntries){
+         let arr = [];
+         activeEntries.forEach(proj => arr = [...arr, ...proj.entries]);
+         setEntriesCount(arr.length);
+      }
    }, [activeEntries])
 
 
-   // function renderEntries(arr) {
-   //    if (arr){
-   //       let elements = arr.map((value, index) => (
-   //          <div className="respond-recordings__per-day">
-   //             <h3 className="respond-recordings__date">26 мая</h3>
-   //             <Record time="13:00-14:00" name="Ольга" email="olgavolga@gmail.com" comment="Очень интересно" />
-   //          </div>
-   //       ));
-   //       return elements;
-   //    }
-   // }
+   function renderEntries(arr) {
+      if (arr){
 
-   // const respondItems = useMemo(() => renderEntries(activeEntries), [activeEntries]);
+         let elements = arr.map((value, index) => {
+
+            const day = +value.date.split('-').reverse()[0];
+            const month = monthsForDays.find((el, id) => id + 1 == +value.date.split('-').reverse()[1]);
+
+            return (<div className="respond-recordings__per-day" key={index}>
+               <h3 className="respond-recordings__date">{`${day} ${month}`}</h3>
+
+               {value.entries.map((entry, id) => (
+                  <Record key={id} time={entry.time} name={entry.name} email={entry.email} comment={entry.comment} />
+               ))}
+            </div>)
+         });
+
+         return elements;
+      }
+   }
+
+   const respondItems = useMemo(() => renderEntries(activeEntries), [activeEntries]);
 
    return (
       <section className="respond-recordings">
-         <h2 className="respond-recordings__title">Записи респондентов (<span>7</span>)</h2>
+
+         {activeEntries && activeEntries.length ? (
+            <h2 className="respond-recordings__title">Записи респондентов (<span>{entriesCount}</span>)</h2>
+         ) : (<h2 className="respond-recordings__title">Записей респондентов нет</h2>)}
+
          <div className="respond-recordings__content">
             {/* <div className="popup recording__popup" data-popup-target="respond-recording">
                <ul className="popup__list">
@@ -62,33 +84,7 @@ const RespondRecordings = ({activeDate, entries}) => {
                </ul>
             </div> */}
 
-            {/* {respondItems} */}
-            {/* <div className="respond-recordings__per-day">
-               <h3 className="respond-recordings__date">26 мая</h3>
-               <Record time="13:00-14:00" name="Ольга" email="olgavolga@gmail.com" comment="Очень интересно" />
-            </div>
-            <div className="respond-recordings__per-day">
-               <h3 className="respond-recordings__date">28 мая</h3>
-
-               <Record time="9:00-10:00" name="Тимур Николаевич" email="timnik@gmail.com"/>
-               <Record time="11:00-12:00" name="Константин" email="kostyahover@yandex.ru"/>
-               <Record time="17:00-18:00" name="Владислав Маслёнников" email="masleonka@gmail.com"
-                  comment="Пожалуйста, приглашайте меня на тестирования, связанный также с финансовыми отчётами, бухгалтерией и т.д., так как я финансист"
-               />
-            </div>
-            <div className="respond-recordings__per-day">
-               <h3 className="respond-recordings__date">30 мая</h3>
-
-               <Record time="10:00-11:00" name="Анна" email="annakovalenko@gmail.com"
-                  comment="Добрый вечер. Если случится форс-мажор и запись перенесётся, прошу позвонить мне по номеру +7 808 487 44 25"
-               />
-               <Record time="14:00-15:00" name="Виктор Иннокентьевич" email="bestvictor@mail.ru"
-                  comment="Я на самом деле не автослесарь, но 10 лет владел автомастерской, поэтому считаю, что подойду для тестирования"
-               />
-               <Record time="14:00-15:00" name="Виктор Иннокентьевич" email="bestvictor@mail.ru"
-                  comment="Я на самом деле не автослесарь, но 10 лет владел автомастерской, поэтому считаю, что подойду для тестирования"
-               />
-            </div> */}
+            {respondItems}
          </div>
       </section>
    )

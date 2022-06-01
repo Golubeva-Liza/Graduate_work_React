@@ -26,7 +26,7 @@ const NewProjReady = ({
       setProjects,
       clearFields,
       isProjectEdit,
-      activeProjectId,
+      projectActive,
       projects
    }) => {
    
@@ -46,7 +46,7 @@ const NewProjReady = ({
          linkToForm: formLink,
          duration: duration == 'Другое' ? durationField : duration.replace(/[^0-9]/g,""),
          dates: selectedDays,
-         projId: activeProjectId,
+         projId: isProjectEdit ? projectActive.projId : null,
       };
 
       const obj = {
@@ -56,7 +56,6 @@ const NewProjReady = ({
          key: localStorage.getItem('authKey')
       };
 
-      console.log(obj);
       universalRequest('addProject', JSON.stringify(obj)).then((res) => onProjectLoaded(res, projObj));
    }, [])
 
@@ -67,8 +66,11 @@ const NewProjReady = ({
 
          if (isProjectEdit){
             const project = projects.find(el => el.projId == newProject.projId);
+            //переносим статичные данные
             newProject['linkForRespond'] = project.linkForRespond;
             newProject['linkForCustomer'] = project.linkForCustomer;
+            newProject['entriesInfo'] = project.entriesInfo;
+
             const projectIndex = projects.findIndex(el => el.projId == newProject.projId);
             const updatedProjects = [...projects.slice(0, projectIndex), newProject, ...projects.slice(projectIndex + 1)];
             setProjects(updatedProjects);
@@ -76,6 +78,7 @@ const NewProjReady = ({
          } else {
             newProject['linkForRespond'] = res.linkForRespond;
             newProject['linkForCustomer'] = res.linkForCustomer;
+            newProject['entriesInfo'] = [];
             newProject['projId'] = res.projId;
             setProjects(projects => [...projects, newProject]);
          }

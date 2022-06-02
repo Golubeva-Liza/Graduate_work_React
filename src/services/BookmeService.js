@@ -46,6 +46,10 @@ const useBookmeService = () => {
             url += 'projects/add-project.php';
             break;
 
+         case 'deleteProject':
+            url += 'projects/delete-project.php';
+            break;
+
          case 'getProjects': //+
             url += 'projects/get-projects.php';
             break;
@@ -59,12 +63,12 @@ const useBookmeService = () => {
             url += 'projects/get-one-project.php';
             break;
 
-         case 'addEntry':
+         case 'addEntry': //+
             url += 'entries/add-entry.php';
             break;
 
-         case 'test':
-            url += 'api/test.php';
+         case 'deleteEntry': //+
+            url += 'entries/delete-entry.php';
             break;
 
          default: break;

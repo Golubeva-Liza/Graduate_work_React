@@ -3,11 +3,15 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import Calendar from '../calendar/Calendar';
 import Accordion from '../accordion/Accordion';
 
-const ProjectsAside = ({setModalActive, accordActive, setAccordActive, projects, setProjects, setIsProjectEdit}) => {
+const ProjectsAside = ({setModalActive, accordActive, setAccordActive, projects, setProjects, setIsProjectEdit, setModalDeleteActive}) => {
 
    const editProj = () => {
       setIsProjectEdit(true);
       setModalActive(true);
+   }
+
+   const deleteProj = () => {
+      setModalDeleteActive(true);
    }
 
    const addProj = () => {
@@ -28,7 +32,7 @@ const ProjectsAside = ({setModalActive, accordActive, setAccordActive, projects,
                   return <Accordion accordClass="projects-aside__project" name={project.projectName} key={id}
                      items={['Редактировать', 'Копировать ссылку', 'Удалить', 'Режим совместной работы']}
                      accordActive={accordActive} setAccordActive={setAccordActive}
-                     onClick={[editProj, null, null, null]}
+                     onClick={[editProj, null, deleteProj, null]}
                      time startTime={firstDate} finalTime={lastDate}
                   />
                })

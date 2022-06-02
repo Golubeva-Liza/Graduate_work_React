@@ -33,9 +33,10 @@
    }
    &__btn{
       position: absolute;
-      top: 0;
-      right: 8px;
+      top: 4px;
+      right: 10px;
       svg{
+         pointer-events: none;
          fill: $main-grey;
       }
       &:hover svg {
@@ -43,8 +44,9 @@
      }
    }
    &__popup{
-      top: 208px;
-      right: calc(35px + 8px + 10px + 12px);
+      top: 24px;
+      right: 0;
+      // right: calc(35px + 8px + 10px + 12px);
    }
 
 }

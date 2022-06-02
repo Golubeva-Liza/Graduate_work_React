@@ -19,7 +19,8 @@ const ProjectsPage = () => {
 
    const [modalProjectActive, setModalProjectActive] = useState(false);
    const [modalTimeActive, setModalTimeActive] = useState(false);
-   const [modalDeleteActive, setModalDeleteActive] = useState(false);
+   const [projectDeleteActive, setProjectDeleteActive] = useState(false);
+   const [entryDeleteActive, setEntryDeleteActive] = useState(false);
 
    const [selectedDays, setSelectedDays] = useState(null);//список всех выбранных дат с интервалами времени
    const [selectedDate, setSelectedDate] = useState(null);//выбранная дата для редактирования времени в модальном окне
@@ -31,6 +32,9 @@ const ProjectsPage = () => {
 
    const [activeDate, setActiveDate] = useState(null);
    const [entries, setEntries] = useState(null);
+   const [targetEntry, setTargetEntry] = useState(null); //запись, на которой выбирают настройку, влияет на отображение popup
+   const [removedEntry, setRemovedEntry] = useState(null); //запись, на которой выбирают настройку
+   const [changeViewEntries, setChangeViewEntries] = useState(false); //нужно для обновления выводимого списка записей, тк useEffect не видит разницы в изменениях внутри свойств объекта
 
 
    //запрос на получение информации проектов
@@ -72,9 +76,102 @@ const ProjectsPage = () => {
          setProjectActive(find);
          setEntries(find.entriesInfo);
          setActiveDate(null);
+         setTargetEntry(null);
+         setRemovedEntry(null);
          //они влияют на отображаемые записи
       }
    }, [projectActiveName])
+
+
+
+   const deleteProject = () => {
+      const obj = {
+         ...projectActive, 
+         user: localStorage.getItem('userKey'),
+         key: localStorage.getItem('authKey')
+      };
+
+      universalRequest('deleteProject', JSON.stringify(obj)).then((res) => onProjectDelete(res));
+   }
+
+   const onProjectDelete = (res) => {
+      setProjectDeleteActive(false);
+
+      const isError = isFetchError(res);
+      if (!isError){
+         const index = projects.findIndex(el => el.projId == projectActive.projId);
+         const updatedProjects = [...projects.slice(0, index), ...projects.slice(index + 1)];
+         setProjects(updatedProjects);
+      }else{
+         console.log(res);
+      }
+   }
+
+
+   const onModalDeleteClose = () => {
+      setRemovedEntry(null);
+   }
+
+
+   const deleteEntry = () => {
+      const entryDate =  entries.find(el => el.date === removedEntry.date);
+      const currentEntry = entryDate.entries.find(el => el.id === removedEntry.id);
+
+      const obj = {
+         ...currentEntry, 
+         user: localStorage.getItem('userKey'),
+         key: localStorage.getItem('authKey')
+      };
+
+      universalRequest('deleteEntry', JSON.stringify(obj)).then((res) => onEntryDelete(res, entryDate));
+   }
+
+   const onEntryDelete = (res, entryDate) => {
+      setEntryDeleteActive(false);
+
+      const isError = isFetchError(res);
+      if (!isError){
+         const updatedProj = {...projectActive};
+
+         //найти номер записи с датой в массиве  entriesInfo
+         const dateId = updatedProj.entriesInfo.findIndex(el => el.date == entryDate.date);
+         //найти номер записи в массиве entries
+         const entries = updatedProj.entriesInfo[dateId].entries;
+         const entryId = entries.findIndex(el => el.id == removedEntry.id);
+
+         //обновить список записей
+         const newEntries = [...entries.slice(0, entryId), ...entries.slice(entryId + 1)];
+         
+         //если записей на этот день больше нет, то удаляем эту дату
+         if (newEntries.length == 0){
+            updatedProj.entriesInfo = [...updatedProj.entriesInfo.slice(0, dateId), ...updatedProj.entriesInfo.slice(dateId + 1)];
+         } else {
+            updatedProj.entriesInfo[dateId].entries = newEntries;
+         }
+
+         //находим индекс этого проекта и меняем его информацию
+         const index = projects.findIndex(el => el.projId == updatedProj.projId);
+         const updatedProjects = [...projects.slice(0, index), updatedProj, ...projects.slice(index + 1)];
+
+         setRemovedEntry(null);//убрать удаляемую запись
+         setProjects(updatedProjects);//обновить проекты
+         setEntries(updatedProj.entriesInfo);//обновить список записей
+         setChangeViewEntries(true);
+
+      }else{
+         setRemovedEntry(null);
+         console.log(res);
+      }
+   }
+
+
+   const getEntryInfo = () => {
+      console.log(removedEntry);
+      const entryDate =  entries.find(el => el.date === removedEntry.date);
+      const currentEntry = entryDate.entries.find(el => el.id === removedEntry.id);
+      const date =  entryDate.date.split('-').reverse().join('.');
+      return `запись респондента ${currentEntry.name} на ${date} ${currentEntry.time}`;
+   }
 
 
    return (
@@ -84,6 +181,7 @@ const ProjectsPage = () => {
             accordActive={projectActiveName} setAccordActive={setProjectActiveName}
             projects={projects} setProjects={setProjects}
             setIsProjectEdit={setIsProjectEdit}
+            setModalDeleteActive={setProjectDeleteActive}
          />
          <ModerCalendar
             projects={projects}
@@ -95,6 +193,10 @@ const ProjectsPage = () => {
             activeDate={activeDate}
             entries={entries}
             setEntries={setEntries}
+            targetEntry={targetEntry} setTargetEntry={setTargetEntry}
+            setEntryDeleteActive={setEntryDeleteActive}
+            setRemovedEntry={setRemovedEntry}
+            changeViewEntries={changeViewEntries} setChangeViewEntries={setChangeViewEntries}
          />
          <Modal modalClass={'modal-new-project'} active={modalProjectActive} setActive={setModalProjectActive}>
             <ModalNewProject 
@@ -118,12 +220,22 @@ const ProjectsPage = () => {
                setSelectedDays={setSelectedDays}
             />
          </Modal>
-         <Modal modalClass={'modal-delete'} active={modalDeleteActive} setActive={setModalDeleteActive}>
+         <Modal modalClass={'modal-delete'} active={projectDeleteActive} setActive={setProjectDeleteActive}>
             <ModalDelete 
-               setModalActive={setModalDeleteActive} 
+               setModalActive={setProjectDeleteActive} 
                removal={'проекта'}
                whatDelete={projectActiveName}
                info={'со всеми записями и расписанием тестирования'}
+               deleteSubmit={deleteProject}
+            />
+         </Modal>
+         <Modal modalClass={'modal-delete'} active={entryDeleteActive} setActive={setEntryDeleteActive}>
+            <ModalDelete 
+               setModalActive={setEntryDeleteActive} 
+               removal={'проекта'}
+               whatDelete={removedEntry ? getEntryInfo() : null}
+               deleteSubmit={deleteEntry}
+               onClose={onModalDeleteClose}
             />
          </Modal>
       </>

@@ -130,7 +130,7 @@ const RespondDBPage = () => {
                setModalActive={setModalDeleteActive} 
                removal={'респондента'}
                whatDelete={activeRespond ? respondents[activeRespond].name : null}
-               info={'и его/её записи на тестирования'}
+               info={' и его/её записи на тестирования'}
                deleteSubmit={() => setRemovedRespond(activeRespond)}
             />
          </Modal>

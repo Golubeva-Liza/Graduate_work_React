@@ -18,6 +18,7 @@
       height: calc(100% - 50px);//минус высота заголовка
       overflow-y: auto;
       padding-right: 10px;
+      position: relative;
    }
    &__content::-webkit-scrollbar {
       width: 12px;//ширина scrollbar

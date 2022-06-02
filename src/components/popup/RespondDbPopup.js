@@ -23,9 +23,6 @@ const RespondDbPopup = (props) => {
       >
          <ul className="popup__list">
             <li className="popup__item">
-               <button className="button-reset">Смотреть анкету</button>
-            </li>
-            <li className="popup__item">
                <button className="button-reset" onClick={modalEditRespond}>Редактировать</button>
             </li>
             <li className="popup__item">
@@ -36,7 +33,6 @@ const RespondDbPopup = (props) => {
             </li>
             <li className="popup__item">
                <button className="button-reset">Пригласить в проект</button>
-               
             </li>
          </ul>
       </div>

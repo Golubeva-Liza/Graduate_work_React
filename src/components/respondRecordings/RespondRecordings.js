@@ -1,14 +1,25 @@
 import './respondRecordings.scss';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import Record from './Record';
 import useCalendarValues from '../../hooks/useCalendarValues';
 
-const RespondRecordings = ({activeDate, entries}) => {
+
+const RespondRecordings = ({
+      activeDate, 
+      entries, 
+      targetEntry, setTargetEntry, 
+      setEntryDeleteActive, 
+      setRemovedEntry,
+      changeViewEntries, setChangeViewEntries
+   }) => {
 
    const {monthsForDays} = useCalendarValues(); 
 
    const [activeEntries, setActiveEntries] = useState(null);
    const [entriesCount, setEntriesCount] = useState(0);
+
+   const popup = useRef();
+   const entriesList = useRef();
 
 
    //отображаемые записи зависят от всего списка записей и выбранной даты
@@ -26,6 +37,23 @@ const RespondRecordings = ({activeDate, entries}) => {
 
    }, [entries, activeDate])
 
+   //и от изменения в записях, их редактирование или удаление
+   useEffect(() => {
+      if (changeViewEntries == true){
+         let arr = [...entries];
+
+         if (activeDate){
+            arr = arr.filter(
+               (item) => item.date === activeDate
+            );
+         }
+         
+         setActiveEntries(arr);
+         setChangeViewEntries(false);
+      }
+      
+   }, [changeViewEntries])
+
    //установка количества записей, тк в данном случае не подходит использование activeEntries.length
    useEffect(() => {
       if (activeEntries){
@@ -35,10 +63,14 @@ const RespondRecordings = ({activeDate, entries}) => {
       }
    }, [activeEntries])
 
+   const removeListener = () => {
+      document.removeEventListener('click', closePopup);
+   }
+
 
    function renderEntries(arr) {
       if (arr){
-
+         console.log('entries render');
          let elements = arr.map((value, index) => {
 
             const day = +value.date.split('-').reverse()[0];
@@ -48,7 +80,21 @@ const RespondRecordings = ({activeDate, entries}) => {
                <h3 className="respond-recordings__date">{`${day} ${month}`}</h3>
 
                {value.entries.map((entry, id) => (
-                  <Record key={id} time={entry.time} name={entry.name} email={entry.email} comment={entry.comment} />
+                  <Record 
+                     key={id} 
+                     date={value.date}
+                     time={entry.time} 
+                     name={entry.name} 
+                     email={entry.email} 
+                     comment={entry.comment} 
+                     id={entry.id}
+                     targetEntry={targetEntry}
+                     setTargetEntry={setTargetEntry}
+                     link={popup}
+                     removeListener={removeListener}
+                     setEntryDeleteActive={setEntryDeleteActive}
+                     setRemovedEntry={setRemovedEntry}
+                  />
                ))}
             </div>)
          });
@@ -57,7 +103,28 @@ const RespondRecordings = ({activeDate, entries}) => {
       }
    }
 
-   const respondItems = useMemo(() => renderEntries(activeEntries), [activeEntries]);
+   const respondItems = useMemo(() => 
+      renderEntries(activeEntries)
+   , [activeEntries, targetEntry]);
+
+   
+   //когда открылся popup у записи
+   useEffect(() => {
+      if (targetEntry){
+         // накапливаются обработчики, если кликать только на другие кнопки. нет подсветки выбранной кнопки.
+         // console.log(targetEntry);
+         document.addEventListener('click', closePopup);
+      }
+   }, [targetEntry])
+
+   const closePopup = (e) => {
+      if(popup.current && !popup.current.contains(e.target) && !e.target.classList.contains('more-functions')){
+         setTargetEntry(null);
+         removeListener();
+         // dotBtns.current.forEach(item => item ? item.classList.remove('active') : null);
+      }
+   }
+
 
    return (
       <section className="respond-recordings">
@@ -66,24 +133,7 @@ const RespondRecordings = ({activeDate, entries}) => {
             <h2 className="respond-recordings__title">Записи респондентов (<span>{entriesCount}</span>)</h2>
          ) : (<h2 className="respond-recordings__title">Записей респондентов нет</h2>)}
 
-         <div className="respond-recordings__content">
-            {/* <div className="popup recording__popup" data-popup-target="respond-recording">
-               <ul className="popup__list">
-                  <li className="popup__item">
-                     <button className="button-reset">Отправить письмо</button>
-                  </li>
-                  <li className="popup__item">
-                     <button className="button-reset">Редактировать</button>
-                  </li>
-                  <li className="popup__item">
-                     <button className="button-reset">Удалить</button>
-                  </li>
-                  <li className="popup__item">
-                     <button className="button-reset">Пригласить в проект</button>
-                  </li>
-               </ul>
-            </div> */}
-
+         <div className="respond-recordings__content" ref={entriesList}>
             {respondItems}
          </div>
       </section>

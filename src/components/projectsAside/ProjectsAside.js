@@ -2,9 +2,33 @@ import './projectsAside.scss';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import Calendar from '../calendar/Calendar';
 import Accordion from '../accordion/Accordion';
+import useAddressValues from '../../hooks/useAddressValues';
 
-const ProjectsAside = ({setModalActive, accordActive, setAccordActive, projects, setProjects, setIsProjectEdit, setModalDeleteActive}) => {
+const ProjectsAside = ({setModalActive, accordActive, setAccordActive, projects, setIsProjectEdit, setModalDeleteActive, projectActive}) => {
 
+   const [copyRespLink, setCopyRespLink] = useState(false);
+   const [copyScheduleLink, setCopyScheduleLink] = useState(false);
+   
+   const {hostUrl} = useAddressValues();
+
+   //копирование ссылки для респондентов
+   useEffect(() => {
+      if (copyRespLink){
+         // console.log(`${hostUrl}${projectActive.linkForRespond}`);
+         navigator.clipboard.writeText(`${hostUrl}${projectActive.linkForRespond}`);
+         setCopyRespLink(false);
+      }
+   }, [copyRespLink])
+
+   //копирование ссылки для заказчиков
+   useEffect(() => {
+      if (copyScheduleLink){
+         navigator.clipboard.writeText(`${hostUrl}${projectActive.linkForCustomer}`);
+         setCopyScheduleLink(false);
+      }
+   }, [copyScheduleLink])
+
+   
    const editProj = () => {
       setIsProjectEdit(true);
       setModalActive(true);
@@ -19,6 +43,7 @@ const ProjectsAside = ({setModalActive, accordActive, setAccordActive, projects,
       setModalActive(true);
    }
 
+
    return (
       <aside className="projects-aside">
          <div>
@@ -30,9 +55,9 @@ const ProjectsAside = ({setModalActive, accordActive, setAccordActive, projects,
                   const lastDate = project.dates[project.dates.length - 1].date.split('-').reverse().join('.');
 
                   return <Accordion accordClass="projects-aside__project" name={project.projectName} key={id}
-                     items={['Редактировать', 'Копировать ссылку', 'Удалить', 'Режим совместной работы']}
+                     items={['Редактировать', 'Удалить', 'Ссылка для респондентов', 'Ссылка для заказчика']}
                      accordActive={accordActive} setAccordActive={setAccordActive}
-                     onClick={[editProj, null, deleteProj, null]}
+                     onClick={[editProj, deleteProj, ()=>copyRespLink(true), ()=>setCopyScheduleLink(true)]}
                      time startTime={firstDate} finalTime={lastDate}
                   />
                })

@@ -59,7 +59,7 @@ const useBookmeService = () => {
             answerType = 'text';
             break;
 
-         case 'getOneProject':
+         case 'getOneProject': //+
             url += 'projects/get-one-project.php';
             break;
 
@@ -69,6 +69,10 @@ const useBookmeService = () => {
 
          case 'deleteEntry': //+
             url += 'entries/delete-entry.php';
+            break;
+            
+         case 'getProjectSchedule': //+
+            url += 'customer/get-project-data.php';
             break;
 
          default: break;

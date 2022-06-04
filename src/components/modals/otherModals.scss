@@ -406,3 +406,23 @@
       color: $main-blue;
    }
 }
+.modal-customer{
+   &__first, &__params{
+      width: 480px;
+   }
+   &__schedule{
+      width: 705px;
+   }
+
+   &__info{
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 16px;
+   }
+   &__comment{
+      height: 90px !important;
+   }
+   &__calendar{
+      margin-bottom: 32px;
+   }
+}

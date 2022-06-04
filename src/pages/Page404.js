@@ -6,9 +6,9 @@ const Page404 = () => {
    const {projectId} = useParams();
    let navigate = useNavigate();
 
-   useEffect(() => {
-      setTimeout(() => navigate('/'), 3000);
-   }, []);
+   // useEffect(() => {
+   //    setTimeout(() => navigate('/'), 3000);
+   // }, []);
    
    return (
       <main>

@@ -2,7 +2,7 @@ import './calendar.scss';
 import './calendarCreateProj.scss';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { CalendarArrow, CalendarArrowSmall } from '../../resources';
-import getDate from '../../hooks/getDate';
+import {getDate} from '../../hooks/getDate';
 
 
 const CalendarScheduleToRespondent = ({className, small, projectDates, selectedDay, setSelectedDay}) => {

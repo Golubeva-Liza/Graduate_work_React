@@ -27,7 +27,6 @@ const ModalNewProject = ({
    const descrInput = useInput('');
    const [projAddress, setProjAddress] = useState('');
    const projFormLink = useInput('');
-   const projLink = useInput('');
    const [durationRadio, setDurationRadio] = useState(null);
    const durationField = useInput('');
 
@@ -83,7 +82,6 @@ const ModalNewProject = ({
                descrInput={descrInput} 
                addressInput={projAddress} setAddressInput={setProjAddress}
                projFormLink={projFormLink} 
-               projLink={projLink} 
                durationField={durationField}
                step={step} setStep={setStep}
                durationRadio={durationRadio} setDurationRadio={setDurationRadio}
@@ -104,6 +102,7 @@ const ModalNewProject = ({
                setDate={setSelectedDate}
                selectedDays={selectedDays}
                isProjectEdit={isProjectEdit}
+               calendarValues={calendarValues}
             />
          ) : false}
          
@@ -115,7 +114,6 @@ const ModalNewProject = ({
                descr={descrInput.value}
                address={projAddress}
                formLink={projFormLink.value}
-               linkForRespond={projLink.value}
                duration={durationRadio}
                durationField={durationField.value}
                selectedDays={selectedDays}

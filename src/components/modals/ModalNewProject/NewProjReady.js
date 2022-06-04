@@ -38,6 +38,12 @@ const NewProjReady = ({
 
    useEffect(() => {
       setLoading(true);
+      
+      //сортировка дат по возрастанию
+      const dates = JSON.parse(JSON.stringify(selectedDays)); //глубокая копия массива
+      dates.sort(function(a, b) {
+         return new Date(a.date).getTime() - new Date(b.date).getTime();
+      });
 
       const projObj = {
          projectName: name, 
@@ -45,7 +51,7 @@ const NewProjReady = ({
          address,
          linkToForm: formLink,
          duration: duration == 'Другое' ? durationField : duration.replace(/[^0-9]/g,""),
-         dates: selectedDays,
+         dates: dates,
          projId: isProjectEdit ? projectActive.projId : null,
       };
 
@@ -55,7 +61,7 @@ const NewProjReady = ({
          user: localStorage.getItem('userKey'),
          key: localStorage.getItem('authKey')
       };
-
+      // console.log(projObj);
       universalRequest('addProject', JSON.stringify(obj)).then((res) => onProjectLoaded(res, projObj));
    }, [])
 
@@ -119,12 +125,12 @@ const NewProjReady = ({
       
                   <span className="modal-new-project__project-link">
                      Ссылка для респондентов:
-                     <a href={`${hostUrl}${thisProject.linkForRespond}`}>{hostUrl}{thisProject.linkForRespond}</a>
+                     <a rel="noreferrer" target="_blank" href={`${hostUrl}${thisProject.linkForRespond}`}>{hostUrl}{thisProject.linkForRespond}</a>
                   </span>
       
                   <span className="modal-new-project__project-link">
                      Ссылка для заказчиков:
-                     <a href={`${hostUrl}${thisProject.linkForCustomer}`}>{hostUrl}{thisProject.linkForCustomer}</a>
+                     <a rel="noreferrer" target="_blank" href={`${hostUrl}${thisProject.linkForCustomer}`}>{hostUrl}{thisProject.linkForCustomer}</a>
                   </span>
                </div>
             ) : null

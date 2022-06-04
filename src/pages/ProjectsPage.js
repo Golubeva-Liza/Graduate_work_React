@@ -34,7 +34,9 @@ const ProjectsPage = () => {
    const [entries, setEntries] = useState(null);
    const [targetEntry, setTargetEntry] = useState(null); //запись, на которой выбирают настройку, влияет на отображение popup
    const [removedEntry, setRemovedEntry] = useState(null); //запись, на которой выбирают настройку
-   const [changeViewEntries, setChangeViewEntries] = useState(false); //нужно для обновления выводимого списка записей, тк useEffect не видит разницы в изменениях внутри свойств объекта
+
+   //нужно для обновления выводимого списка записей, тк useEffect не видит разницы в изменениях внутри свойств объекта
+   const [renderEntries, setRenderEntries] = useState(false);
 
 
    //запрос на получение информации проектов
@@ -57,12 +59,19 @@ const ProjectsPage = () => {
    //если открытого проекта больше нет, то открывается первый проект в обновленном списке
    useEffect(() => {
       if (projects.length){
-         const activeProject = projects.find(el => el.projId == projectActive ? projectActive.projId : null);
-         if (!activeProject){
+         if (!projectActive){
             setProjectActiveName(projects[0].projectName);
+
          } else {
-            //название может поменяться, поэтому обновляем активный проект
-            setProjectActiveName(activeProject.projectName);
+            const activeProject = projects.find(el => el.projId === projectActive.projId);
+            
+            //если имя не поменялось, то просто меняем состояние у активного проекта
+            if (projectActiveName === activeProject.projectName){
+               setProjectActive(activeProject);
+            } else{
+               //если название поменялось, обновляем имя активного проекта
+               setProjectActiveName(activeProject.projectName);
+            }
          }
       }
    }, [projects])
@@ -72,7 +81,6 @@ const ProjectsPage = () => {
    useEffect(() => {
       if (projectActiveName){
          const find = projects.find(el => el.projectName == projectActiveName); //открытый проект
-         // console.log(find);
          setProjectActive(find);
          setEntries(find.entriesInfo);
          setActiveDate(null);
@@ -156,7 +164,7 @@ const ProjectsPage = () => {
          setRemovedEntry(null);//убрать удаляемую запись
          setProjects(updatedProjects);//обновить проекты
          setEntries(updatedProj.entriesInfo);//обновить список записей
-         setChangeViewEntries(true);
+         setRenderEntries(true);
 
       }else{
          setRemovedEntry(null);
@@ -182,6 +190,7 @@ const ProjectsPage = () => {
             projects={projects} setProjects={setProjects}
             setIsProjectEdit={setIsProjectEdit}
             setModalDeleteActive={setProjectDeleteActive}
+            projectActive={projectActive}
          />
          <ModerCalendar
             projects={projects}
@@ -196,7 +205,7 @@ const ProjectsPage = () => {
             targetEntry={targetEntry} setTargetEntry={setTargetEntry}
             setEntryDeleteActive={setEntryDeleteActive}
             setRemovedEntry={setRemovedEntry}
-            changeViewEntries={changeViewEntries} setChangeViewEntries={setChangeViewEntries}
+            changeViewEntries={renderEntries} setChangeViewEntries={setRenderEntries}
          />
          <Modal modalClass={'modal-new-project'} active={modalProjectActive} setActive={setModalProjectActive}>
             <ModalNewProject 

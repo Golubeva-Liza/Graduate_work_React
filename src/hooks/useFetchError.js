@@ -8,8 +8,8 @@ const useFetchError = () => {
          return true;
    
       } else if (res.authError){
-         sessionStorage.removeItem('userKey');
-         sessionStorage.removeItem('authKey');
+         localStorage.removeItem('userKey');
+         localStorage.removeItem('authKey');
          navigate('/');
          return true;
    

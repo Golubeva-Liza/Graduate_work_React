@@ -17,10 +17,14 @@ const ModalSetTime = ({setModalActive, date, setDate, selectedDays, setSelectedD
    useEffect(() => {
       if (date){
          const day = selectedDays.find(item => item.date == date);
-         const obj = day.intervals.map(item => 
-            ({firstTime: item.split('-')[0], lastTime: item.split('-')[1]})
-         )
-         setInputFields(obj);
+         if (day){
+            const obj = day.intervals.map(item => 
+               ({firstTime: item.split('-')[0], lastTime: item.split('-')[1]})
+            )
+            setInputFields(obj);
+         } else {
+            setInputFields([{ firstTime: '', lastTime: '' }]);
+         }
       }
       
    }, [date])
@@ -69,15 +73,31 @@ const ModalSetTime = ({setModalActive, date, setDate, selectedDays, setSelectedD
       const withoutEmpty = inputFields.filter(item => item.firstTime !== '' && item.lastTime !== '' );
       const intervals = withoutEmpty.map(item => item.firstTime ? `${item.firstTime}-${item.lastTime}` : null);
 
+      //если применяем интервал только к выбранному дню
       if (radioTime == 'current' || checkWeekdays.length == 0){
-         //обновление интервалов выбранного дня в объекте selectedDays
 
-         const id = selectedDays.findIndex(item => item.date == date);
-         const newSelectedDay = {date: selectedDays[id].date, intervals: [...selectedDays[id].intervals]};
-         newSelectedDay.intervals = intervals;
+         const id = selectedDays.findIndex(item => item.date == date); //id этого дня в списке всех дней
+         let updatedDays = [];
 
-         const updatedDays = [...selectedDays.slice(0, id), newSelectedDay, ...selectedDays.slice(id + 1)];
+         //если интервалов времени нет на этот день
+         if (withoutEmpty.length == 0){
+            //то убираем этот день из списка
+            updatedDays = [...selectedDays.slice(0, id), ...selectedDays.slice(id + 1)];
+         
+         //если этого дня в списке не было, то добавляем интервал
+         } else if (id === -1){
+            const newSelectedDay = {date: date, intervals: intervals};
+            updatedDays = [...selectedDays, newSelectedDay];
+
+         //если просто обновился список интервалов, то обновляем их   
+         } else {
+            const newSelectedDay = {date: selectedDays[id].date, intervals: [...selectedDays[id].intervals]};
+            newSelectedDay.intervals = intervals;
+            updatedDays = [...selectedDays.slice(0, id), newSelectedDay, ...selectedDays.slice(id + 1)];
+         }
+
          setSelectedDays(updatedDays);
+         // console.log(updatedDays);
 
       } else if (radioTime == 'weekdays'){
          //применяем интервалы времени ко всем дням, которые попадают под условие checkWeekdays (выбранный день недели)

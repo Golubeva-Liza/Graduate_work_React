@@ -27,7 +27,9 @@ const App = () => {
    const [user, setUser] = useState('');
 
    const onLogin = (res) => {
-      // console.log(res);
+      console.log('залогинен');
+      console.log(res);
+      
       if (res.key){
          setUser({
             'name': res.name, 
@@ -89,9 +91,9 @@ const App = () => {
                   }/>
                   {/* сделать проверку, если нет значений */}
                   <Route path='/projects/:projectId' element={<RespondPage/>}/>
-                  <Route path='/:projectHash' element={<ClientPage/>}/>
+                  <Route path='/schedule/:projectHash' element={<ClientPage/>}/>
 
-                  <Route path='*' element={<Page404/>}/>
+                  <Route path="*" element={<Page404/>}/>
                </Routes>
             </Suspense>
          </div>

@@ -98,6 +98,9 @@ const useValidation = () => {
          case 'newPass':
             return value.length < 6 || value.length >= 60 ? 'Пароль должен быть длиной от 6 до 30 символов' : true;
 
+         case 'comment':
+            return sqlInjection.test(String(value)) ? 'Поле ввода содержит недопустимые символы' : true;
+
          default:
             break;
       }

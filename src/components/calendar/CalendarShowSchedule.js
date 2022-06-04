@@ -2,7 +2,7 @@ import './calendar.scss';
 import './calendarCreateProj.scss';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { CalendarArrow, CalendarArrowSmall } from '../../resources';
-import getDate from '../../hooks/getDate';
+import { getDate } from '../../hooks/getDate';
 import useCalendarValues from '../../hooks/useCalendarValues';
 
 
@@ -40,8 +40,7 @@ const CalendarShowSchedule = ({className, small, projects, projectActive, active
    }, [activeDate, currentDate])
 
 
-
-   function renderCalendar() {
+   function renderCalendarFunc() {
       
       const currentProjectDates = projects.length > 0 ? projectActive.dates : null;
 
@@ -100,7 +99,8 @@ const CalendarShowSchedule = ({className, small, projects, projectActive, active
       return days;
    }
 
-   const calendarDays = useMemo(() => projectActive ? renderCalendar() : null, [currentDate, projectActive]);
+   const calendarDays = useMemo(() => projectActive ? renderCalendarFunc() : null, [currentDate, projectActive]);
+
 
    const onLeftArrow = () => {
       setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)));

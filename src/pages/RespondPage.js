@@ -26,6 +26,7 @@ const RespondPage = () => {
 
 
    const onProjectLoaded = (res) => {
+      console.log(res);
       if (!res.error){
          setProject(res);
       }

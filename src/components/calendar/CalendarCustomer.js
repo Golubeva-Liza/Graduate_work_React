@@ -6,17 +6,17 @@ import {getDate, transformDate} from '../../hooks/getDate';
 import getDatesList from '../../hooks/getDatesList';
 
 
-const CalendarCreateSchedule = ({classes, calendarValues, small, setModalTimeActive, setDate, selectedDays}) => {
+const CalendarCustomer = ({classes, dates, setModalTimeActive, setDate}) => {
 
    const monthsNames = useMemo(() => [
       "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август",
       "Сетрябрь", "Октрябрь", "Ноябрь", "Декабрь"
    ], []);
 
-   const [currentDate, setCurrentDate] = useState(new Date(new Date(selectedDays[0].date).setDate(1)));
+   const [currentDate, setCurrentDate] = useState(new Date(new Date(dates[0].date).setDate(1)));
 
    function renderCalendar() {
-      // console.log(selectedDays);
+      console.log(dates);
       let days = [];
 
       let firstDayIndex = currentDate.getDay() - 1;//день недели первого дня месяца, где 0 - воскресенье, поэтому вычитаем единицу, чтобы 0 был понедельником
@@ -24,10 +24,8 @@ const CalendarCreateSchedule = ({classes, calendarValues, small, setModalTimeAct
          firstDayIndex = 6;
       }//а воскресенье станет 6
 
-
       const lastDayOfCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
       //последний аргумент 0 дает последнее число предыдущего месяца. поэтому прибавляем к текущему месяцу 1
-
 
       //формируем последние числа предыдущего месяца, пустые (отступы)
       for (let x = firstDayIndex; x > 0; x--){
@@ -36,8 +34,8 @@ const CalendarCreateSchedule = ({classes, calendarValues, small, setModalTimeAct
 
       const newDate = new Date(currentDate);//копируем дату
       //первая и послелняя дата выбранного промежутка
-      const first = transformDate(calendarValues[0]).split('.').reverse().join('-');
-      const last = transformDate(calendarValues[1]).split('.').reverse().join('-');
+      const first = dates[0].date.split('.').reverse().join('-');
+      const last = dates[dates.length-1].date.split('.').reverse().join('-');
 
       //промежуток дат
       const datesList = getDatesList(first, last);
@@ -54,12 +52,14 @@ const CalendarCreateSchedule = ({classes, calendarValues, small, setModalTimeAct
 
          //если число входит в интервал выбранных дат
          else if (datesList.find(item => item == currentDay)) {
-            const date = selectedDays.find(item => item.date == currentDay);//находим этот день в списке имеющихся интервалов
+            const date = dates.find(item => item.date == currentDay);//находим этот день в списке имеющихся интервалов
 
             days.push(<div key={i} className="calendar__date calendar__selected">
                <span>{i}</span>
-               {date ? date.intervals.map((item, index) => index < 2 ? <div key={index}>{item}</div> : '') : null}
-               {date ? date.intervals.length > 2 ? <div style={{lineHeight: '2px'}}>...</div> : '' : null}
+               {date ? date.intervals.map((item, index) => 
+                  index < 1 ? <div key={index}>{item}{date.intervals.length > 1 ? '...' : null}</div> : null)
+               : null}
+               {<div style={{'position': 'absolute', 'color':'#18A0FB', 'bottom': '8px'}}>11:00-19:00</div>}
             </div>);
          }
 
@@ -71,7 +71,7 @@ const CalendarCreateSchedule = ({classes, calendarValues, small, setModalTimeAct
       return days;
    }
 
-   const calendarDays = useMemo(() => renderCalendar(), [currentDate, selectedDays]);
+   const calendarDays = useMemo(() => renderCalendar(), [currentDate, dates]);
 
    const onLeftArrow = () => {
       if (currentDate.getMonth() != new Date().getMonth()){
@@ -103,10 +103,10 @@ const CalendarCreateSchedule = ({classes, calendarValues, small, setModalTimeAct
    };
    
    return (
-      <div className={`calendar calendar_create-schedule ${small ? 'calendar_small' : ''} ${classes}`}>
+      <div className={`calendar calendar_create-schedule ${classes}`}>
          <div className="calendar__month">
             <button className="button-reset calendar__arrow" type="button" onClick={onLeftArrow}>
-               {small ? <CalendarArrowSmall/>: <CalendarArrow/>}
+               <CalendarArrow/>
             </button>
             <p>
                <span className="calendar__month-name">
@@ -114,7 +114,7 @@ const CalendarCreateSchedule = ({classes, calendarValues, small, setModalTimeAct
                </span>
             </p>
             <button className="button-reset calendar__arrow" type="button" onClick={onRightArrow}>
-               {small ? <CalendarArrowSmall/>: <CalendarArrow/>}
+               <CalendarArrow/>
             </button>
          </div>
          <div className="calendar__weekdays">
@@ -132,4 +132,4 @@ const CalendarCreateSchedule = ({classes, calendarValues, small, setModalTimeAct
       </div>
    )
 }
-export default CalendarCreateSchedule;
+export default CalendarCustomer;

@@ -70,7 +70,7 @@ const RespondRecordings = ({
 
    function renderEntries(arr) {
       if (arr){
-         console.log('entries render');
+         // console.log('entries render');
          let elements = arr.map((value, index) => {
 
             const day = +value.date.split('-').reverse()[0];

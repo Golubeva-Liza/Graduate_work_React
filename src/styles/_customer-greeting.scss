@@ -1,0 +1,34 @@
+.customer-greeting{
+   padding-top: 60px;
+   .my-container{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+   }
+   &__title{
+      margin-bottom: 48px;
+      font-weight: 600;
+      font-size: 25px;
+      line-height: 30px;
+      text-align: center;
+      color: $main-blue;
+   }
+   &__descr{
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 22px;
+      color: #000000;
+      margin-bottom: 24px;
+   }
+   &__text{
+      max-width: 482px;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 18px;
+      color: #000000;
+      margin-bottom: 24px;
+   }
+   &__btn{
+      padding: 0 16px;
+   }
+}

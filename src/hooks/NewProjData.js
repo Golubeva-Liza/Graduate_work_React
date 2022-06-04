@@ -3,7 +3,6 @@ import {translit} from '../../../hooks/translit';
 import useValidation from '../../../hooks/useValidation';
 import { AddressSuggestions } from 'react-dadata';
 import useBookmeService from '../../../services/BookmeService';
-import {transformDate} from '../../../hooks/getDate';
 
 import { CalendarArrowSmall } from '../../../resources';
 import InputWithLabel from '../../inputWithLabel/InputWithLabel';
@@ -23,6 +22,7 @@ const NewProjData = ({
       descrInput,
       addressInput, setAddressInput,
       projFormLink, 
+      projLink,
       durationRadio, setDurationRadio,
       durationField,
       calendarValues, setCalendarValues,
@@ -62,6 +62,13 @@ const NewProjData = ({
       setCalendarActive(!calendarActive);
    }
 
+   const transformDate = (date) => {
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
+      const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+      return `${day}.${month}.${year}`;
+   }
+
    const getDaysArray = function(start, end) {
       for (var arr=[], date=new Date(start); date<=new Date(end); date.setDate(date.getDate()+1)){
          arr.push(new Date(date));
@@ -79,7 +86,7 @@ const NewProjData = ({
             if (res == 'success'){
                onCheckedProject();
             } else{
-               setErrorMessage(errorMessage => ({...errorMessage, projName: res}));
+               setErrorMessage(errorMessage => ({...errorMessage, ...{projName: res}}));
             }
          });
       } else {
@@ -111,13 +118,12 @@ const NewProjData = ({
 
             if (isElSelected){
                datesArray.push(isElSelected);
-            } 
-            // else {
-            //    datesArray.push({
-            //       date: el,
-            //       intervals: [defaultTimeInterval]
-            //    });
-            // }
+            } else {
+               datesArray.push({
+                  date: el,
+                  intervals: [defaultTimeInterval]
+               });
+            }
          })
       }
 

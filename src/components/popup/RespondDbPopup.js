@@ -17,8 +17,9 @@ const RespondDbPopup = (props) => {
    }
  
    return (
+      //rowNum - 195
       <div className={`popup ${popupClass} ${popupOpened ? 'show' : ''}`} 
-         style={{top: `${isLow == true ? rowNum - 195 : rowNum + 40}px`}} 
+         style={{top: `${isLow == true ? rowNum - 80 : rowNum + 40}px`}} 
          ref={link}
       >
          <ul className="popup__list">
@@ -28,12 +29,12 @@ const RespondDbPopup = (props) => {
             <li className="popup__item">
                <button className="button-reset" onClick={removeRespond}>Удалить</button>
             </li>
-            <li className="popup__item">
+            {/* <li className="popup__item">
                <button className="button-reset">Отправить письмо</button>
             </li>
             <li className="popup__item">
                <button className="button-reset">Пригласить в проект</button>
-            </li>
+            </li> */}
          </ul>
       </div>
    )

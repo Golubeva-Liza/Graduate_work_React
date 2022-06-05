@@ -5,7 +5,6 @@ import useValidation from '../../hooks/useValidation';
 import useSelectValues from '../../hooks/useSelectValues';
 import useBookmeService from "../../services/BookmeService";
 import dateToAge from "../../hooks/dateToAge";
-import checkInterval from "../../hooks/checkInterval";
 
 import Select from "../select/Select";
 import InputWithLabel from "../inputWithLabel/InputWithLabel";
@@ -90,9 +89,6 @@ const RespondendSettings = ({selectedDay, time, formLink, projectId, setEntryRea
          formData.set('age', 0);
       }
 
-      // for (let [key, val] of formData.entries()) {
-      //    console.log(key, val);
-      // }
       universalRequest('addEntry', formData).then(onEntryPost);
    }
 

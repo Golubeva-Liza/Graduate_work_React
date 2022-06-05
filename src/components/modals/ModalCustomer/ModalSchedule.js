@@ -11,13 +11,6 @@ import { CalendarArrowSmall } from '../../../resources';
 import ProgressBtns from '../../progressBtns/ProgressBtns';
 import Button from '../../button/Button';
 import CalendarCustomer from '../../calendar/CalendarCustomer';
-import InputWithLabel from '../../inputWithLabel/InputWithLabel';
-import Input from '../../input/Input';
-import InputMask from 'react-input-mask';
-import Loader from '../../loader/Loader';
-import getIntervals from '../../../hooks/getIntervals';
-import ErrorMessage from '../../errorMessage/ErrorMessage';
-
 
 
 const ModalSchedule = ({
@@ -28,7 +21,6 @@ const ModalSchedule = ({
       setCurrentDate
    }) => {
 
-   const {errorMessage, setErrorMessage, validation} = useValidation();
 
    return (
       <div className={`modal__content modal-customer__schedule`}>

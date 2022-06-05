@@ -9,7 +9,7 @@
          $firstTime = date("H:i", $i / 1000);
          $lastTime = date("H:i", ($i + $dur) / 1000);
 
-         if ($i + $step <= $end){
+         if ($i + $dur <= $end){
             array_push($intervals, $firstTime . '-' . $lastTime);
          }
       }

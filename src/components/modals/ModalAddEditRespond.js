@@ -34,7 +34,7 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
    const form = useRef();
    
    // const [errorMessage, setErrorMessage] = useState({});
-   const [genderInput, setGenderInput] = useState('М');
+   const [genderInput, setGenderInput] = useState('Н');
    const [clearSelect, setClearSelect] = useState(false);
    const [tagsList, setTagsList] = useState([]);
 
@@ -44,7 +44,6 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
 
 
    useEffect(() => {
-      // console.log(new Date('2022-09-01'));
       if (editRespond || editRespond === 0){
          const currentRespond = respondents[editRespond];
          //заполняем поля формы имеющимися данными
@@ -53,8 +52,8 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
          phoneInput.setValue(currentRespond.phone);
          dateInput.setValue(currentRespond.birthday.split('-').reverse().join('.'));
          ageInput.setValue(currentRespond.age);
-         setGenderInput(currentRespond.gender);
 
+         setGenderInput(currentRespond.gender === '-' ? 'Н' : currentRespond.gender);
          sityInput.setValue(currentRespond.homecity === '-' ? '' : currentRespond.homecity);
          setTagsList(currentRespond.tags === '-' ? [] : currentRespond.tags.split(', '));
          setEducationValue(currentRespond.education === '-' ? 'Не важно' : currentRespond.education);
@@ -79,18 +78,19 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
       const strokeDate = dateInput.value.split('.').reverse().join('-');
       formData.set('birthdayDate', strokeDate);
 
+      for(let [name, value] of formData) {
+         if (value === 'Не важно'){
+            formData.set(name, '-');
+         } else if (value === 'Н'){
+            formData.set('gender', '-');
+         }
+      }
+
       // перезапись возраста с учетом даты рождения
       if (dateInput.value.replace(/[^0-9]/g,"")){
-         
          const age = dateToAge(strokeDate);
          formData.set('age', age);
       } 
-      if (formData.get('education') == 'Не важно'){
-         formData.set('education', '-');
-      }
-      if (formData.get('familyStatus') == 'Не важно'){
-         formData.set('familyStatus', '-');
-      }  
       if (tagsList.length){
          const strokeTags = tagsList.map(el => (
             el[0].toUpperCase() + el.slice(1)
@@ -137,7 +137,7 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
       ageInput.removeValue();
       sityInput.removeValue();
       tagsInput.removeValue();
-      setGenderInput('М');
+      setGenderInput('Н');
       setClearSelect(true);
       setFamilyStatusValue(null);
       setEducationValue(null);
@@ -164,7 +164,7 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
 
    return (
       <div className="modal__content" ref={modal} onClick={e => e.stopPropagation()}>
-         <h3 className="modal__title">Редактировать респондента</h3>
+         <h3 className="modal__title">{editRespond === null ? 'Добавить респондента' : 'Редактировать респондента'}</h3>
          <form className="modal__form" ref={form} onSubmit={e => e.preventDefault()}>
             <InputWithLabel labelClass="modal__label" labelTitle="ФИО *">
                <Input inputType="text" inputName="name" inputText="Введите ФИО" value={nameInput.value} onChange={nameInput.onChange} onBlur={e => validation(e)}/>
@@ -183,6 +183,14 @@ const ModalAddEditRespond = ({setModalActive, respondents, setRespondents, editR
             <div className="modal__label">
                <span className="modal__input-name">Пол</span>
                <div className="modal__some-inputs">
+                  <label className="checkbox modal__checkbox">
+                     <span>Не важно</span>
+                     <input className="visually-hidden checkbox__input" type="radio" name="gender" value="Н" 
+                        onChange={(e) => setGenderInput(e.target.value)}
+                        checked={genderInput == "Н" ? true : false}
+                     />
+                     <div className="checkbox__check"></div>
+                  </label>
                   <label className="checkbox modal__checkbox">
                      <span>Мужской</span>
                      <input className="visually-hidden checkbox__input" type="radio" name="gender" value="М" 

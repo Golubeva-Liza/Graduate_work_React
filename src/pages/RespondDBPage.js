@@ -37,8 +37,7 @@ const RespondDBPage = () => {
       const obj = {
          "user": localStorage.getItem('userKey'),
          "key": +localStorage.getItem('authKey')
-      };
-      // console.log(obj);
+      }
       universalRequest('getAllRespondents', JSON.stringify(obj)).then((res) => {
          const isError = isFetchError(res);
          if (!isError){

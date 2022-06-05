@@ -9,7 +9,6 @@ import { CalendarArrowSmall } from '../../../resources';
 import ProgressBtns from '../../progressBtns/ProgressBtns';
 import Button from '../../button/Button';
 import Loader from '../../loader/Loader';
-import getIntervals from '../../../hooks/getIntervals';
 import useFetchError from '../../../hooks/useFetchError';
 
 

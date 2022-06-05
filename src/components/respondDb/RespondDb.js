@@ -52,8 +52,8 @@ const RespondDb = ({
          setPopupActive(true);
       }
 
-      const name = currentItem.childNodes[1].innerHTML;
-      const phone = currentItem.childNodes[7].innerHTML.replace(/[^0-9]/g,"");
+      const name = currentItem.childNodes[0].innerHTML;//1 при чекбоксе
+      const phone = currentItem.childNodes[6].innerHTML.replace(/[^0-9]/g,"");//7 при чекбоксе
       const respondNum = respondents.findIndex(el => el.name == name && el.phone == phone);
       setActiveRespond(respondNum);
    }
@@ -80,12 +80,12 @@ const RespondDb = ({
    
             return (
                <div className="table__row" key={value.id} ref={el => respondList.current[index] = el}>
-                  <div>
+                  {/* <div>
                      <label className="checkbox">
                         <input className="checkbox__input" name="respondent" type="checkbox"/>
                         <div className="checkbox__check"></div>
                      </label>
-                  </div>
+                  </div> */}
                   <div>{value.name}</div>
                   <div>{value.gender}</div>
                   <div>{value.age}</div>
@@ -122,12 +122,12 @@ const RespondDb = ({
          />
          <div className="table respondDb__table" ref={table}>
             <div className="table__title">
-               <div>
+               {/* <div>
                   <label className="checkbox">
                      <input className="checkbox__input" name="all" type="checkbox"/>
                      <div className="checkbox__check"></div>
                   </label>
-               </div>
+               </div> */}
                <div>ФИО</div>
                <div>Пол</div>
                <div>Возраст</div>
@@ -150,23 +150,8 @@ const RespondDb = ({
          {loader}
 
          <div className="respondDb__btns">
-            <button className="button" disabled>Пригласить респондентов в проект</button>
+            {/* <button className="button" disabled>Пригласить респондентов в проект</button> */}
             <button className="button respondDb__add-btn" onClick={() => setModalActive(true)} >Добавить респондента</button>
-            {/* <Popup 
-               items={['Добавить одного респондента', 'Импорт из Excel']}
-               popupClass={`respondDb__btns-popup`} 
-               popupOpened={popupActive}
-            /> */}
-            {/* <div className="popup respondDb__btns-popup" data-popup-target="add-respond">
-               <ul className="popup__list">
-                  <li className="popup__item">
-                     <button className="button-reset" data-modal-btn="add-respond">Добавить одного респондента</button>
-                  </li>
-                  <li className="popup__item">
-                     <button className="button-reset" data-modal-btn="add-file">Импорт из Excel</button>
-                  </li>
-               </ul>
-            </div> */}
          </div>
       </main>
    )

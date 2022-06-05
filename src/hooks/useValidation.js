@@ -23,19 +23,6 @@ const useValidation = () => {
    })
 
 
-   const registrationValid = (name, email, password) => {
-      if (name.length < 3 || name.length >= 30){
-         return 'Имя пользователя должно быть длиной от 3 до 30 символов';
-         
-      } else if (!regForEmail.test(String(email).toLocaleLowerCase())){
-         return 'Введите корректный почтовый адрес';
-
-      } else if(password.length < 6 || password.length > 30){
-         return 'Пароль должен быть длиной от 6 до 30 символов';
-      }
-      return true;
-   }
-
    const loginValid = (email, password) => {
       if (!regForEmail.test(String(email).toLocaleLowerCase())){
          return 'Введите корректный почтовый адрес';
@@ -101,6 +88,9 @@ const useValidation = () => {
          case 'comment':
             return sqlInjection.test(String(value)) ? 'Поле ввода содержит недопустимые символы' : true;
 
+         case 'password':
+            return value.length < 6 || value.length >= 30 ? 'Пароль должен быть длиной от 6 до 30 символов' : true;
+
          default:
             break;
       }
@@ -119,7 +109,46 @@ const useValidation = () => {
       }
    }
 
-   return {registrationValid, loginValid, fieldsValid, validation, errorMessage, setErrorMessage, scrollIntoTop};
+
+   const timeValid = (field, whatField, index, prevField) => {
+      //при whatField == first  prevField = конечное время из предыдущего интервала
+      //при whatField == last  prevField = начальное время текущего интервала
+
+      if (field.replace(/[^\d]/g, '') && field.replace(/[^\d]/g, '').length !== 4){
+         return 'Введите корректное время';
+      }
+
+      if (whatField == 'first'){
+         if (prevField && +prevField.replace(/[^\d]/g, '') >= +field.replace(/[^\d]/g, '')){
+            return 'Начальное время следующего интервала должно быть больше предыдущего';
+         }
+      } else {
+         if (prevField.replace(/[^\d]/g, '') && !field.replace(/[^\d]/g, '')){
+            return 'Введите конечное время';
+         } else if (field.length && +prevField.replace(/[^\d]/g, '') >= +field.replace(/[^\d]/g, '')){
+            return 'Конечное время интервала должно быть больше начального';
+         }
+      }
+
+      return true;
+   }
+
+   const timeValidation = (field, whatField, index, prevField) => {
+
+      const validRes = timeValid(field, whatField, index, prevField);
+      let error = {};
+      if (validRes === true){
+         Object.assign(error, errorMessage);
+         delete error[`${whatField}${index}`];
+         setErrorMessage({...error});
+      } else {
+         error[`${whatField}${index}`] = validRes;
+         setErrorMessage(errorMessage => ({...errorMessage, ...error}));
+      }
+   }
+
+
+   return {loginValid, fieldsValid, validation, errorMessage, setErrorMessage, scrollIntoTop, timeValidation};
 }
 
 export default useValidation;

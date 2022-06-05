@@ -20,7 +20,7 @@
 
       if(mysqli_num_rows($projects) > 0){
 
-         //подготовка записей
+         //1) подготовка записей
          $sqlentries = mysqli_query($conn, "SELECT * FROM entries");
          $entries = array();
 
@@ -47,6 +47,8 @@
             array_push($entries, $entriesInfo);
          }
 
+         //список всех записей готов $entries
+
          
          $res = array();
          while ($row = $projects->fetch_assoc()) {
@@ -70,6 +72,14 @@
                   array_push($datesArr[$find2]['intervals'], $interval[0] . '-' . $interval[1]);
                }
             }
+
+            // //сортировка расписания по дате, тк по умолчанию они в порядке хранения в бд
+            usort($datesArr, function($a, $b) {
+               $first = new DateTime($a['date'] . '00:00:00');
+               $next = new DateTime($b['date'] . '00:00:00');
+               return $first->getTimestamp() - $next->getTimestamp();
+            });
+
 
             //записи на этот проект
             $projEntriesFilter = array_filter($entries, function($entry) use ($projId) {return $entry['project'] == $projId;});
@@ -96,7 +106,7 @@
 
             }
 
-            //сортировка по дате, тк по умолчанию они в порядке хранения в бд
+            //сортировка записей по дате, тк по умолчанию они в порядке хранения в бд
             usort($projEntries, function($a, $b) {
                $first = new DateTime($a['date'] . '00:00:00');
                $next = new DateTime($b['date'] . '00:00:00');

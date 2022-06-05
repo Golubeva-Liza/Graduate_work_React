@@ -11,41 +11,32 @@
       $row = mysqli_fetch_assoc($sql);
       $id = $row['id'];
       $name = $row['name'];
-      // $email = $row['email'];
       $password2 = $row['password'];
       $img = $row['img'];
       
       if(password_verify($password, $password2)){
-         $random_key = rand(1, 4000000000); 
+         $random_key = rand(1, 2000000000); 
          $userId = md5($id);
+         $currentTime = strtotime(date("Y-m-d H:i:s"));
 
-         $auth = mysqli_query($conn, "SELECT * FROM authorization WHERE userId={$id}");
+         //здесь проблема
+         $record = mysqli_query($conn, "INSERT INTO authorization (userId, authkey, time) VALUES ($id, $random_key, FROM_UNIXTIME($currentTime))");
+         
+         if ( $record === false ){
+            echo json_encode(array("error" => "Что-то пошло не так. Попробуйте еще раз.", "time" => $currentTime, "id" => $id, "randomKey" => $random_key));
 
-         // if(mysqli_num_rows($auth) > 0){
-         //    $sql = mysqli_query($conn, "DELETE FROM authorization WHERE userId={$id}");
-         // }
-
-         // $record = mysqli_query($conn, "INSERT INTO authorization (userId, authkey) VALUES ($id, $random_key)");
-
-         if(mysqli_num_rows($auth) > 0){
-            $update = mysqli_query($conn, "UPDATE authorization SET authkey={$random_key} WHERE userId={$id}");
          } else {
-            $record = mysqli_query($conn, "INSERT INTO authorization (userId, authkey) VALUES ($id, $random_key)");
+            $record2 = mysqli_query($conn, "SELECT * FROM authorization WHERE userId=$id");
+            $row2 = mysqli_fetch_assoc($record2);
+   
+            echo json_encode(array("userId" => $userId, "key" => $row2['authkey'], "name" => $name, "email" => $email, "img" => $img));
          }
-
-         // $record2 = mysqli_query($conn, "SELECT * FROM authorization WHERE authkey={$random_key}");
-         // $row2 = mysqli_fetch_assoc($record2);
-
-         // $timestamp = strtotime($row2['time']); //переводится значение из базы данных в секунды 
-         // $dateTime = date("Y-m-d H:i:s", $timestamp);
-
-         echo json_encode(array("userId" => $userId, "key" => $random_key, "name" => $name, "email" => $email, "img" => $img));
       }
       else{
-         echo json_encode(array("message" => "Введен неправильный пароль", "password" => $password));
+         echo json_encode(array("error" => "Введен неправильный пароль"));
       }
 
    } else{
-      echo json_encode(array("message" => "Пользователя с таким почтовым адресом нет"));
+      echo json_encode(array("error" => "Пользователя с таким почтовым адресом нет"));
    }
 ?>

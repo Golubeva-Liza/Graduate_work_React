@@ -27,6 +27,12 @@
          color: #FFFFFF;
          background-color: $main-blue;
       }
+      &:disabled{
+         border: 1px solid $blue-disabled;
+         color: $blue-disabled;
+         background-color: #FFFFFF;
+         cursor: default;
+      }
    }
    &_red{
       background-color: $main-red;

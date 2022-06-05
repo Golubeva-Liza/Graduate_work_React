@@ -2,7 +2,7 @@
 
    function checkUser($conn, $authTime, $key, $user){
 
-      $loggedUser = mysqli_query($conn, "SELECT * FROM authorization WHERE authkey = {$key}");
+      $loggedUser = mysqli_query($conn, "SELECT * FROM authorization WHERE authkey = $key");
       
       if(mysqli_num_rows($loggedUser) > 0){
          $row = mysqli_fetch_assoc($loggedUser);
@@ -46,12 +46,15 @@
             $sql = mysqli_query($conn, "DELETE FROM authorization WHERE authkey = {$key} AND userId = {$id}");
             return array(
                "authError" => "Идентификаторы не совпадают",
+               "userId"=>$id,
+               "user"=>$user
             );
          }
    
       } else{
          return array(
             "authError" => "Ключ не совпадает",
+            "errorKey" => $key
          );
       }
    }

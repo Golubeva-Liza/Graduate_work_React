@@ -9,40 +9,57 @@ import InputWithLabel from '../inputWithLabel/InputWithLabel';
 import Input from '../input/Input';
 import Button from '../button/Button';
 import FormPassword from '../formPassword/FormPassword';
+import ErrorMessage from '../errorMessage/ErrorMessage';
 
 
 const LogForm = ({toggleForm, onLogin}) => {
    const emailInput = useInput('');
    const passwordInput = useInput('');
    const form = useRef();
-   const [errorMessage, setErrorMessage] = useState('');
+   const [globalErrorMessage, setGlobalErrorMessage] = useState('');
 
    const {universalRequest} = useBookmeService();
-   const {loginValid} = useValidation();
+   const {validation, errorMessage} = useValidation();
    
 
    const formSubmit = async () => {
-      const successValid = loginValid(emailInput.value, passwordInput.value);
-      
-      if (successValid === true){
-         setErrorMessage('');
-         const formData = new FormData(form.current);
-         universalRequest('login', formData).then((res) => onLogin(res));
+      const formData = new FormData(form.current);
+      universalRequest('login', formData).then((res) => onUserLogged(res));
 
-      } else {
-         setErrorMessage(successValid);
+   }
+
+   const onUserLogged = (res) => {
+      if (res.error){
+         setGlobalErrorMessage(res.error);
+      } else{
+         onLogin(res);
       }
    }
 
    return (
       <div className={`form active`}>
          <h2 className="form__title">Войти в систему</h2>
-         {errorMessage ? <div className="error-message form__error-message">{errorMessage}</div> : null}
+         {globalErrorMessage ? <div className="error-message form__error-message">{globalErrorMessage}</div> : null}
          <form action="#" onSubmit={(e) => e.preventDefault()} ref={form}>
             <InputWithLabel labelClass="form__label" labelTitle="Почта">
-               <Input inputType="text" inputName="email" inputText="Введите свою почту" value={emailInput.value} onChange={emailInput.onChange}/>
+               <Input 
+                  inputType="text" 
+                  inputName="email" 
+                  inputText="Введите свою почту" 
+                  value={emailInput.value} 
+                  onChange={emailInput.onChange}
+                  onBlur={e => validation(e)}
+               />
+               {errorMessage.email ? <ErrorMessage message={errorMessage.email}/> : null}
             </InputWithLabel>
-            <FormPassword labelText="Пароль" placeholder="Введите пароль" password={passwordInput.value} changePassword={passwordInput.onChange}/>
+            <FormPassword 
+               labelText="Пароль" 
+               placeholder="Введите пароль" 
+               password={passwordInput.value} 
+               changePassword={passwordInput.onChange}
+               onBlur={e => validation(e)}
+               errorMessage={errorMessage}
+            />
             <Button 
                buttonClass="form__btn"
                type="button"

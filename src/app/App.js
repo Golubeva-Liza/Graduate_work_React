@@ -4,7 +4,7 @@ import useBookmeService from '../services/BookmeService';
 import useFetchError from '../hooks/useFetchError';
 
 import Loader from '../components/loader/Loader';
-import Page404 from '../pages/Page404';
+// import Page404 from '../pages/Page404';
 import './App.scss';
 import AuthContext from '../hooks/context';
 import PrivateRoute from '../components/privateRoute/PrivatePoute';
@@ -13,7 +13,7 @@ const LoginPage = lazy(() => import('../pages/LoginPage'));
 const ModeratorPage = lazy(() => import('../pages/ModeratorPage'));
 const RespondPage = lazy(() => import('../pages/RespondPage'));
 const ClientPage = lazy(() => import('../pages/ClientPage'));
-// const Page404 = lazy(() => import('../pages/Page404'));
+const Page404 = lazy(() => import('../pages/Page404'));
 
 
 
@@ -62,6 +62,7 @@ const App = () => {
    }, []);
 
    const onUserLoad = (res) => {
+      console.log(res);
       const isError = isFetchError(res);
       if (!isError){
          setUser({

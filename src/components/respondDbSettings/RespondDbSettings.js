@@ -105,7 +105,7 @@ const RespondDbSettings = ({respondents, filteredResponds, setFilteredResponds, 
 
    useEffect(() => {
       if (ageNow.length){ 
-         console.log('применить фильтры')
+         // console.log('применить фильтры')
          applyFilters();
       }
    }, [ageNow]);

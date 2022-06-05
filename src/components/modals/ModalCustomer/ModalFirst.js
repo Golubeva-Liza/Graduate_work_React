@@ -14,7 +14,6 @@ import InputWithLabel from '../../inputWithLabel/InputWithLabel';
 import Input from '../../input/Input';
 import InputMask from 'react-input-mask';
 import Loader from '../../loader/Loader';
-import getIntervals from '../../../hooks/getIntervals';
 import ErrorMessage from '../../errorMessage/ErrorMessage';
 
 

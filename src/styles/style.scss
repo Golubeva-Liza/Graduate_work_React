@@ -112,7 +112,7 @@ input::-webkit-inner-spin-button {
    height: 100vh;
    .my-container{
       display: flex;
-      height: 100%;
+      height: calc(100% - 48px);
    }
 }
 .main-loader{

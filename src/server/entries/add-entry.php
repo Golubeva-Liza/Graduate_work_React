@@ -19,6 +19,7 @@
    // $random_id = rand(time(), 10000000); //random id of user
    $phoneNum = preg_replace("/[^0-9]/", '', $phone);
    $editDate = date("Y-m-d");
+   $times = explode("-", $time);
 
    if (!$city){
       $city = '-';
@@ -28,7 +29,17 @@
    $currentRespond = mysqli_query($conn, "SELECT * FROM respondents WHERE email='{$email}' AND phone='{$phoneNum}'");
 
    if(mysqli_num_rows($currentRespond) > 0){
-      echo json_encode("Есть в базе");
+
+      $respondID = mysqli_fetch_assoc($currentRespond)['id'];
+
+      $record = mysqli_query($conn, "INSERT INTO entries (respondent, firstTime, lastTime, date, project, callInfo, comment) VALUES ($respondID, '{$times[0]}', '{$times[1]}', '{$date}', {$projId}, '{$callInfo}', '{$comment}')");
+
+      if($record2){
+         echo json_encode("success");
+      }else{
+         echo json_encode("Что-то пошло не так");
+      }
+
    }else{
 
       // $respond = array("age"=>$age, "birthday"=>$birthday, "phone"=>$phoneNum);
@@ -39,11 +50,7 @@
       if($record){
          $select = mysqli_query($conn, "SELECT * FROM respondents WHERE email='{$email}' AND phone='{$phoneNum}'");
          $respondID = mysqli_fetch_assoc($select)['id'];
-
-         // $select2 = mysqli_query($conn, "SELECT * FROM test_dates WHERE time='{$interval}' AND date='{$date}' AND project={$projId}");
-         // $projTimeID = mysqli_fetch_assoc($select2)['id'];
          
-         $times = explode("-", $time);
          $record2 = mysqli_query($conn, "INSERT INTO entries (respondent, firstTime, lastTime, date, project, callInfo, comment) VALUES ({$respondID}, '{$times[0]}', '{$times[1]}', '{$date}', {$projId}, '{$callInfo}', '{$comment}')");
 
          if($record2){
@@ -55,27 +62,5 @@
          echo json_encode("Респондент не записался в базу данных");
       }
    }
-
-   // if (!$city){
-   //    $city = '-';
-   // }
-   // if (!$tags){
-   //    $tags = '-';
-   // }
-   
-   // $record = mysqli_query($conn, "INSERT INTO respondents (unique_id, user_name, user_email, user_phone, user_gender, user_age, education, homecity, family_status, tags) VALUES ({$random_id}, '{$username}', '{$email}', '{$phoneNum}', '{$gender}', {$age}, '{$education}', '{$city}', '{$familyStatus}', '{$tags}')");
-   // if($record){
-   //    $currentRespond= mysqli_query($conn, "SELECT * FROM respondents WHERE unique_id = '{$random_id}'");
-   //    if(mysqli_num_rows($currentRespond) > 0){
-   //       $data = mysqli_fetch_all($currentRespond);
-   //       $json = json_encode($data);
-   //       echo $json;
-   //       // echo "success";
-   //    }else{
-   //       echo "Что-то пошло не так";
-   //    }
-   // }else{
-   //    echo "Респондент не записался в базу данных";
-   // }
 
 ?>

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import InputWithLabel from '../inputWithLabel/InputWithLabel';
 import Input from '../input/Input';
+import ErrorMessage from '../errorMessage/ErrorMessage';
 
-const FormPassword = ({labelText, placeholder, password, changePassword}) => {
+const FormPassword = ({labelText, placeholder, password, changePassword, onBlur, errorMessage}) => {
 
    const [passwordBtnActive, setPasswordBtnActive] = useState(false);
    
@@ -19,7 +20,9 @@ const FormPassword = ({labelText, placeholder, password, changePassword}) => {
                inputText={placeholder} 
                value={password} 
                onChange={changePassword}
+               onBlur={onBlur}
             />
+            {errorMessage && errorMessage.password ? <ErrorMessage message={errorMessage.password}/> : null}
          </InputWithLabel>
          <button 
             className={`button-reset form__eye ${passwordBtnActive ? 'active' : ''}`}

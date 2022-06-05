@@ -119,7 +119,8 @@
    &__row, &__title{
       display: grid;  
       align-items: center;
-      grid-template-columns: 30px minmax(135px, 1fr) 26px 54px minmax(88px, 140px) 125px minmax(110px, 143px) 115px minmax(135px, 1fr) 39px;
+      //30px для чекбокса, 135 для ФИО
+      grid-template-columns: minmax(150px, 1fr) 26px 54px minmax(88px, 140px) 125px minmax(110px, 143px) 115px minmax(135px, 1fr) 39px;
       height: 47px;
       column-gap: 21px;
       background-color: #FFFFFF;
@@ -130,7 +131,7 @@
          text-overflow: ellipsis;
          overflow-x: hidden;
          &:nth-child(1){
-            padding-left: 14px;
+            padding-left: 21px;//для чекбокса 14px
          }
          &:last-child{
             padding-right: 14px;

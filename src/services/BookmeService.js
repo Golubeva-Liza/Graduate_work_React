@@ -37,6 +37,10 @@ const useBookmeService = () => {
          case 'getLoggedUser': //+
             url += 'api/get-user.php';
             break;
+
+         case 'logout': //+
+            url += 'api/logout.php';
+            break;
          
          case 'updateUserData': //+
             url += 'users/update-user.php';

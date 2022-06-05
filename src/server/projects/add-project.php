@@ -27,9 +27,11 @@
             $deleteTime = mysqli_query($conn, "DELETE FROM timeintervals WHERE project = $projectId");
    
             foreach ($days as $value) {
-               foreach ($value->intervals as $interval) {
-                  $times = explode("-", $interval);
-                  $time_record = mysqli_query($conn, "INSERT INTO timeintervals (firstTime, lastTime, date, project) VALUES ('{$times[0]}', '{$times[1]}', '{$value->date}', {$projectId})");
+               if (count($value->intervals) > 0){
+                  foreach ($value->intervals as $interval) {
+                     $times = explode("-", $interval);
+                     $time_record = mysqli_query($conn, "INSERT INTO timeintervals (firstTime, lastTime, date, project) VALUES ('{$times[0]}', '{$times[1]}', '{$value->date}', {$projectId})");
+                  }
                }
             }
    
@@ -53,7 +55,7 @@
          $projectId = mysqli_fetch_assoc($currentProject)['projId'];
          $randomKey = md5(time()+$projectId); // MD5-хэш текущего времени с точностью до сотых секунды
    
-         $record = mysqli_query($conn, "UPDATE projects SET linkForRespond='projects/{$projectId}', linkForCustomer='projects/{$randomKey}' WHERE projId={$projectId}");
+         $record = mysqli_query($conn, "UPDATE projects SET linkForRespond='projects/{$projectId}', linkForCustomer='schedule/{$randomKey}' WHERE projId={$projectId}");
    
          foreach ($days as $value) {
             foreach ($value->intervals as $interval) {

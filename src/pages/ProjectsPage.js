@@ -53,7 +53,7 @@ const ProjectsPage = () => {
       if (!isError){
          setProjects(res);
       } 
-      console.log(res);
+      // console.log(res);
    }
 
    //если открытого проекта больше нет, то открывается первый проект в обновленном списке
@@ -234,7 +234,7 @@ const ProjectsPage = () => {
                setModalActive={setProjectDeleteActive} 
                removal={'проекта'}
                whatDelete={projectActiveName}
-               info={'со всеми записями и расписанием тестирования'}
+               info={' со всеми записями и расписанием тестирования'}
                deleteSubmit={deleteProject}
             />
          </Modal>

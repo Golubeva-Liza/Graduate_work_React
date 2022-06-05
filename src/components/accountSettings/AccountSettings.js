@@ -101,9 +101,22 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
    }
 
    const logout = () => {
-      localStorage.removeItem('userKey');
-      localStorage.removeItem('authKey');
-      navigate('/');
+
+      const obj = {
+         "user": localStorage.getItem('userKey'),
+         "key": +localStorage.getItem('authKey')
+      };
+
+      universalRequest('logout', JSON.stringify(obj)).then(res => {
+         const isError = isFetchError(res);
+         if (!isError){
+            localStorage.removeItem('userKey');
+            localStorage.removeItem('authKey');
+            navigate('/');
+         }else{
+            console.log(res);
+         }
+      });
    }
 
    const onUploadPhoto = () => {

@@ -57,7 +57,7 @@ const ProjectsAside = ({setModalActive, accordActive, setAccordActive, projects,
                   return <Accordion accordClass="projects-aside__project" name={project.projectName} key={id}
                      items={['Редактировать', 'Удалить', 'Ссылка для респондентов', 'Ссылка для заказчика']}
                      accordActive={accordActive} setAccordActive={setAccordActive}
-                     onClick={[editProj, deleteProj, ()=>copyRespLink(true), ()=>setCopyScheduleLink(true)]}
+                     onClick={[editProj, deleteProj, ()=>setCopyRespLink(true), ()=>setCopyScheduleLink(true)]}
                      time startTime={firstDate} finalTime={lastDate}
                   />
                })

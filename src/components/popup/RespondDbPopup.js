@@ -10,7 +10,6 @@ const RespondDbPopup = (props) => {
    
    const modalEditRespond = () => {
       setEditModalActive(true);
-      // console.log(activeRespond);
       setEditRespond(activeRespond);
       setPopupActive(false);
       dotBtns.current.forEach(item => item ? item.classList.remove('active') : null);

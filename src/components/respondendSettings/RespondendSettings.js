@@ -17,7 +17,7 @@ import Button from "../button/Button";
 
 const RespondendSettings = ({selectedDay, time, formLink, projectId, setEntryReady}) => {
 
-   const {errorMessage, setErrorMessage, validation} = useValidation();
+   const {errorMessage, validation} = useValidation();
    const {educationValues, familyStatusValues} = useSelectValues();
    const {universalRequest} = useBookmeService();
 
@@ -93,7 +93,7 @@ const RespondendSettings = ({selectedDay, time, formLink, projectId, setEntryRea
    }
 
    const onEntryPost = (res) => {
-      if (res == 'success'){
+      if (res === 'success'){
          setEntryReady(true);
       } else {
          console.log(res);

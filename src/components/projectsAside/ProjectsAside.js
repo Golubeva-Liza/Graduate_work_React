@@ -1,5 +1,5 @@
 import './projectsAside.scss';
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Calendar from '../calendar/Calendar';
 import Accordion from '../accordion/Accordion';
 import useAddressValues from '../../hooks/useAddressValues';

@@ -1,10 +1,8 @@
 import './respondDb.scss';
 
-import { useState, useRef, useEffect, useMemo } from 'react';
-import useBookmeService from '../../services/BookmeService';
+import { useState, useRef, useMemo } from 'react';
 
 import RespondDbPopup from '../popup/RespondDbPopup';
-import Popup from '../popup/Popup';
 import { Dots } from '../../resources';
 import Loader from '../loader/Loader';
 
@@ -80,12 +78,6 @@ const RespondDb = ({
    
             return (
                <div className="table__row" key={value.id} ref={el => respondList.current[index] = el}>
-                  {/* <div>
-                     <label className="checkbox">
-                        <input className="checkbox__input" name="respondent" type="checkbox"/>
-                        <div className="checkbox__check"></div>
-                     </label>
-                  </div> */}
                   <div>{value.name}</div>
                   <div>{value.gender}</div>
                   <div>{value.age}</div>
@@ -122,12 +114,6 @@ const RespondDb = ({
          />
          <div className="table respondDb__table" ref={table}>
             <div className="table__title">
-               {/* <div>
-                  <label className="checkbox">
-                     <input className="checkbox__input" name="all" type="checkbox"/>
-                     <div className="checkbox__check"></div>
-                  </label>
-               </div> */}
                <div>ФИО</div>
                <div>Пол</div>
                <div>Возраст</div>
@@ -150,7 +136,6 @@ const RespondDb = ({
          {loader}
 
          <div className="respondDb__btns">
-            {/* <button className="button" disabled>Пригласить респондентов в проект</button> */}
             <button className="button respondDb__add-btn" onClick={() => setModalActive(true)} >Добавить респондента</button>
          </div>
       </main>

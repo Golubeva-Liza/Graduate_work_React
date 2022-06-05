@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 import ModerCalendar from '../components/moderCalendar/ModerCalendar';
 import ProjectsAside from '../components/projectsAside/ProjectsAside';

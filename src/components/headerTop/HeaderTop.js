@@ -1,5 +1,4 @@
 import './headerTop.scss';
-import { NavLink } from 'react-router-dom';
 
 const HeaderTop = () => {
    return (

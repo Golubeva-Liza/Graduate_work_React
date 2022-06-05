@@ -1,5 +1,5 @@
 import './headerSide.scss';
-import { HeaderArrow, Calendar, Respond, Settings, ProfilePhoto, DefaultUser } from '../../resources';
+import { HeaderArrow, Calendar, Respond, Settings, DefaultUser } from '../../resources';
 import { useState, useEffect, useContext } from 'react';
 import AuthContext from '../../hooks/context';
 import useAddressValues from '../../hooks/useAddressValues';

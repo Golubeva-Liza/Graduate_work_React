@@ -6,8 +6,6 @@ import useValidation from '../../hooks/useValidation';
 import useFetchError from '../../hooks/useFetchError';
 import useAddressValues from '../../hooks/useAddressValues';
 
-import Input from '../input/Input';
-import InputWithLabel from '../inputWithLabel/InputWithLabel';
 import Button from '../button/Button';
 import Popup from '../popup/Popup';
 import { DefaultUser } from '../../resources';
@@ -133,7 +131,7 @@ const AccountSettings = ({setModalPasswordActive, setModalFileActive, user, setU
          formData.append("removePhoto", true);
 
          universalRequest('updateUserData', formData).then(res => {
-            if (res == 'success'){
+            if (res === 'success'){
                console.log('success');
                const updatedUser = [...user.slice(0, 4), ''];
                setUser(updatedUser);

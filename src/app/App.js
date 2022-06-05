@@ -1,5 +1,5 @@
-import { lazy, Suspense, useState, useEffect, createContext, useMemo } from 'react';
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import { lazy, Suspense, useState, useEffect } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import useBookmeService from '../services/BookmeService';
 import useFetchError from '../hooks/useFetchError';
 
@@ -7,7 +7,6 @@ import Loader from '../components/loader/Loader';
 // import Page404 from '../pages/Page404';
 import './App.scss';
 import AuthContext from '../hooks/context';
-import PrivateRoute from '../components/privateRoute/PrivatePoute';
 
 const LoginPage = lazy(() => import('../pages/LoginPage'));
 const ModeratorPage = lazy(() => import('../pages/ModeratorPage'));

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 const CheckboxList = ({values, parentClass, firstCheckAll, setCheckValues}) => {
    //firstCheckAll - параметр, отвечающий за то, что первый элемент чеклиста отмечает все другие чекбоксы (выбрать всё)

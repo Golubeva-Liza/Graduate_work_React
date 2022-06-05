@@ -1,16 +1,12 @@
 import './popup.scss';
 
 const EntriesPopup = ({popupClass, link, removeEntry}) => {
-   
-   const modalEditRespond = () => {
-
-   }
  
    return (
       <div className={`popup show ${popupClass}`} ref={link}>
          <ul className="popup__list">
             <li className="popup__item">
-               <button className="button-reset" onClick={modalEditRespond}>Редактировать запись</button>
+               <button className="button-reset" onClick={null}>Редактировать запись</button>
             </li>
             <li className="popup__item">
                <button className="button-reset" onClick={removeEntry}>Удалить запись</button>

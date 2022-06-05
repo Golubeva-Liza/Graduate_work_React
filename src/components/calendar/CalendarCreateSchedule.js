@@ -1,6 +1,6 @@
 import './calendar.scss';
 import './calendarCreateProj.scss';
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo } from 'react';
 import { CalendarArrow, CalendarArrowSmall } from '../../resources';
 import {getDate, transformDate} from '../../hooks/getDate';
 import getDatesList from '../../hooks/getDatesList';
@@ -94,13 +94,6 @@ const CalendarCreateSchedule = ({classes, calendarValues, small, setModalTimeAct
          setModalTimeActive(true);
       }
    }
-
-   const getDaysArray = function(start, end) {
-      for (var arr=[], date=new Date(start); date<=new Date(end); date.setDate(date.getDate()+1)){
-         arr.push(new Date(date));
-      }
-      return arr;
-   };
    
    return (
       <div className={`calendar calendar_create-schedule ${small ? 'calendar_small' : ''} ${classes}`}>

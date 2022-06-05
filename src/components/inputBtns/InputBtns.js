@@ -1,5 +1,4 @@
 import './inputBtns.scss';
-import {translit} from '../../hooks/translit';
 
 const InputBtns = (props) => {
    const {classes, values, radioValue, setRadioValue} = props;

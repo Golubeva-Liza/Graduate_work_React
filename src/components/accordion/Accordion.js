@@ -1,5 +1,5 @@
 import './accordion.scss';
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 
 const Accordion = ({accordClass, name, items, accordActive, setAccordActive, onClick, time, startTime, finalTime}) => {
 

@@ -1,7 +1,5 @@
 import "./respondentCalendar.scss";
-import { useState, useEffect, useMemo } from 'react';
 
-import Calendar from "../calendar/Calendar";
 import CalendarScheduleToRespondent from "../calendar/CalendarScheduleToRespondent";
 
 

@@ -1,5 +1,4 @@
 import './aboutProjectsAside.scss';
-import { useState, useEffect } from 'react';
 
 const AboutProjectsAside = ({project}) => {
 
@@ -14,11 +13,6 @@ const AboutProjectsAside = ({project}) => {
                </p>
             ))}
          </div>
-         
-
-         {/* <div className="about-project__info">
-            Модератор: <span>Мария</span> 
-         </div> */}
 
          <div className="about-project__info">
             Адрес: <span>{project.address}</span> 

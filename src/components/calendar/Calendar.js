@@ -1,5 +1,5 @@
 import './calendar.scss';
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useMemo, useEffect, useRef } from 'react';
 import { CalendarArrow, CalendarArrowSmall } from '../../resources';
 
 const Calendar = ({classes, small}) => {
